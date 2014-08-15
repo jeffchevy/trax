@@ -1,0 +1,358 @@
+.errors { color: red; font-size: 1.2em; white-space: nowrap; }
+
+body,li,div,ul {
+	color: white;
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	background: black;
+	color: white;
+	padding: 0px;
+	margin: 0px;
+	font-family: "Trebuchet MS",Arial,Helvetica,Sans-Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+}
+p {
+	font-family: "Trebuchet MS",Arial,Helvetica,Sans-Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    background: white;
+    border: 1px black;
+    color: black;
+    text-align: left;
+    margin: 1px;
+    padding: 2px;
+}
+.table, .row, .cell {
+	/*border: 1px solid white;*/
+}
+.table {
+	display: table;
+	width: 100%;
+}
+
+.row {
+	display: table-row;
+}
+
+.cell {
+	display: table-cell;
+	text-align: right;
+}
+.tablefooter {
+	display: table-footer;
+	border: 8px solid black;
+	text-align: center;
+	background-color: white;
+
+}
+
+.smalllabel {
+	color: #454;
+	font-size: 1em;
+}
+.biglabel {
+	color: #454;
+	font: 1.5em bold;
+}
+
+.dropshadow {
+ -moz-box-shadow: 9px 6px 6px #333; /* Firefox */
+ -webkit-box-shadow: 9px 6px 6px #333; /* Safari/Chrome */
+ box-shadow: 9px 6px 6px #333; /* Opera and other CSS3 supporting browsers */
+ -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#333')";/* IE 8 */
+ : progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#333');/* IE 5.5 - 7 */ 
+} 
+#mainmenu {
+	width: 130px;
+}
+div#mainmenu2 {
+	position: absolute;
+	top: 0;
+}
+#earned, #earnedblank {
+	height: 100px;
+}
+#earned {
+ 	text-align: center;
+    padding-top: 10px;
+}
+
+.meritbadge {
+	margin: 5px;
+}
+
+#rankmenu {
+	
+}
+
+#pages {
+	min-height: 400px;
+	padding-left: 20px;
+}
+
+#unit {
+	float: left;
+}
+#troopList {
+	color: white;
+	width: 100%;
+}
+#import {
+	float: right;
+}
+
+#page1, #page2 {
+	width: 50%;
+	/*border: solid 1px;*/
+	color: white;
+	min-height: 100px;
+	background: #454;
+	/*padding: 10px 35px 10px 20px;*/
+	border-right: solid thin grey;
+}
+#page1 {
+	
+	/*background: url("../images/book/page1.png") no-repeat right top transparent;*/
+}
+
+#page2 {
+	/*background: url("../images/book/page2.png") no-repeat left top transparent;*/
+	/*padding-top: 10px;*/
+	vertical-align: top;
+}
+#pagetwo {
+}
+div#scoutimage, div#awardimage{
+	width: 100px; 
+}
+img#scoutimage, #awardimage { /*mirror reflections*/
+	margin: 0 0 10px 45px;
+	height: 140px; 
+}
+
+img#awardimage {
+}
+div#awardname{
+	width: 100%;
+	height: 100px; 
+	padding-top: 25px;
+	vertical-align: top;
+}
+p#awardname, p#subtitle {
+	color: #B0D1B2;
+	background: transparent;
+	text-transform: uppercase;
+	font-family: simplex, herman, georgia;
+    font-size: 3em;
+    font-style: normal;
+    font-weight: bold;
+    text-align: center;
+}
+p#subtitle {
+	font-size: 1.5em;
+	text-transform: none;
+}
+
+#sponsor {
+	background: url("../images/book/sponsors.png") no-repeat center top transparent;
+	height: 95px;
+}
+
+#inprogress, inprogressblank {
+	height: 70em;
+	width: 12em;
+}
+
+#inprogress {
+	background: url("../images/book/inprogress.png") no-repeat center top transparent;
+}
+
+#rank-nav {
+	padding: 0 13em 0 20px ;
+}
+#rank a:link,#rank a:visited {
+    color: black;
+    text-decoration: none;
+}
+#rank li {
+	display: inline;
+    border: solid thin white;
+}
+#rank {
+    background-color: #cca;
+	list-style: none outside none;
+	font-size: 1.3em;
+	text-align: left;
+}
+.active {
+	border: solid thin red;
+	background: grey;
+	background: #454 !important;
+	padding: 0 3px;
+}
+
+
+#nav {
+	list-style: none outside none;
+	width: auto;
+	margin: 0;
+	padding: 0;
+}
+
+#nav li {
+	
+}
+
+#scouts {
+	width: 10em;
+	font-size: 1.3em;
+	background-color: grey;
+}
+
+#scoutnames {
+	vertical-align: top;
+}
+
+#scouts li,#scouts a:link,#scouts a:visited {
+	list-style: none outside none;
+	text-align: left;
+	color: white;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.selectedscout {
+	background-color: #555555;
+    color: white;
+    font-weight: bold;
+    border: thin solid red;
+} 
+
+#nav-home, #nav-troop, #nav-advancement, #nav-calendar, #nav-email, #nav-shirt, #nav-report, #nav-sash
+{
+	display: block;
+	text-indent: -9999px;
+	height: 120px;
+	width: 130px;
+}
+
+#nav-home {
+	padding: 6px 0 0 8px;
+	background: url("../images/book/logo.png") no-repeat center top transparent;
+	border: none;
+}
+
+#nav-troop {
+}
+
+#nav-advancement {
+	background: url("../images/book/scoutbookcover.png") no-repeat center top transparent;
+}
+
+#nav-calendar {
+	background: url("../images/book/calendar.png") no-repeat center top transparent;
+}
+
+#nav-email {
+	background: url("../images/book/email.png") no-repeat center top transparent;
+}
+
+#nav-shirt {
+	background: url("../images/book/shirt.png") no-repeat center top transparent;
+}
+
+#nav-report {
+	background: url("../images/book/report.png") no-repeat center top transparent;
+}
+
+#nav-sash {
+	background: url("../images/book/sash.png") no-repeat center top transparent;
+}
+.cleared
+{
+	float: none;
+	clear: both;
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-size:1px;
+}
+input.requirementcheckbox {
+ 	width:	1.4em;
+ 	margin:	0 0 5px 0;
+}
+.requirementtext {
+    background: none repeat scroll 0 0 white;
+    border: thin solid;
+    color: black;
+    margin: 0 0 5px 22px;
+    padding: 0 7px;
+    text-align: left;
+    width: 85%;
+}
+div.datebox {
+	background: #B0D1B2;
+    border: thin solid black;
+    margin: 0;
+    padding: 0 15px;
+    text-align: left;
+    width: 6em;
+    color: black;
+    font-size: 13px;
+}
+
+div.spacercolumn {
+	background: none repeat scroll 0 0 transparent;
+    color: transparent;
+}
+
+#scout_info {
+	height: 9em;
+}
+
+.requirementCount {
+	 color: red;
+    left: -20px;
+    position: relative;
+    top: 20px;
+}
+
+.requirementscheckbox {
+}
+
+#scoutleftpocket, #scoutrightpocket , Boy_Scout_left_sleeve ,#scoutleftsleeve,#scoutrightsleeve,
+#venturerleftpocket,#venturerrightpocket,#venturerleftsleeve,#venturerrightsleeve {
+		width: 200px;
+		height: 300px;
+}
+
+#scoutleftpocket {
+	background: url("../images/shirt/Boy_Scout_left_pocket.png") no-repeat center top transparent;
+}
+#scoutrightpocket {
+	background: url("../images/shirt/Boy_Scout_left_sleeve_(Boy_Scouts_of_America).png") no-repeat center top transparent;
+}
+#scoutleftsleeve {
+	background: url("../images/shirt/Boy_Scout_left_sleeve.png") no-repeat center top transparent;
+}
+#scoutrightsleeve {
+	background: url("../images/shirt/Boy_Scout_right_sleeve.png") no-repeat center top transparent;
+}
+#venturerleftpocket {
+	background: url("../images/shirt/Venturer_left_pocket.png") no-repeat center top transparent;
+}
+#venturerrightpocket {
+	background: url("../images/shirt/Venturer_right_pocket.png") no-repeat center top transparent;
+}
+#venturerleftsleeve {
+	background: url("../images/shirt/Venturer_left_sleeve.png") no-repeat center top transparent;
+}
+#venturerrightsleeve {
+	background: url("../images/shirt/Venturer_right_sleeve.png") no-repeat center top transparent;
+}

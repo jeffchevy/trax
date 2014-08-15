@@ -1,0 +1,40 @@
+<html>
+	<body style="font-size: 18px; font-family: verdana; width:700px;">
+		
+		<table>
+			<tr>
+				<td>
+					$newLeader.firstName,
+				</td>
+			</tr>	
+			<tr>
+				<td>
+					$oldLeader.fullName from $oldLeader.unit.typeOfUnit.name $oldLeader.unit.number  has invited you to join ScoutTrax to view the records for $scout.fullName. 
+					<p><b>ScoutTrax is free.</b><p>
+				</td>
+			</tr>	
+			<tr>
+				<td colspan='2' style="padding:20px">	
+					<p>ScoutTrax is scout tracking and coordination system. It will help coordinate your scout units progress toward scouting goals and ideals.</p>  
+					<p>As a new member of ScoutTrax, you will be able to create your own user name and password.</p>
+					<p>If you use another program for tracking your scouts, just create a username and password to access $scout.fullName's record. 
+						Once you are logged in click on the scout picture to get a report of the advancement record.</p>
+					
+					<p style="color: red;">In order to get started you need to click on the ScoutTrax image below and set up a username and password. Then use your new user name and password to login.</p>
+					<a href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">		
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+					</a>
+					<p>After doing this, login and update your information and scout advancement records. 
+					This information will be kept secure, while shared with other scout leaders.</p>
+				</td>						
+			</tr>
+			<tr>
+				<td colspan='2' style="padding:20px"> 
+					If you're not able to access ScoutTrax or have any questions, please send us a message at www.facebook.com/ScoutTrax
+				</td>	
+			</tr>
+		</table>
+	</body>
+</html>
+
+

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition name="main.definition" template="/tiles/main/layout.jsp">
+        <put-attribute name="header" value="/tiles/main/header.jsp" />
+        <put-attribute name="navigation" value="/tiles/main/navigation.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/tiles/main/footer.jsp" />
+    </definition>	
+    <definition name="simple.definition" template="/tiles/simplelayout.jsp">
+        <put-attribute name="body" value="" />
+    </definition>
+    <definition name="threerowlayout.definition" template="/tiles/threerowlayout.jsp">
+        <put-attribute name="top" value="" />
+        <put-attribute name="bottom" value="" />
+    </definition>
+    
+    <definition name="scout.definition" template="/tiles/layout.jsp">
+        <put-attribute name="mainmenu" value="/tiles/mainmenu.jsp" />
+        <put-attribute name="earned" value="/tiles/earned.jsp" />
+        <put-attribute name="rankmenu" value="/tiles/rankmenu.jsp" />
+        <put-attribute name="inprogress" value="/tiles/inprogress.jsp" />
+        <put-attribute name="pages" value="/tiles/pages.jsp" />
+        <put-attribute name="footer" value="" />
+        <put-attribute name="scoutnames" value="" />
+        <put-attribute name="sponsor" value="/tiles/sponsor.jsp" />
+    </definition>
+    <definition name="cub.definition" template="/tiles/layout.jsp">
+        <put-attribute name="mainmenu" value="/tiles/mainmenu.jsp" />
+        <put-attribute name="earned" value="/tiles/earned.jsp" />
+        <put-attribute name="rankmenu" value="/tiles/cub/rankmenu.jsp" />
+        <put-attribute name="inprogress" value="/tiles/inprogress.jsp" />
+        <put-attribute name="pages" value="/tiles/pages.jsp" />
+        <put-attribute name="footer" value="" />
+        <put-attribute name="scoutnames" value="" />
+        <put-attribute name="sponsor" value="/tiles/sponsor.jsp" />
+    </definition>
+    <definition name="troopmanage.definition" template="/tiles/layout.jsp">
+        <put-attribute name="mainmenu" value="/tiles/mainmenu.jsp" />
+        <put-attribute name="rankmenu" value="" />
+        <put-attribute name="earned" value="/tiles/earned.jsp" />
+        <put-attribute name="inprogress" value="/tiles/inprogress.jsp" />
+        <put-attribute name="pages" value="/tiles/pages.jsp" />
+        <put-attribute name="footer" value="" />
+        <put-attribute name="scoutnames" value="" />
+        <put-attribute name="sponsor" value="" />
+    </definition>
+	<definition name="register.definition" template="/tiles/register/layout.jsp">
+        <put-attribute name="header" value="/tiles/register/header.jsp" />
+        <put-attribute name="menu" value="" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/tiles/register/footer.jsp" />
+    </definition>
+    
+	<definition name="scoutTraxUserGuide" extends="simple.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/scoutTraxUserGuide.jsp" />
+	</definition>
+	<definition name="userGuideForCubs" extends="simple.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/UserGuideForCubs.jsp" />
+	</definition>
+	<definition name="scoutreport" extends="simple.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/scoutreport.jsp" />
+	</definition>
+    <definition name="*Success" extends="main.definition">
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}Success.jsp" />
+    </definition>
+    
+	<definition name="home" extends="simple.definition">
+        <put-attribute name="body" value="/tiles/main/home.jsp" />
+    </definition>
+    <definition name="login" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/login.jsp" />
+        <put-attribute name="bottom" value="/WEB-INF/jsp/loginlinks.jsp" />
+    </definition>
+    <definition name="forgot" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/forgot.jsp" />
+    </definition>
+    <definition name="accountcreated" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/accountcreated.jsp" />
+    </definition>
+    <definition name="resetPassword" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/resetPassword.jsp" />
+    </definition>
+    <definition name="resetPasswordSuccess" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/resetPasswordSuccess.jsp" />
+    </definition>
+    <definition name="forgotPasswordSuccess" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/forgotPasswordSuccess.jsp" />
+    </definition>
+    <definition name="unit" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/unit.jsp" />
+    </definition>
+    <definition name="user" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/user.jsp" />
+    </definition>    
+    <definition name="emailVerification" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/emailVerification.jsp" />
+    </definition>
+
+    <definition name="cubAdvancement" extends="cub.definition">
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+		<put-attribute name="footer" value="/tiles/footer.jsp" />
+    </definition>
+    	
+	<definition name="advancement" extends="scout.definition">
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+		<put-attribute name="footer" value="/tiles/footer.jsp" />
+    </definition>
+    <definition name="shirt" extends="scout.definition">
+		<put-attribute name="rankmenu" value="" />
+    	<put-attribute name="pages" value="/WEB-INF/jsp/shirt.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showBadges" extends="scout.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showBadges.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showCub*" extends="cub.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/cub/showCub{1}.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    </definition>
+    <definition name="showDtgs" extends="scout.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showDtgs.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showAwards" extends="scout.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showAwards.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showServiceLog" extends="scout.definition">
+    	<put-attribute name="pages" value="/WEB-INF/jsp/showServiceLog.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showCampLog" extends="scout.definition">
+    	<put-attribute name="pages" value="/WEB-INF/jsp/showCampLog.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showLeadershipLog" extends="scout.definition">
+    	<put-attribute name="pages" value="/WEB-INF/jsp/showLeadershipLog.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    	<put-attribute name="sponsor" value="" />
+    </definition>
+    
+    
+ 
+    <definition name="scout" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/scout.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="scouttransfer" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/scouttransfer.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="invitecub" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/inviteCub.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+       <definition name="leader" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/leader.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showTroop" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showTroop.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showuploadprofileImage" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showuploadprofileImage.jsp" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showfeedback" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showfeedback.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showgroupemail" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showgroupemail.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showcubgroupemail" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showcubgroupemail.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="training" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/training.jsp" />
+        <put-attribute name="earned" value="" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    
+     <definition name="report" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/report.jsp" />
+     	<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    </definition>
+    <definition name="toFirstClass" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/toFirstClass.jsp" />
+     	<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+    </definition>
+     <definition name="groupReport" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/groupreport.jsp" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="groupCubReport" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/groupcubreport.jsp" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="tools" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/tools.jsp" />
+        <put-attribute name="inprogress" value="" />
+    </definition>
+    <definition name="showAwardsPreview" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showAwardsPreview.jsp" />
+    </definition>
+    <definition name="showRequirementsPreview" extends="troopmanage.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/showRequirementsPreview.jsp" />
+    </definition>
+	<definition name="campLogEntry" extends="troopmanage.definition">
+		<put-attribute name="pages" value="/WEB-INF/jsp/campLogEntry.jsp" />
+	</definition>    
+	<definition name="leadershipLogEntry" extends="troopmanage.definition">
+		<put-attribute name="pages" value="/WEB-INF/jsp/leadershipLogEntry.jsp" />
+	</definition>    
+	<definition name="serviceLogEntry" extends="troopmanage.definition">
+		<put-attribute name="pages" value="/WEB-INF/jsp/serviceLogEntry.jsp" />
+	</definition>    
+ 
+    
+    <definition name="member" extends="register.definition">
+        <put-attribute name="body" value="/WEB-INF/jsp/member.jsp" />
+    </definition>
+    
+</tiles-definitions>

@@ -1,0 +1,789 @@
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log opened at 2013-05-16 16:30:13
+project --topLevelPackage org.testtrax --projectName testtrax --java 7 --packaging JAR
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log closed at 2013-05-16 16:30:24
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log opened at 2013-05-16 16:30:27
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName awardConfig --class ~.model.Award --type ~.model.AwardConfig
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+field boolean --fieldName canSelect --value true
+focus --class ~.model.Requirement
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry 
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+// [failed] field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+focus --class ~.model.Organization
+focus --class ~.model.Organization 
+hint
+hint relationship
+hint fields 
+help relationship
+help
+hint relationships
+// [failed] field set --fieldName councila --type Council --class ~.model.Organization 
+// [failed] field reference --fieldName organization --type ~.model.Organization --class ~.model.Council --notNull 
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName award --type ~.model.Award
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+field boolean --fieldName canSelect --value true
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry 
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+// [failed] field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords --testAutomatically
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE --testAutomatically 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName award --type ~.model.Award
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+field boolean --fieldName canSelect --value true
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry --testAutomatically 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry --testAutomatically 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry --testAutomatically
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Unit
+field number --fieldName number --type int --permitReservedWords --notNull 
+field string --fieldName calendar 
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+field set --fieldName units --type ~.model.Unit --class ~.model.Organization --cardinality ONE_TO_MANY --mappedBy organization
+entity jpa --class ~.model.Position --permitReservedWords  --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field string --fieldName name
+entity jpa --class ~.model.UnitType --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field number --fieldName sortOrder --type int
+field number --fieldName startAge --type int
+field number --fieldName endAge --type int
+field string --fieldName name
+entity jpa --class ~.model.ScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.CubScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.Council  --testAutomatically
+field string --fieldName name
+field string --fieldName address
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName phone
+field string --fieldName website
+field string --fieldName yearOrganized
+entity jpa --class ~.model.Scout --extends ~.model.User
+field date --fieldName birthDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field boolean --fieldName selected 
+field boolean --fieldName checked
+field string --fieldName profileImage
+entity jpa --class ~.model.Leader --extends ~.model.User
+field reference --fieldName award --type ~.model.Award --class ~.model.Requirement
+field set --fieldName requirements --type ~.model.Requirement --class ~.model.Award --cardinality ONE_TO_MANY --mappedBy award
+// [failed] field reference --fieldName awardConfig --type ~.model.AwardConfig --class ~.model.RequirementConfig
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords --testAutomatically
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE --testAutomatically 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName award --type ~.model.Award
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field boolean --fieldName canSelect --value true
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry --testAutomatically 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry --testAutomatically 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry --testAutomatically
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Unit
+field number --fieldName number --type int --permitReservedWords --notNull 
+field string --fieldName calendar 
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+field set --fieldName units --type ~.model.Unit --class ~.model.Organization --cardinality ONE_TO_MANY --mappedBy organization
+entity jpa --class ~.model.Position --permitReservedWords  --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field string --fieldName name
+entity jpa --class ~.model.UnitType --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field number --fieldName sortOrder --type int
+field number --fieldName startAge --type int
+field number --fieldName endAge --type int
+field string --fieldName name
+entity jpa --class ~.model.ScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.CubScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.Council  --testAutomatically
+field string --fieldName name
+field string --fieldName address
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName phone
+field string --fieldName website
+field string --fieldName yearOrganized
+entity jpa --class ~.model.Scout --extends ~.model.User
+field date --fieldName birthDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field boolean --fieldName selected 
+field boolean --fieldName checked
+field string --fieldName profileImage
+entity jpa --class ~.model.Leader --extends ~.model.User
+field reference --fieldName award --type ~.model.Award --class ~.model.Requirement
+field set --fieldName requirements --type ~.model.Requirement --class ~.model.Award --cardinality ONE_TO_MANY --mappedBy award
+field reference --fieldName awardConfig --type ~.model.AwardConfig --class ~.model.RequirementConfig
+field set --fieldName requirementConfigs --type ~.model.RequirementConfig --class ~.model.AwardConfig --cardinality ONE_TO_MANY --mappedBy awardConfig
+// [failed] field set --fieldName council --type ~.model.Council --class ~.model.Organization 
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords --testAutomatically
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE --testAutomatically 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName award --type ~.model.Award
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field boolean --fieldName canSelect --value true
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry --testAutomatically 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry --testAutomatically 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry --testAutomatically
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Unit
+field number --fieldName number --type int --permitReservedWords --notNull 
+field string --fieldName calendar 
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+field set --fieldName units --type ~.model.Unit --class ~.model.Organization --cardinality ONE_TO_MANY --mappedBy organization
+entity jpa --class ~.model.Position --permitReservedWords  --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field string --fieldName name
+entity jpa --class ~.model.UnitType --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field number --fieldName sortOrder --type int
+field number --fieldName startAge --type int
+field number --fieldName endAge --type int
+field string --fieldName name
+entity jpa --class ~.model.ScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.CubScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.Council  --testAutomatically
+field string --fieldName name
+field string --fieldName address
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName phone
+field string --fieldName website
+field string --fieldName yearOrganized
+entity jpa --class ~.model.Scout --extends ~.model.User
+field date --fieldName birthDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field boolean --fieldName selected 
+field boolean --fieldName checked
+field string --fieldName profileImage
+entity jpa --class ~.model.Leader --extends ~.model.User
+field reference --fieldName award --type ~.model.Award --class ~.model.Requirement
+field set --fieldName requirements --type ~.model.Requirement --class ~.model.Award --cardinality ONE_TO_MANY --mappedBy award
+field reference --fieldName awardConfig --type ~.model.AwardConfig --class ~.model.RequirementConfig
+field set --fieldName requirementConfigs --type ~.model.RequirementConfig --class ~.model.AwardConfig --cardinality ONE_TO_MANY --mappedBy awardConfig
+field set --fieldName councila --type ~.model.Council --class ~.model.Organization 
+field reference --fieldName organization --type ~.model.Organization --class ~.model.Council --notNull
+field set --fieldName unit --type ~.model.Unit --class ~.model.UnitType 
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+jpa setup --database MYSQL --provider HIBERNATE --databaseName testtrax --userName trax --password trax
+entity jpa --class ~.model.User --inheritanceType SINGLE_TABLE --permitReservedWords --testAutomatically
+field string --fieldName firstname --notNull --comment "First name cannot be null"
+field date --fieldName creationDate --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName lastLoginDate --type java.util.Date --dateTimeFormatPattern "S-"
+field number --fieldName bsaMemberId --type int
+field boolean --fieldName isRetired
+field string --fieldName middleName
+field string --fieldName preferredName
+field string --fieldName lastName --notNull --comment "Last name cannot be null"
+field string --fieldName nameSuffix
+field email template --fieldName email 
+field string --fieldName textMessageNumber
+field string --fieldName phone
+field string --fieldName address
+field string --fieldName city --notNull --comment "Must specify the city"
+field string --fieldName state --notNull --comment "Must specify the state" --permitReservedWords 
+field string --fieldName username
+field string --fieldName password
+field string --fieldName zip
+field boolean --fieldName accountEnabled --value false
+entity jpa --class ~.model.Award --inheritanceType SINGLE_TABLE --testAutomatically 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateAwarded --type java.util.Date --dateTimeFormatPattern "S-"
+field boolean --fieldName inProgress
+field boolean --fieldName recordedToCouncil
+field boolean --fieldName purchased
+field boolean --fieldName distributed
+field string --fieldName reminders
+field number --fieldName percentComplete --type double --transient 
+field reference --fieldName signOffLeader --type ~.model.User
+field reference --fieldName awardConfig --type ~.model.AwardConfig
+entity jpa --class ~.model.AwardConfig
+field string --fieldName name --notNull 
+field string --fieldName description
+field number --fieldName sortOrder --type int
+field boolean --fieldName required --value false
+field string --fieldName link
+field reference --fieldName award --type ~.model.Award
+entity jpa --class ~.model.Permission
+field string --fieldName name
+entity jpa --class ~.model.Role  --permitReservedWords
+field reference --fieldName permissions --class ~.model.Permission --type ~.model.Role
+entity jpa --class ~.model.Requirement 
+field date --fieldName dateCompleted --type java.util.Date --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --dateTimeFormatPattern "S-"
+entity jpa --class ~.model.RequirementConfig 
+field number --fieldName sortOrder --type int
+field string --fieldName text
+field boolean --fieldName leaderAuthorized --value false
+field boolean --fieldName canSelect --value true
+entity jpa --class ~.model.Badge --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.BeltLoop --extends ~.model.Award
+entity jpa --class ~.model.cub.ActivityBadge --extends ~.model.Award
+entity jpa --class ~.model.cub.CubAward --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRank --extends ~.model.Award
+entity jpa --class ~.model.cub.CubRankElective --extends ~.model.Award
+entity jpa --class ~.model.cub.Pin --extends ~.model.Award
+entity jpa --class ~.model.Course --extends ~.model.Award
+entity jpa --class ~.model.DutyToGod --extends ~.model.Award
+entity jpa --class ~.model.Rank --extends ~.model.Award
+entity jpa --class ~.model.RankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.DutyToGodConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CourseConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.BadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.BeltLoopConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.ActivityBadgeConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubAwardConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.CubRankElectiveConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.cub.PinConfig --extends ~.model.AwardConfig
+entity jpa --class ~.model.CampLogEntry --testAutomatically 
+field date --fieldName returnDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName departDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName location --sizeMin 1 --sizeMax 150
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field string --fieldName description --sizeMin 1 --sizeMax 150
+field reference --fieldName signOffLeader --type ~.model.User
+entity jpa --class ~.model.LeadershipLogEntry --testAutomatically 
+field date --fieldName startDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName endDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.ServiceLogEntry --testAutomatically
+field string --fieldName typeOfProject --sizeMin 1 --sizeMax 150
+field date --fieldName serviceDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field date --fieldName dateEntered --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field reference --fieldName signOffLeader --type ~.model.User
+field number --fieldName timeInHours --type double --decimalMin 0.1
+field string --fieldName description --sizeMin 1 --sizeMax 150
+entity jpa --class ~.model.Unit
+field number --fieldName number --type int --permitReservedWords --notNull 
+field string --fieldName calendar 
+entity jpa --class ~.model.Organization
+field boolean --fieldName accountEnabled 
+field boolean --fieldName hasTigers 
+field string --fieldName name
+field string --fieldName council
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName district
+field reference --fieldName organization --class ~.model.Unit --type ~.model.Organization
+field set --fieldName units --type ~.model.Unit --class ~.model.Organization --cardinality ONE_TO_MANY --mappedBy organization
+entity jpa --class ~.model.Position --permitReservedWords  --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field string --fieldName name
+entity jpa --class ~.model.UnitType --inheritanceType SINGLE_TABLE --identifierType java.lang.String
+field number --fieldName sortOrder --type int
+field number --fieldName startAge --type int
+field number --fieldName endAge --type int
+field string --fieldName name
+entity jpa --class ~.model.ScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.CubScoutUnitType --extends ~.model.UnitType
+entity jpa --class ~.model.Council  --testAutomatically
+field string --fieldName name
+field string --fieldName address
+field string --fieldName city
+field string --fieldName state --permitReservedWords 
+field string --fieldName zip
+field string --fieldName phone
+field string --fieldName website
+field string --fieldName yearOrganized
+entity jpa --class ~.model.Scout --extends ~.model.User
+field date --fieldName birthDate --type java.util.Date --notNull --dateTimeFormatPattern "S-"
+field boolean --fieldName selected 
+field boolean --fieldName checked
+field string --fieldName profileImage
+entity jpa --class ~.model.Leader --extends ~.model.User
+field reference --fieldName award --type ~.model.Award --class ~.model.Requirement
+field set --fieldName requirements --type ~.model.Requirement --class ~.model.Award --cardinality ONE_TO_MANY --mappedBy award
+field reference --fieldName awardConfig --type ~.model.AwardConfig --class ~.model.RequirementConfig
+field set --fieldName requirementConfigs --type ~.model.RequirementConfig --class ~.model.AwardConfig --cardinality ONE_TO_MANY --mappedBy awardConfig
+field set --fieldName councila --type ~.model.Council --class ~.model.Organization 
+field reference --fieldName organization --type ~.model.Organization --class ~.model.Council --notNull
+field set --fieldName unit --type ~.model.Unit --class ~.model.UnitType 
+field reference --fieldName typeOfUnit --type ~.model.UnitType --class ~.model.Unit
+service --interface ~.service.UserService --entity ~.model.User --class ~.service.impl.UserServiceImpl
+service --interface ~.service.AwardService --entity ~.model.Award --class ~.service.impl.AwardServiceImpl
+// [failed] script C:\Users\Jeff\workspace-sts-3.2.0.RELEASE\roo\testtraxroo.script
+web mvc setup 
+web mvc all --package ~.web
+logging setup --level INFO
+security setup
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log closed at 2013-05-17 03:16:23
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log opened at 2013-11-21 06:34:36
+// Spring Roo 1.2.3.RELEASE [rev 7fd62b6] log opened at 2014-08-15 14:59:55

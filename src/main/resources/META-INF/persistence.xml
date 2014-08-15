@@ -1,0 +1,42 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+	http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+version="2.0">
+  <persistence-unit name="trax" transaction-type="RESOURCE_LOCAL">
+    <!-- We are using Hibernate for JPA implementation -->
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>org.trax.model.Award</class>
+    <class>org.trax.model.AwardConfig</class>
+    <class>org.trax.model.Course</class>
+    <class>org.trax.model.CourseConfig</class>
+    <class>org.trax.model.Badge</class>
+    <class>org.trax.model.BadgeConfig</class>
+    <class>org.trax.model.DutyToGod</class>
+    <class>org.trax.model.DutyToGodConfig</class>    
+    <class>org.trax.model.CampLogEntry</class>
+    <class>org.trax.model.Leader</class>
+    <class>org.trax.model.LeadershipLogEntry</class>
+    <class>org.trax.model.Guardian</class>
+    <class>org.trax.model.Organization</class>
+    <class>org.trax.model.Rank</class>
+    <class>org.trax.model.RankConfig</class>
+    <class>org.trax.model.Requirement</class>
+    <class>org.trax.model.RequirementConfig</class>
+    <class>org.trax.model.ServiceLogEntry</class>
+    <class>org.trax.model.Permission</class>
+    <class>org.trax.model.Role</class>
+    <class>org.trax.model.Scout</class>
+    <class>org.trax.model.Unit</class>
+    <class>org.trax.model.cub.CubUnitType</class>
+    <class>org.trax.model.ScoutUnitType</class>
+    
+    <properties>
+      <property name="hibernate.archive.autodetection" value="class" />
+      <property name="hibernate.show_sql" value="true" />
+      <property name="use_sql_comments" value="true" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+      <property name="hibernate.hbm2ddl.auto" value="update" />
+    </properties>
+  </persistence-unit>
+</persistence>

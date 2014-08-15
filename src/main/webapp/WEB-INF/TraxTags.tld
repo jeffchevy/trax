@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" 
+"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_2.dtd"> 
+
+<taglib> 
+	<tlib-version>1.0</tlib-version> 
+	<jsp-version>1.1</jsp-version>
+	<short-name>Trax</short-name>
+	<uri>http://www.trax.org</uri>
+	<display-name>Trax Tags Library</display-name>
+
+	<tag> 
+        <name>award</name> 
+        <tag-class>org.trax.tags.AwardTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the Award and its requirements</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the Award</description>
+        </attribute>
+    </tag>	
+    <tag> 
+        <name>logentry</name> 
+        <tag-class>org.trax.tags.LogEntryTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the log entry</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the type of log entry</description>
+        </attribute>
+    </tag>
+    <tag> 
+        <name>scoutreport</name> 
+        <tag-class>org.trax.tags.ScoutReportTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show a summary of a boy and his awards and accomplishments</display-name> 
+    </tag>
+	<tag> 
+        <name>groupreport</name> 
+        <tag-class>org.trax.tags.GroupReportTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>Show all the awards for a list of boys</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The list of boys with all their awards</description>
+        </attribute>
+        <attribute>
+            <name>styleId</name>
+            <required>true</required>
+            <description>id of the table to be rendered</description>
+        </attribute>
+    </tag>
+	<tag> 
+        <name>footer</name> 
+        <tag-class>org.trax.tags.FooterTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the footer</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the footer</description>
+        </attribute>
+    </tag>
+	<tag> 
+        <name>unitnumber</name> 
+        <tag-class>org.trax.tags.UnitNumberTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the troop number as patches</display-name> 
+        <attribute>
+            <name>number</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+            <description>the unit number displayed as a patch</description>
+        </attribute>
+    </tag> 
+	<tag> 
+        <name>earned</name> 
+        <tag-class>org.trax.tags.EarnedTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the earned awards</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <description>The name of the Award list</description>
+        </attribute>
+        <attribute>
+            <name>size</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+            <description>the size of each award</description>
+        </attribute>
+    </tag>
+     	<tag> 
+        <name>inprogress</name> 
+        <tag-class>org.trax.tags.InProgressTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show awards in progress</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <description>The name of the Award list</description>
+        </attribute>
+        <attribute>
+            <name>size</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+            <description>the size of each award</description>
+        </attribute>
+    </tag> 
+    <tag> 
+        <name>selectages</name> 
+        <tag-class>org.trax.tags.SelectAgesTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the ages in a drop down</display-name> 
+    </tag>
+    <tag> 
+        <name>scoutnames</name> 
+        <tag-class>org.trax.tags.ScoutNamesTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the scout names in a list</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the Scouts list</description>
+        </attribute>
+    </tag>
+	<tag> 
+        <name>displaybadges</name> 
+        <tag-class>org.trax.tags.DisplayBadgesTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>display all the badges</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the BadgeConfig list</description>
+        </attribute>
+    </tag>
+	<tag> 
+        <name>displayawards</name> 
+        <tag-class>org.trax.tags.DisplayAwardsTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>display all the Awards</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the AwardConfig list</description>
+        </attribute>
+    </tag>
+    <tag> 
+        <name>servicelog</name> 
+        <tag-class>org.trax.tags.ServiceLogTag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>display Service log entries</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the service logs entry list</description>
+        </attribute>
+    </tag>
+</taglib>

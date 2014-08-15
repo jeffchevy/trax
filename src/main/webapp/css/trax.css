@@ -1,0 +1,80 @@
+#main {
+	
+	margin: auto;
+	width: 500px;
+	background-position: center center;
+}
+#info {
+	padding-top: 5em;
+	padding-bottom: 3em;
+}
+#header {
+	height: 75px;
+}
+
+#main-nav {
+	height: 30px;
+}
+#content {
+ 	height: 300px;
+}
+
+#footer {
+	width: 1000px;
+	height: 50px;
+}
+
+ 
+ul#main-nav {
+    list-style: none outside none;
+    float: left;
+    height: 39px;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+ul#main-nav li a {
+  display: block;
+  width: 7em;
+  height: 2em;
+  border: .1em solid blue;
+  text-decoration: none;
+  color: #999;
+  font-weight: bold;
+  text-align: center;
+  background: #144;
+} 
+ul#main-nav li.active {
+	color: #080807;
+}
+
+ul#main-nav li a:hover {
+  background: black;
+  color: #fff;
+} 
+			
+ul#main-nav li {
+  margin: 0 .1em;
+  float: left;
+}
+
+.topnav * {
+    z-index: 1002;
+}
+* {
+    border: 0 none;
+    margin: 0 auto;
+    outline: medium none;
+    padding: 0;
+}
+.topnav {
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 12px;
+    line-height: 1em;
+}
+body {
+    font: 12px/1.8em "Liberation sans",Arial,Helvetica,sans-serif;
+    background: url("../images/header_cbg.jpg") repeat-y scroll center top transparent;
+	color: black;
+}

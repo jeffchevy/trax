@@ -1,0 +1,42 @@
+<html>
+	<body style="font-size: 18px; font-family: verdana; width:700px;">
+		
+		<table>
+			<tr>
+				<td>
+					$user.firstName,
+				</td>
+				<td>&nbsp;</td>
+			</tr>	
+			<tr>
+				<td>
+					$leader.fullName has invited you to join ScoutTrax.
+				</td>	
+				<td style="padding: 20px;margin:20px 0 0 20px; background: #D44B38; border: 1px solid #C43B28; color: #FFF; font-weight: bold;">
+					<a style="text-decoration: none;color:white;" href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">
+					Click to learn more about ScoutTrax</a>
+				</td>
+			</tr>	
+			<tr>
+				<td colspan='2' style="padding:20px">	
+					ScoutTrax is an online scout tracking system. It will help coordinate your scout units progress toward scouting goals and ideals.  
+					<p>As a new member of ScoutTrax, you will be able to create your own user name and password.</p>
+					
+					<p style="color: red;">In order to get started you need to click on the ScoutTrax image below and set up a username and password.</p>
+					<a href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">		
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+					</a>
+					<p>After doing this, login and update your information and scout advancement records. 
+					This information will be kept secure, while shared with other scout leaders.</p>
+				</td>						
+			</tr>
+			<tr>
+				<td colspan='2' style="padding:20px">
+					If you're not able to access ScoutTrax or have any questions, please contact $leader.fullName at $leader.phone or email $leader.email.
+				</td>	
+			</tr>
+		</table>
+	</body>
+</html>
+
+
