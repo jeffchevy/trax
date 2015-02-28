@@ -1,5 +1,6 @@
-   <%@ taglib prefix="trax" uri="/WEB-INF/TraxTags.tld"%>
-   <link rel="stylesheet" href="css/jquery.ui.theme.css">
+<%@ taglib prefix="trax" uri="/WEB-INF/TraxTags.tld"%>
+<link rel="stylesheet" href="css/jquery-ui.all.css">
+
 <div class='table' id="content">
 	<div class='row'>
 		<trax:award name='award'/>
@@ -8,15 +9,16 @@
 <div id="spinner" class="spinner" style="display:none">
     <img id="img-spinner" src="images/spinner.gif" alt="Loading" />
 </div>
-<div id="noScoutSelectedDialog" title="Warning!">
+<div id="noScoutSelectedDialog" title="Warning!" >
 	<p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
 	   You must first select a scout before updating requirements.</p>
 </div>
-	<script type="text/javascript" src="js/jquery.maskedinput-custom-1.3.js"></script>
+	<script type="text/javascript" src="js/new/jquery.mask.js"></script>
+	<!-- <script type="text/javascript" src="js/jquery.maskedinput-custom-1.3.js"></script> -->
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
-			$('.datebox').mask('99/99/9999');
+			$('.datebox').mask("00/00/0000", {placeholder: "__/__/____"});
 			$('.datebox').datepicker({
 				buttonImage: '/images/datepicker.gif',
 				onSelect: function(dateText, inst){ 
@@ -90,7 +92,7 @@
 		                }
 					} 								
 				});
-			$('#awarddatebox').mask('99/99/9999');
+			$('#awarddatebox').mask("00/00/0000", {placeholder: "__/__/____"});
 			$('#awarddatebox').datepicker({
 				onSelect: function(dateText, inst){ 
 					var selectedbox = $('#awardearned');
@@ -161,6 +163,35 @@
 						}
 					}
 			});
+			$('#awardawardedcheckbox').click(function(mystuff) 
+            {
+            	//make sure at least one boy is selected and we have scouts (not when a boy is logged in)
+                if ($('.scoutName:checked').length==0 && $('.selectedscout').length==0 && $('.scoutName').length>0)
+				{
+					$( "#noScoutSelectedDialog" ).dialog("open");
+					return false;
+				}
+				else
+				{
+	                var selectedbox = this;
+					$.get('awardawarded.html',{ischecked: selectedbox.checked}, function(data) {});
+				}
+            });
+			$('#awardpurchasedcheckbox').click(function(mystuff) 
+            {
+            	//make sure at least one boy is selected and we have scouts (not when a boy is logged in)
+                if ($('.scoutName:checked').length==0 && $('.selectedscout').length==0 && $('.scoutName').length>0)
+				{
+					$( "#noScoutSelectedDialog" ).dialog("open");
+					return false;
+				}
+				else
+				{
+	                var selectedbox = this;
+					$.get('awardpurchased.html',{ischecked: selectedbox.checked}, function(data) {});
+				}
+            });
+			
             $('.requirementscheckbox').click(function(mystuff) 
             {
             	//make sure at least one boy is selected and we have scouts (not when a boy is logged in)
@@ -344,14 +375,9 @@
 	suppressAjaxSpinner = false
 	$(function() {
         $("input:submit, a.buttonAnchor, a.submitAnchor, button").button();
-       
-        $("#spinner").hide().ajaxStart(function() {
-            if (!suppressAjaxSpinner) $(this).show()
-          }).ajaxStop(function() {
-          	$(this).hide()
-          }).ajaxError(function() {
-          	$(this).hide()
-          });
+        $(document).ajaxStart(function(){ if (!suppressAjaxSpinner){ $("#spinner").show()}});
+        $(document).ajaxStop(function(){ $("#spinner").hide()});
+        $(document).ajaxError(function(){ $("#spinner").hide()});
     });
 			
 </script>
@@ -361,4 +387,5 @@
     background: url("images/awards/dtg/Religious Knot.png") no-repeat;
     background-size:80px 60px;
 }
+#noScoutSelectedDialog { display: none; }
 </style>

@@ -1,7 +1,6 @@
+<!doctype html>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 
-"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 	<title>ScoutTrax.org Free online scout advancement tracking.</title>
@@ -11,8 +10,9 @@
 	requirements, camping, leadership, scout master, scout leader, scout book, rank, Eagle, Eagle Scout, user friendly, easy, 
 	simple, parents, Awards, camping, service, Merit Badge, email, den, safe, secure, advancement, BSA, LDS, Duty to God, email, report "/>
 
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script src="js/jquery-ui-1.8.10.custom.min.js" type="text/javascript"></script>
+	<script src="js/jquery.js"></script>
+	
+	<script src="js/jquery-ui-1.11.2.custom.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-37757159-1']);

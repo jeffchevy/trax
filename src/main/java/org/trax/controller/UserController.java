@@ -153,6 +153,9 @@ public class UserController
 		Organization organization = (Organization) request.getSession().getAttribute(ORGANIZATION);
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Scout scout = new Scout(organization, user.getUnit(), "", "", "", "", user.getZip());
+		//needs to be a copy, not the original, that is used by someone else
+		scout.setUnitCopy(user.getUnit());
+		
 		return new ModelAndView("scout", "scout", scout);
 	}
 
@@ -166,7 +169,7 @@ public class UserController
 		leader.setOrganization(user.getOrganization());
 		leader.setState(user.getOrganization().getState());
 		leader.setCity(user.getOrganization().getCity());
-		leader.setUnit(user.getUnit());
+		leader.setUnitCopy(user.getUnit());
 		leader.setZip(user.getZip());
 		return new ModelAndView("leader", "leader", leader);
 	}

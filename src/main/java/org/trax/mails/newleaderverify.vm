@@ -24,7 +24,7 @@
 					
 					<p style="color: red;">In order to get started you need to click on the ScoutTrax image below and set up a username and password.</p>
 					<a href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">		
-						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/scouttraxPatch.png">
 					</a>
 					<p>After doing this, login and update your information and scout advancement records. 
 					This information will be kept secure, while shared with other scout leaders.</p>

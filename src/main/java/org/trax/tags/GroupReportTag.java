@@ -90,8 +90,8 @@ public class GroupReportTag extends TagSupport
 					if (scout.isSelected()||scout.isChecked())
 					{
 						List<NameComplete> nameCompleteList = (List<NameComplete>)awardScoutMap.get(awardKey);
-						String td = ("<td class=''>");
 						String complete = "";
+						String classes = "";
 						for (NameComplete nameComplete : nameCompleteList)
 						{
 							if (nameComplete.getFullName().equals(scout.getFullName()))
@@ -103,6 +103,8 @@ public class GroupReportTag extends TagSupport
 									{
 										//it contains a date - count it!
 										awardCount++;
+										//if it is complete (i.e. has a date) then let the user know if its awarded or purchased
+										classes = (nameComplete.isPurchased() ? "purchased ":"")+ (nameComplete.isAwarded()?"awarded": "");
 									} 
 									if (isCub)
 									{
@@ -115,7 +117,7 @@ public class GroupReportTag extends TagSupport
 								break;
 							}
 						}
-						tbody+=td+complete+"</td>";
+						tbody+="<td class='"+classes+"'>"+complete+"</td>";
 					}
 				}
 				totalAwardCount += awardCount;

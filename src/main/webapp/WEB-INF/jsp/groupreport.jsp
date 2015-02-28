@@ -1,7 +1,5 @@
    <%@ taglib prefix="trax" uri="/WEB-INF/TraxTags.tld"%>
    		<style type="text/css">
-			@import "css/data_table.css";
-			@import "css/TableTool.css";
 			span.hilite { font-weight: bold; }
 			.required {
 				background-color: #876;
@@ -87,6 +85,12 @@
 			th.sorting_desc {
 				background: url("images/sort_desc.png") no-repeat scroll right center #797;
 			}
+			.purchased {
+				background: url("images/dollar-sign.png") no-repeat scroll right center;
+			}
+			.awarded {
+				background: url("images/awarded.png") no-repeat scroll right center;
+			}
 		</style>
 		<script type="text/javascript">
 			$(document).ready(function()
@@ -161,19 +165,19 @@
 	<div id='page1' class='cell'>
 		<a id='printpreview' href="#" title='Print Preview'><img alt="Print Preview" src="images/printpreview.png"></a>
 		<div id='printdiv'>
-		<div class='row'>
-			<h1>${scout.unit.number} Group report</h1>
-			<h2>${todaysDate}</h2>
-		</div>
-		<div class='row'>
-			<trax:groupreport name='rankScoutMap' styleId='rankreport'/>
-		</div>
-		<div class='row'>
-			<trax:groupreport name='requiredScoutMap' styleId='requiredreport'/>
-		</div>
-		<div class='row'>
-			<trax:groupreport name='awardScoutMap' styleId='awardreport'/>
-		</div>
+			<div class='row'>
+				<h1>${scout.unit.typeOfUnit.name } ${scout.unit.number} Group report</h1>
+				<h2>${todaysDate}</h2>
+			</div>
+			<div class='row'>
+				<trax:groupreport name='rankScoutMap' styleId='rankreport'/>
+			</div>
+			<div class='row'>
+				<trax:groupreport name='requiredScoutMap' styleId='requiredreport'/>
+			</div>
+			<div class='row'>
+				<trax:groupreport name='awardScoutMap' styleId='awardreport'/>
+			</div>
 		</div>
 	</div>
 </div>

@@ -1,7 +1,5 @@
    <%@ taglib prefix="trax" uri="/WEB-INF/TraxTags.tld"%>
    		<style type="text/css">
-			@import "css/data_table.css";
-			@import "css/TableTool.css";
 			span.hilite { font-weight: bold; }
 			.required {
 				background-color: #876;

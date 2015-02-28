@@ -16,8 +16,8 @@ public class DutyToGod extends Award
 		
 	}
 	
-	public DutyToGod(AwardConfig awardConfig, Date dateCompleted, String reminders, Set<Requirement> requirements, User signOffLeader)
+	public DutyToGod(AwardConfig awardConfig, Date dateCompleted, String reminders, String event, Set<Requirement> requirements, User signOffLeader)
 	{
-		super(awardConfig, dateCompleted, reminders, requirements, signOffLeader);
+		super(awardConfig, dateCompleted, reminders, event, requirements, signOffLeader);
 	}
 }

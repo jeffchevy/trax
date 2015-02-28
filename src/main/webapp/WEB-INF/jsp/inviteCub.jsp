@@ -4,13 +4,11 @@
 <html>
 	<head>
 		<title>Add Scout</title>
-	    <link rel="stylesheet" href="css/jquery.ui.datepicker.css">
-		<link rel="stylesheet" href="css/jquery.ui.theme.css">
-		<link rel="stylesheet" href="css/jquery.ui.all.css">
-		<link rel="stylesheet" href="css/jquery.ui.base.css">
-		<link rel="stylesheet" href="css/jquery.ui.core.css"> 
-		<script type="text/javascript" src="js/jquery.js"></script>
-	    <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.js"></script>
+		<link rel="stylesheet" href="css/jquery-ui.all.css">
+
+		<script src="js/jquery.js"></script>
+		
+	    <script type="text/javascript" src="js/jquery-ui-1.11.2.custom.min.js"></script>
 	    <script type="text/javascript">
 			$(document).ready(function()
 			{

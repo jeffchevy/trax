@@ -20,8 +20,8 @@ public class BeltLoop extends Award
 	{
 	}
 	
-	public BeltLoop(AwardConfig awardConfig, Date dateCompleted, String reminders, Set<Requirement> requirements, User signOffLeader)
+	public BeltLoop(AwardConfig awardConfig, Date dateCompleted, String reminders, String event, Set<Requirement> requirements, User signOffLeader)
 	{
-		super(awardConfig, dateCompleted, reminders, requirements, signOffLeader);
+		super(awardConfig, dateCompleted, reminders, event, requirements, signOffLeader);
 	}
 }

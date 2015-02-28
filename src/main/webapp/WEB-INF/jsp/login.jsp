@@ -1,4 +1,13 @@
-<script>
+<script type="text/javascript">
+	if ( $.browser 
+			&& (($.browser.mozilla && $.browser.version <=13) 
+					|| $.browser.msie )) 
+	{
+		//this is probably IE, IE shows up as Mozilla, but FF is at version 34, IE is at version 12
+		alert("Warning!\r\nInternet Explorer may cause some problems with ScoutTrax.org.\r\n The most common is requirements not being saved.\n\r We recommend using Safari, Chrome or Firefox.")
+	}
+
+
 	$(document).ready(function()
 	{ 
 		$('#username').focus();	
@@ -23,6 +32,10 @@ input.text {
     padding: 0.5em;
     text-align: center;
 }
+.warninput {
+ font-size: 11px;
+ color: #C00;
+}
 </style>	 
 <c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
 		<span style="color: red">${SPRING_SECURITY_LAST_EXCEPTION.message}</span>
@@ -34,7 +47,7 @@ input.text {
 		<tr>
 		<td>
 			<div class='action darkbackground'>
-				<label class='biginput'>Not registered yet? <br><a href='organization.html' title='Create a new ScoutTrax account'>click here</a></label>
+				<label class='biginput'><br><a href='organization.html' title='Create a new ScoutTrax account for your pack, troop, team, crew or ship'>Organization not registered?</a></label>
 			</div>	
 		</td>
 		<td>
@@ -53,16 +66,18 @@ input.text {
 						<td><label class='biginput'>Username</label></td>
 						<td><input id='username' type="text" name="j_username"></td>
 					</tr>
+					
 					<tr>
 						<td></td>
 						<td><label class='biginput'>Password</label></td> 
 						<td><input id='password' type="password" name="j_password"></td>
 					</tr>	
 					<tr>
-						<td>
-						</td>
-						<td colspan="2" class='buttoncell' >
+						<td></td>
+						<td></td>
+						<td class='buttoncell' >
 							<input class='button' type="submit" value="Sign In" />
+							<a class="warninput" title="I forgot my username or password" href="forgot.html">Forgot login or password?</a></label>
 						</td>
 					</tr>
 				</table>

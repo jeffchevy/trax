@@ -1,3 +1,30 @@
+<link type="text/css" href="css/jquery-ui.all.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.youtubepopup.min.js"></script>
+
+ <script type="text/javascript">
+ 	$(function () {
+		$.fn.YouTubePopup.defaults.fullscreen = 0;
+		$.fn.YouTubePopup.defaults.color1 = 'CCCCCC';
+	});
+	$(document).ready(function()
+	{ 
+		$('#username').focus();	
+		$('#about').click(function(){
+                   window.open('scoutTraxUserGuide.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
+           });	
+		$.fn.YouTubePopup.defaults.fullscreen = 1;
+        $('a.youtube').YouTubePopup({ 
+     	   	autoplay: 1, 
+        	hideTitleBar: true,
+        	clickOutsideClose: true,
+        	showBorder: false
+         });
+	});
+</script>
+
+
 <style>
 #scouttraxlink {
 	font-size: 1.3em;
@@ -51,11 +78,45 @@ h5 {
     padding-bottom: 10px;
     width: 14em;
 }
+#watchadd {
+	position: absolute;
+	left: 50%;
+	top: 10.5em;
+	z-index: 4;
+	}
+#play {
+	padding: 3px 0 0 5px;
+}
+.middle {
+	margin-left: auto;
+    margin-right: auto;
+}
 </style>
 
-<p class='center'>
-<img border=0 width=600 height=340 src="images/Scout_Trax_Business2.png">
- </p>
+<div class='center'>
+	<img border=0 width=600 height=340 src="images/Scout_Trax_Business3.png">
+	
+	<a id='watchadd' class="youtube" href="#" rel="Os1gLeAFeGY" title="Watch the ad">
+		<img id="play" alt="Play" src="images/play.png" /></p></a>
+	 
+	<table class='middle'>
+		<tr>
+			<td>
+				<a class="youtube" href="#" rel="W2fA1RSoSHk" title="Getting Started">
+					<img alt="Getting Started" src="images/gettingstarted.png"></a>
+			</td>
+			
+			<td>
+				<a class="youtube" href="#" rel="hN9LmH3xmHY" title="Features of Scout trax">
+					<img alt="About Scouting" src="images/features.png"></a>
+			</td>
+			<td>
+				<a class="youtube" href="#" rel="oE7emvBDwys" title="Advanced features for leaders">
+					<img alt="Features for Leaders" src="images/extrafeatures.jpg"></a>
+			</td>
+		</tr>
+	</table>
+</div>
 <h1>ScoutTrax.org User Guide</h1>
 <p class='center subtitle'>for Cub Leaders, Parents and Scouts</p>
 <div><ol id="toc"></ol></div>

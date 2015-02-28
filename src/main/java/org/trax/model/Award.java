@@ -38,10 +38,12 @@ public class Award implements Serializable
 	private Date dateCompleted;
 	private Date dateEntered;
 	private Date dateAwarded;
+	private Date datePurchased;
 	private AwardConfig awardConfig;
 	private Set<Requirement> requirements;
 	private long id;
 	private String reminders;
+	private String event;
 	private boolean inProgress;
 	private String percentComplete;
 
@@ -49,11 +51,12 @@ public class Award implements Serializable
 	{
 		
 	}
-	public Award(AwardConfig awardConfig, Date dateCompleted, String reminders, Set<Requirement> requirements, User signOffLeader)
+	public Award(AwardConfig awardConfig, Date dateCompleted, String reminders, String event, Set<Requirement> requirements, User signOffLeader)
 	{
 		setAwardConfig(awardConfig);
 		setDateCompleted(dateCompleted);
 		setReminders(reminders);
+		setEvent(event);
 		setRequirements(requirements);
 		setUser(signOffLeader);
 	}
@@ -130,6 +133,17 @@ public class Award implements Serializable
 		this.dateAwarded = dateAwarded;
 	}
 	
+	@Column(name = "datePurchased", nullable = true, unique = false)
+	public Date getDatePurchased()
+	{
+		return datePurchased;
+	}
+
+	public void setDatePurchased(Date datePurchased)
+	{
+		this.datePurchased = datePurchased;
+	}
+	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER) 
     @JoinColumn(name="awardId", nullable=false)
 	@ForeignKey(name = "FK_AWARD_REQUIREMENT")
@@ -147,7 +161,15 @@ public class Award implements Serializable
 	{
 		this.reminders = reminders;
 	}
-	
+	private void setEvent(String event)
+	{
+		this.event = event;
+	}
+	@Column (name="event", nullable=true,length=256)
+	public String getEvent()
+	{
+		return event;
+	}
 	@Column (name="reminder", nullable=true,length=2500 )
 	public String getReminders()
 	{

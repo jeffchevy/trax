@@ -260,9 +260,9 @@ public class EarnedTag extends TagSupport
 							+ getEarnedMessage(bearBeadCount, "Bear Bead")
 							+ getEarnedMessage(bearArrowpointCount, "Bear Arrow Point")
 							+")</span>");
-					writer.write("<ul id='earnedmerritbadges' class='jcarousel-skin-tango'>");
+					writer.write("<div id='earnedmerritbadges' class='jcarousel jcarousel-skin-tango'><ul>");
 					writer.write(htmlLists);
-					writer.write("</ul>");
+					writer.write("</ul></div>");
 				}
 			}
 		}

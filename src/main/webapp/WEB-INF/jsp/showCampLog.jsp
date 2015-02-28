@@ -7,7 +7,6 @@
 	<head>
 	<title>Users</title>
 		<style type="text/css">
-			@import "css/data_table.css";
 			@import "css/TableTool.css";
 			#page1 {
 				background-color: #454;
@@ -15,20 +14,46 @@
 				background-image: none;
 			}
 		</style>
-		<link rel="stylesheet" href="css/jquery.ui.datepicker.css">
-		<link rel="stylesheet" href="css/jquery.ui.theme.css">
-		<link rel="stylesheet" href="css/jquery.ui.all.css">
-		<link rel="stylesheet" href="css/jquery.ui.base.css">
-		<link rel="stylesheet" href="css/jquery.ui.core.css"> 
+		<link rel="stylesheet" href="css/jquery-ui.all.css">
+
 		<script type="text/javascript">
 		$(document).ready(function()
 		{
+			/* 
+			
+		    l - length changing input control
+		    f - filtering input
+		    t - The table!
+		    i - Table information summary
+		    p - pagination control
+		    r - processing display element
+
+			"sDom": '<"top"i>rt<"bottom"flp><"clear">'
+			means
+			'<' gives '<div>'
+			'<"class"' gives '<div class="class">'
+			'>' gives '</div>'
+			<div class="top">i</div>rt<div class="bottom">flp</div><div class="clear"></div>
+			*/
 			$('#campEntryList').dataTable({
 					"aaSorting": [[ 1, "asc" ]],
 					"bPaginate": false,
 					"bLengthChange": false,
 					"bInfo": false,
-					"sDom": '<"top">rt<"bottom"if<"clear">>' 
+					"sDom" : '<"top">rtf<"bottom"if<"clear">>',
+					"tableTools": {
+			            "aButtons": [
+			                "copy",
+			                "csv",
+			                "xls",
+			                {
+			                    "sExtends": "pdf",
+			                    "sPdfOrientation": "landscape",
+			                    "sPdfMessage": "Your custom message would go here."
+			                },
+			                "print"
+			            ]
+			        }
 			});
 			$("#saveButton").click(function(){
 				if ($('.scoutName').length!=0 //will be zero if this is a scout logged in

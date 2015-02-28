@@ -288,13 +288,18 @@ input.requirementcheckbox {
  	margin:	0 0 5px 0;
 }
 .requirementtext {
-    background: none repeat scroll 0 0 white;
     border: thin solid;
     color: black;
     margin: 0 0 5px 22px;
     padding: 0 7px;
     text-align: left;
     width: 85%;
+}
+#page1 .requirementtext {
+	background: linear-gradient(to right, white, white, white, #888 100%) repeat scroll 0 0 rgba(255, 255, 255, 1);
+}
+#page2 .requirementtext {
+	background: linear-gradient(to left, white, white, white, #888 100%) repeat scroll 0 0 rgba(255, 255, 255, 1);
 }
 div.datebox {
 	background: #B0D1B2;

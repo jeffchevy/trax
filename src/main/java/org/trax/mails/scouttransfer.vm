@@ -18,7 +18,7 @@
 				<td colspan='2' style="padding:20px">	
 					<p style="color: red;">To review $scout.firstName's record click on the ScoutTrax image below.</p>
 					<a href="http://www.scouttrax.org">		
-						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/scouttraxPatch.png">
 					</a>
 				</td>						
 			</tr>

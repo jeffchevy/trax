@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<title></title>
-	    <link rel="stylesheet" href="css/jquery.ui.datepicker.css">
+	    <link rel="stylesheet" href="css/jquery-ui.all.css">
 		<style>
 			#logEntry {
 				background-color: #445544;

@@ -57,7 +57,7 @@ public class ScoutNamesTag extends TagSupport
 				}
 				String checked = shouldCheck?"checked=checked":"";
 				String checkbox = "<input id='sn"+scout.getId()+"' type='checkbox' title='Select a scout' "+checked+" name='scoutIds' value='"+scout.getId()+"' class='scoutName'>" +
-						"<label class='verticalalign' for='sn"+scout.getId()+"'>&nbsp</label>";
+						"<label class='verticalalign' for='sn"+scout.getId()+"'>&nbsp;</label>";
 
 				String link = "<a title='Click to change to this scout' href='changescout.html?id="+scout.getId()+"'>" +
 						scout.getFirstName()+" "+scout.getLastName()+"</a> ";

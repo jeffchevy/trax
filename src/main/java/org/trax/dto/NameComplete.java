@@ -4,11 +4,15 @@ public class NameComplete
 {
 	private String fullName;
 	private String complete; //datestring or % complete
+	private boolean awarded;
+	private boolean purchased;
 	
-	public NameComplete(String fullName, String complete)
+	public NameComplete(String fullName, String complete, boolean awarded, boolean purchased)
 	{
-		this.fullName = fullName;
-		this.complete = complete;
+		this.setFullName(fullName);
+		this.setComplete(complete);
+		this .setAwarded(awarded);
+		this.setPurchased(purchased);
 	}
 
 	public String getFullName()
@@ -29,5 +33,25 @@ public class NameComplete
 	public void setComplete(String complete)
 	{
 		this.complete = complete;
+	}
+
+	public boolean isAwarded()
+	{
+		return awarded;
+	}
+
+	public void setAwarded(boolean awarded)
+	{
+		this.awarded = awarded;
+	}
+
+	public boolean isPurchased()
+	{
+		return purchased;
+	}
+
+	public void setPurchased(boolean purchased)
+	{
+		this.purchased = purchased;
 	}
 }

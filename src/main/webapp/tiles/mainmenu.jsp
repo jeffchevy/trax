@@ -20,6 +20,12 @@
 		 -->
 		<li><a id="nav-email" title='Create and send email' href='createEmail.html'></a></li>
 		<li><a id="nav-training" title='Add/View leader training' href='training.html'></a></li>
+		<security:authorize access='!principal.unit.isCub'>
+		<li><a id="nav-guide" title='User Guide' href='scoutTraxUserGuide.html' target="_blank"></a></li>
+		</security:authorize>
+		<security:authorize access='principal.unit.isCub'>
+		<li><a id="nav-guide" title='User Guide' href='userGuideForCubs.html' target="_blank"></a></li>
+		</security:authorize>
 		<security:authorize  access="hasRole('ROLE_LEADER')">
 		</security:authorize>
 		

@@ -3,6 +3,7 @@ package org.trax.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,7 @@ import org.trax.model.Organization;
 import org.trax.model.Scout;
 import org.trax.model.Unit;
 import org.trax.model.User;
+import org.trax.model.cub.CubUnitType;
 
 @Controller
 public class OrganizationController extends AbstractScoutController
@@ -81,36 +84,32 @@ public class OrganizationController extends AbstractScoutController
 		searchForm.setTypeOfUnit(scout.getUnit().getTypeOfUnit());
 		
 		//need to determine if this boy is moving or just becoming a boyScout
-		boolean getCubUnitTypes=false;
-		if ( !scout.getUnit().isCub() )
+		Collection<BaseUnitType> unitTypes = null;
+		if ( scout.getUnit().isCub() )
 		{
-			getCubUnitTypes=false;
+			//don't really know if its to another pack or a troop, give them all the options
+			unitTypes = (Collection<BaseUnitType>) traxService.getUnitTypes(false);
+			unitTypes.addAll(traxService.getUnitTypes(true));
 		}
-		else if (scout.getUnit().getTypeOfUnit().getStartAge()>=10 || (scout.getAge()>0 && scout.getAge()<=11))
+		else
 		{
-			getCubUnitTypes=false; //must be transferring to troop
-			Set<Unit> units = scout.getOrganization().getUnits();
-			for (Unit unit : units)
-			{
-				if (unit.getTypeOfUnit().getName().equals("Troop")
-						|| unit.getTypeOfUnit().getName().equals("11 Year Olds"))
-				{
-					searchForm.setTypeOfUnit(unit.getTypeOfUnit());
-					searchForm.setUnitNumber(unit.getNumber());
-				}
-			}
+			unitTypes = (Collection<BaseUnitType>) traxService.getUnitTypes(false);
 		}
-		else 
-		{
-			getCubUnitTypes=true; //must be transferring to another pack
-		}
-		List<? extends BaseUnitType> unitTypes = traxService.getUnitTypes(getCubUnitTypes);
+		
 		model.put("unitTypes", unitTypes);
 		model.put("searchForm", searchForm);
 		
 		return "scouttransfer";
 	}
 	
+	/**
+	 * When getting ready to transfer the user will enter search criteria. If we find it, show it, othewise
+	 * @param model
+	 * @param searchForm
+	 * @param result
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/orgsearch.html", method = RequestMethod.POST)
 	public String searchForOrganization(Map<String, Object> model, @Valid SearchForm searchForm, BindingResult result) throws Exception
 	{
@@ -122,10 +121,17 @@ public class OrganizationController extends AbstractScoutController
 		if (org == null)
 		{
 			org = new Organization();
-			Unit unit = new Unit();
-			//don't know if it is a troop (6) or not, just make a best guess, then the user can review and change if necessary
-			unit.setTypeOfUnit(baseUnitTypeDao.findById(new Long(6), false));
-			unit.setNumber(searchForm.getUnitNumber());
+			BaseUnitType unitType = searchForm.getTypeOfUnit();
+			if (unitType instanceof CubUnitType)
+			{
+				unitType = baseUnitTypeDao.find("Pack");
+			}
+			else 
+			{
+				//default to troop, this is our best guess
+				unitType = baseUnitTypeDao.find("Troop");
+			}
+			Unit unit = new Unit(unitType, searchForm.getUnitNumber(), org);
 			 
 			org.setCouncil(searchForm.getCouncilName());
 			org.setState(searchForm.getStateName());
@@ -219,10 +225,20 @@ public class OrganizationController extends AbstractScoutController
 			Unit unit = scoutTransfer.getLeader().getUnit();
 			if (unit==null)
 			{
-				unit = new Unit(scoutTransfer.getTypeOfUnit(), scoutTransfer.getUnitNumber());
+				Organization org = scoutTransfer.getLeader().getOrganization();
+				if (org==null)
+				{
+					org = scoutTransfer.getOrg();
+					if(org==null)
+					{
+						Log.error("*** Failed to populate unit with an organization ***");
+					}
+				}
+				unit = new Unit(scoutTransfer.getTypeOfUnit(), scoutTransfer.getUnitNumber(), org);
 				scoutTransfer.getLeader().setUnit(unit);
 				scoutTransfer.getLeader().setState(scoutTransfer.getStateName());
 			}
+			
 			message = traxService.transferScout(scoutTransfer.getScoutId(), scoutTransfer.getLeader(), scoutTransfer.getCouncilName());
 			//take the transferred scout out of memory
 			List<Scout> scouts = getScouts(request);

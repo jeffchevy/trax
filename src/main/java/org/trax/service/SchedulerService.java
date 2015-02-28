@@ -180,6 +180,7 @@ public class SchedulerService
 			{
 				try
 				{
+					
 					logger.info("Sending PRE-Birthday reminder to " + leader.getFullName()+" for "+scout.getFullName()+" with birthday "+scout.getBirthDate());
 					mailService.sendPreBirthdayReminder(leader, scout, message);
 				}

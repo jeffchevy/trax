@@ -45,4 +45,20 @@ public class AbstractScoutController
 	    }
 		return scouts;
 	}
+
+	protected Scout getSelectedScout(HttpServletRequest request)
+	{
+		List<Scout> scouts = getScouts(request);
+		Scout selectedScout = null;
+		for (Scout scout : scouts)
+		{
+			if (scout.isChecked() || scout.isSelected())
+			{
+				selectedScout = traxService.refreshScout(scouts.get(0));
+				
+				break;
+			}
+		}
+		return selectedScout;
+	}
 }

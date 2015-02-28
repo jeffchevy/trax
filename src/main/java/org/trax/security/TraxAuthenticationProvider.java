@@ -52,7 +52,7 @@ public class TraxAuthenticationProvider implements AuthenticationProvider
 		}
 		catch(Exception e)
 		{
-			logger.error("Error finding user with username: " + username, e);
+			logger.warn("Error finding user with username: " + username);
 			throw new BadCredentialsException("Invalid username or password");
 		}
 	}

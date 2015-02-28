@@ -451,6 +451,11 @@ public class User implements Serializable
 		this.unit = unit;
 	}
 	
+	public void setUnitCopy(Unit unit)
+	{
+		this.unit = new Unit(unit.getTypeOfUnit(), unit.getNumber(), unit.getOrganization());
+	}
+	
 	@Column (name="useMiddleForFirst", nullable=false, unique=false)
    	public boolean getUseMiddleForFirst()
 	{

@@ -19,7 +19,7 @@
 					<div id='import' class='cell'>
 						 <form:form modelAttribute="uploadAwards" method="post" action="parseAwards.html" enctype="multipart/form-data">
 				               <p>
-				                   <form:label for="fileData" path="fileData">Award Config File</form:label><br/>
+				                   <form:label for="fileData" path="fileData">Award Config File</form:label><br>
 				                   <form:input path="fileData" type="file"/>
 				               </p>
 				
@@ -29,7 +29,7 @@
 					       </form:form>
 						 <form:form modelAttribute="uploadRequirements" method="post" action="parseRequirements.html" enctype="multipart/form-data">
 				               <p>
-				                   <form:label for="fileData" path="fileData">Requirement Config File</form:label><br/>
+				                   <form:label for="fileData" path="fileData">Requirement Config File</form:label><br>
 				                   <form:input path="fileData" type="file"/>
 				               </p>
 				

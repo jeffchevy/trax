@@ -3,7 +3,9 @@ package org.trax.tags;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,8 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.trax.dto.ScoutReportDto;
 import org.trax.model.Award;
 import org.trax.model.AwardConfig;
@@ -40,6 +44,7 @@ public class ScoutReportTag extends TagSupport
 	private Tag parent = null;
 	private String name = null;
 	private int size = 47;
+
 	@Override
 	public int doStartTag() throws JspException
 	{
@@ -70,18 +75,21 @@ public class ScoutReportTag extends TagSupport
 		}
 		writer.write("<h1>"+namePosition+"</h1>");
 		
-		if(scoutReport.getMonthsToEighteen()!=null)
+		Date birthday = scoutReport.getBirthday();
+		if(birthday!=null)
 		{
+			int futureAge = 18;
 			if(scoutReport.isCub())
 			{
-				writer.write("<p>( 11 years old in "+(new Integer(scoutReport.getMonthsToEighteen()).intValue()-84)+" months.)</p>");
+				futureAge=11;
 			}
-			else 
-			{
-				writer.write("<p>( 18 years old in "+scoutReport.getMonthsToEighteen()+" months.)</p>");
-			}
+
+			Integer monthsTo = getMonthsDifference(birthday, futureAge);
+			Date futureBirthday = DateUtils.addYears(birthday, futureAge);
+			writer.write("<p>( "+futureAge+" years old in "+monthsTo+" months. "+DateFormatUtils.format(futureBirthday, "MM/dd/yyyy")+")</p>");
 			
 		}
+		
 		writer.write((scoutReport.getBsaMemberId() !=null?"BSA Member Id: "+scoutReport.getBsaMemberId():""));
 		
 		Collection<CampLogEntry> campLogs = scoutReport.getCampEntries();
@@ -103,22 +111,26 @@ public class ScoutReportTag extends TagSupport
 		for (Award award : scoutReport.getAwards())
 		{
 			AwardConfig awardConfig = award.getAwardConfig();
+			isCub = scoutReport.isCub();
 			String beadsText="";
-			
-			if (awardConfig instanceof CubRankConfig)
+			if(isCub)
 			{
-				beadsText = generateBeadsText(award);
-			}
-			else if (awardConfig instanceof CubRankElectiveConfig)
-			{
-				beadsText = generateArrowPointTexts(award);
+				
+				if (awardConfig instanceof CubRankConfig)
+				{
+					beadsText = generateBeadsText(award);
+				}
+				else if (awardConfig instanceof CubRankElectiveConfig)
+				{
+					beadsText = generateArrowPointTexts(award);
+				}
 			}
 			
 			if(award.getDateCompleted() == null)
 			{
 				double percent = Math.ceil(((((double) award.getRequirements().size())
 						/ awardConfig.getRequirementConfigs().size()) * 100));
-				award.setPercentComplete(""+percent+"%  "+beadsText);
+				award.setPercentComplete(""+percent+"%" +(beadsText==""?"":beadsText));
 			}
 			
 			// only include awards in progress or completed
@@ -131,7 +143,6 @@ public class ScoutReportTag extends TagSupport
 			{
 				//attach sort order so can be sorted in display, this is a hack but works for now
 				String key = awardConfig.getSortOrder()+":"+awardConfig.getName();
-				isCub =scoutReport.isCub();
 				if(isCub)
 				{
 					if (awardConfig instanceof CubRankConfig)
@@ -165,7 +176,16 @@ public class ScoutReportTag extends TagSupport
 				}
 				else
 				{
-					if (awardConfig instanceof RankConfig)
+					if (awardConfig instanceof CubRankConfig || 
+									awardConfig instanceof CubRankElectiveConfig ||
+									awardConfig instanceof PinConfig ||
+									awardConfig instanceof BeltLoopConfig ||
+									awardConfig instanceof CubDutyToGodConfig ||
+									awardConfig instanceof ActivityBadgeConfig)
+					{
+						//skip these
+					}
+					else if (awardConfig instanceof RankConfig)
 					{
 						rankMap.put(key, award);
 					}
@@ -269,12 +289,25 @@ public class ScoutReportTag extends TagSupport
 
 	}
 
+	private static final Integer getMonthsDifference(Date birthdate, int age)
+	{
+		if (birthdate == null)
+		{
+			return null;
+		}
+		int monthsInAYear = 12;
+
+		Calendar startCalendar = Calendar.getInstance();
+		Date now = startCalendar.getTime();
+		int m1 = birthdate.getYear() * monthsInAYear + birthdate.getMonth();
+		int m2 = now.getYear() * monthsInAYear + now.getMonth();
+		return (age * monthsInAYear) - (m2 - m1 + 1);
+	}
+
 	private void writeTableStart(JspWriter writer, String logTypeName, String columnName) throws IOException
 	{
-		writer.write("<table id='scout" + logTypeName
-				+ "' cellspacing='0' class='log dataTable scoutTable' summary='List of " + logTypeName + "s'>" +
-						"<caption>"+logTypeName+"</caption>" +
-						"<thead><tr>" + "<th>" + columnName+ "</th>");
+		writer.write("<table id='scout" + logTypeName + "' cellspacing='0' class='log dataTable scoutTable' summary='List of " + logTypeName + "s'>" + "<caption>" + logTypeName
+						+ "</caption>" + "<thead><tr>" + "<th>" + columnName + "</th>");
 	}
 
 	private void writeTableEnd(JspWriter writer) throws IOException
@@ -282,34 +315,34 @@ public class ScoutReportTag extends TagSupport
 		writer.write("<tfoot></tfoot>\n</table>\n");
 	}
 
-	private void writeAwardTable(JspWriter writer, Map<String, Award> awardMap, String awardTypeName, String totalString)
-			throws IOException
+	private void writeAwardTable(JspWriter writer, Map<String, Award> awardMap, String awardTypeName, String totalString) throws IOException
 	{
-		if(!(awardMap == null || awardMap.isEmpty()))
+		if (!(awardMap == null || awardMap.isEmpty()))
 		{
 			String footerString = "";
-			writer.write("<table id='scout" + awardTypeName.replace(' ', '_')
-					+ "' class='award' cellspacing='0' class='dataTable scoutTable' summary='List of " + awardTypeName + "s'>");
-			writer.write("<caption>"+awardTypeName+"</caption>");
-			writer.write("<thead><tr><th class='hidden'>SortOrder</th>"
-					+ "<th>Name</th><th>Completed</th><th>Recorded by</th></tr></thead>");
+			writer.write("<table id='scout" + awardTypeName.replace(' ', '_') + "' class='award' cellspacing='0' class='dataTable scoutTable' summary='List of " + awardTypeName
+							+ "s'>");
+			writer.write("<caption>" + awardTypeName + "</caption>");
+			writer.write("<thead><tr><th class='hidden'>SortOrder</th>" + "<th>Name</th><th>Earned</th><th>Purchased</th><th>Awarded</th><th>Recorded by</th></tr></thead>");
 			writer.write("<tbody>");
 			int completeAwardCount = 0;
-			if("Required Badges".equals(awardTypeName))
+			if ("Required Badges".equals(awardTypeName))
 			{
 				footerString = "<p>*Only one of (Swimming, Hiking, Cycling) and (Emergency Prepardness or Lifesaving) counts for Eagle</p>";
 				List<BadgeConfig> requiredBadges = this.getRequiredMeritBadges();
 				for (BadgeConfig badgeConfig : requiredBadges)
 				{
-					String sortOrder = ""+badgeConfig.getSortOrder();
+					String sortOrder = "" + badgeConfig.getSortOrder();
 					String awardName = badgeConfig.getName();
-					String key = sortOrder+":"+awardName;
-					Award award = (Award)awardMap.get(key);
-					String complete = "0%";//default
+					String key = sortOrder + ":" + awardName;
+					Award award = (Award) awardMap.get(key);
+					String complete = "0%";// default
+					String purchased = "";// default
+					String awarded = "";// default
 					String userName = "&nbsp;";
-					if (award!=null)
+					if (award != null)
 					{
-						if(award.getDateCompleted()!=null) 
+						if (award.getDateCompleted() != null)
 						{
 							complete = formatter.format(award.getDateCompleted());
 						}
@@ -319,12 +352,12 @@ public class ScoutReportTag extends TagSupport
 						}
 						complete = (String) (award.getDateCompleted() == null ? award.getPercentComplete() : formatter.format(award.getDateCompleted()));
 						completeAwardCount += award.getDateCompleted() == null ? 0 : 1;
-						userName = award.getDateCompleted() == null?"&nbsp;":award.getUser().getFullName();
+						purchased = (award.getDatePurchased() == null ? "" : formatter.format(award.getDatePurchased()));
+						awarded = (award.getDateAwarded() == null ? "" : formatter.format(award.getDateAwarded()));
+						userName = award.getDateCompleted() == null ? "&nbsp;" : award.getUser().getFullName();
 					}
-					String row = "<tr><td class='hidden'>" + sortOrder + "</td>" 
-					+ "<td>" + awardName + "</td>" 
-					+ "<td>" + complete + "</td>" 
-					+ "<td>" + userName + "</td></tr>\n";
+					String row = "<tr><td class='hidden'>" + sortOrder + "</td>" + "<td>" + awardName + "</td>" + "<td>" + complete + "</td>" + "<td>" + purchased + "</td>"
+									+ "<td>" + awarded + "</td>" + "<td>" + userName + "</td></tr>\n";
 					writer.write(row);
 				}
 			}
@@ -335,11 +368,11 @@ public class ScoutReportTag extends TagSupport
 					StringTokenizer st = new StringTokenizer(key, ":");
 					String sortOrder = st.nextToken();
 					String awardName = st.nextToken();
-					Award award = (Award)awardMap.get(key);
+					Award award = (Award) awardMap.get(key);
 					try
 					{
 						String complete;
-						if(award.getDateCompleted()== null || (award.getPercentComplete()!=null && !award.getPercentComplete().contains("%"))) 
+						if (award.getDateCompleted() == null || (award.getPercentComplete() != null && !award.getPercentComplete().contains("%")))
 						{
 							complete = award.getPercentComplete();
 						}
@@ -347,12 +380,12 @@ public class ScoutReportTag extends TagSupport
 						{
 							complete = formatter.format(award.getDateCompleted());
 						}
-						completeAwardCount += award.getDateCompleted() == null?0:1; 
-						
-						String row = "<tr><td class='hidden'>" + sortOrder + "</td>" 
-								+"<td>" + awardName + "</td>" 
-								+ "<td>" + complete + "</td>" 
-								+ "<td>" + (award.getUser()==null?"&nbsp;":award.getUser().getFullName()) + "</td></tr>\n";
+						completeAwardCount += award.getDateCompleted() == null ? 0 : 1;
+						String purchased = (award.getDatePurchased() == null ? "" : formatter.format(award.getDatePurchased()));
+						String awarded = (award.getDateAwarded() == null ? "" : formatter.format(award.getDateAwarded()));
+
+						String row = "<tr><td class='hidden'>" + sortOrder + "</td>" + "<td>" + awardName + "</td>" + "<td>" + complete + "</td>" + "<td>" + purchased + "</td>"
+										+ "<td>" + awarded + "</td>" + "<td>" + (award.getUser() == null ? "&nbsp;" : award.getUser().getFullName()) + "</td></tr>\n";
 						writer.write(row);
 					}
 					catch (Exception e)
@@ -362,11 +395,11 @@ public class ScoutReportTag extends TagSupport
 				}
 			}
 			writer.write("</tbody>\n");
-			writer.write("<tfoot><td><b>"+totalString+"</b></td><td><b>"+completeAwardCount+"</b></td><td></td></tfoot>\n</table>\n");
+			writer.write("<tfoot><td><b>" + totalString + "</b></td><td><b>" + completeAwardCount + "</b></td><td></td><td></td><td></td></tfoot>\n</table>\n");
 			writer.write(footerString);
 		}
 	}
-	
+
 	private List<ScoutReportDto> getScoutReports() throws IOException
 	{
 		Object bean = pageContext.getRequest().getAttribute("scoutReports");
@@ -382,10 +415,10 @@ public class ScoutReportTag extends TagSupport
 			pageContext.setAttribute("errorMessage", message);
 			throw new IOException(message);
 		}
-		
-		return (List<ScoutReportDto>)bean;
+
+		return (List<ScoutReportDto>) bean;
 	}
-	
+
 	private List<BadgeConfig> getRequiredMeritBadges() throws IOException
 	{
 		Object bean = pageContext.getRequest().getAttribute("requiredMeritBadges");
@@ -401,57 +434,68 @@ public class ScoutReportTag extends TagSupport
 			pageContext.setAttribute("errorMessage", message);
 			throw new IOException(message);
 		}
-		
-		return (List<BadgeConfig>)bean;
+
+		return (List<BadgeConfig>) bean;
 	}
-	public static String generateBeadsText(Award award) {
-		String beadsText="";
+
+	public static String generateBeadsText(Award award)
+	{
+		String beadsText = "";
 		boolean isWolf = award.getAwardConfig().getName().equals("Wolf");
 		boolean isBear = award.getAwardConfig().getName().equals("Bear");
 		if (isWolf || isBear)
 		{
-			//count all requirements with a number, for each 3 they earn a bead
+			// count all requirements with a number, for each 3 they earn a bead
 			int numberedRequirements = 0;
 			for (Requirement requirement : award.getRequirements())
 			{
-				if (Character.isDigit(requirement.getRequirementConfig().getText().charAt(0)))
+				String text = requirement.getRequirementConfig().getText();
+				if (text != null && !text.isEmpty() && Character.isDigit(text.charAt(0)))
 				{
 					numberedRequirements++;
 				}
 			}
-			numberedRequirements=numberedRequirements>12 ? 12 : numberedRequirements; //don't count more than 12 for bear
-			beadsText = "("+numberedRequirements/3 +(isWolf?" yellow":" red")+" beads)";
+			numberedRequirements = numberedRequirements > 12 ? 12 : numberedRequirements; // don't
+																							// count
+																							// more
+																							// than
+																							// 12
+																							// for
+																							// bear
+			beadsText = "(" + numberedRequirements / 3 + (isWolf ? " yellow" : " red") + " beads)";
 			if (award.getDateCompleted() != null)
 			{
-				award.setPercentComplete(formatter.format(award.getDateCompleted())+ " (4 " +(isWolf?"yellow":"red")+" beads)");
+				award.setPercentComplete(formatter.format(award.getDateCompleted()) + " (4 " + (isWolf ? "yellow" : "red") + " beads)");
 			}
 		}
 		return beadsText;
 	}
 
-	public static String generateArrowPointTexts(Award award) {
-		String beadsText="";
+	public static String generateArrowPointTexts(Award award)
+	{
+		String beadsText = "";
 		boolean isWolfElective = award.getAwardConfig().getName().equals("Wolf Electives");
 		boolean isBearElective = award.getAwardConfig().getName().equals("Bear Electives");
 		if (isWolfElective || isBearElective)
 		{
-			//count all requirements with a number, for each 3 they earn a bead
-			int arrowpointCount = (award.getRequirements().size()/10);
-			if(arrowpointCount == 1)
+			// count all requirements with a number, for each 3 they earn a bead
+			int arrowpointCount = (award.getRequirements().size() / 10);
+			if (arrowpointCount == 1)
 			{
 				beadsText = " (1 Gold)";
 			}
-			if(arrowpointCount > 1)
+			if (arrowpointCount > 1)
 			{
-				beadsText = " (1 Gold/"+(arrowpointCount-1)+" Silver)";
+				beadsText = " (1 Gold/" + (arrowpointCount - 1) + " Silver)";
 			}
 			if (award.getDateCompleted() != null)
 			{
-				award.setPercentComplete(formatter.format(award.getDateCompleted())+ " (1 Gold/6 Silver)");
+				award.setPercentComplete(formatter.format(award.getDateCompleted()) + " (1 Gold/6 Silver)");
 			}
 		}
 		return beadsText;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -1,0 +1,42 @@
+
+@import "//fonts.googleapis.com/css?family=Lato:400,400italic|Arvo:700,400,400italic";
+body {
+    background: none repeat scroll 0 0 #f0efe7;
+    color: #4e443c;
+    font: 15px/1.5 "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    padding: 0;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Arvo","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: normal;
+    text-align: center;
+    text-rendering: optimizelegibility;
+}
+h1 {
+    color: #4e443c;
+    font-size: 36px;
+    font-weight: bold;
+}
+h2, h2 a {
+    color: #f14e32;
+}
+h3, h3 a {
+    color: #0388a6;
+}
+a {
+    color: #0388a6;
+}
+pre {
+    background: none repeat scroll 0 0 #222;
+    border: 1px solid #000;
+    color: #fff;
+    overflow-x: auto;
+    text-shadow: none;
+}
+.wrapper {
+    margin: auto;
+    max-width: 1120px;
+    padding: 0 20px 40px;
+}

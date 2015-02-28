@@ -4,19 +4,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 	<head>
-		<link rel="stylesheet" href="css/jquery.ui.datepicker.css">
-		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+		<link rel="stylesheet" href="css/jquery-ui.all.css">
+		
 		<script type="text/javascript" src="js/jquery.jeditable.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.10.0.custom.js"></script>
 		<script type="text/javascript" src="js/jquery.validate.js"></script>
 		<script type="text/javascript" src="js/jquery.jeditable.datepicker.js"></script>
 		<script type="text/javascript" src="js/jquery.dataTables.editable.js"></script>
 		<script type="text/javascript" src="js/dataTableColumnFilter.js"></script>
 		<title>Users</title>
 		<style type="text/css">
-			@import "css/data_table.css";
-			@import "css/TableTool.css";
 			span.hilite { font-weight: bold; }
 			.dataTables_filter {
 			    float: right;
@@ -90,6 +86,9 @@
 			th.rotateheader > div > span {
 			  border-bottom: 1px solid #fff;
 			  padding: 5px 10px;
+			}
+			#leaderlist tfoot td {
+				white-space: normal;
 			}
 		</style>
 		<script type="text/javascript">
@@ -177,7 +176,7 @@
                          ]          
                 	});
 				    </security:authorize>
-				//$("#hasdatepicker").mask("99/99/9999");
+				//$("#hasdatepicker").mask("00/00/0000");
 			} );    
 		</script>		
 	</head>

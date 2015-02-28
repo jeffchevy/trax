@@ -1,14 +1,13 @@
+<!doctype html>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-
-"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 	<meta name="google-site-verification" content="r8_DZ-vawNf3PjfAGDvN0YERMTlf-nnpI5TB5dvLDFQ" />
 	<meta name="keywords" content="Free, online, tracking, software, Boy scout, scout, cub scout, Varsity, Venture, Venturing, Troop, Patrol, Team, Crew, merit badge, 
 	requirements, camping, leadership, scout master, scout leader, scout book, rank, Eagle, Eagle Scout, user friendly, easy, 
 	simple, parents, Awards, camping, service, Merit Badge, email, den, safe, secure, advancement, BSA, LDS, Duty to God, email, report "/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-37757159-1']);
@@ -21,8 +20,9 @@
 	  })();
 	
 	</script>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script src="js/jquery-ui-1.10.0.custom.js" type="text/javascript"></script>
+	<script src="js/jquery.js"></script>
+	
+	<script src="js/jquery-ui-1.11.2.custom.min.js" type="text/javascript"></script>
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">	
 
 	<title><tiles:insertAttribute name="title" ignore="true" />www.ScoutTrax.org Free online scout advancement tracking.</title>
@@ -39,7 +39,7 @@
 		.table {width: 100%}
 		#centerlogo {
 			padding: 2% 25%;
-			width:50%;
+			width: 50%;
 			background: black;
 		}
 		#centertop, #centerbottom {
@@ -133,7 +133,12 @@
 			    $( "#successMessage" ).dialog("open");
 			    
 			}
-			if($.support.opacity === false)//check to see if browser supports CSS3
+			if(navigator.appName == 'Microsoft Internet Explorer') {//check to see if browser supports CSS3
+				alert('This browser is not supported by ScoutTrax.\n  You may continue to explore using this browser, but many features will not work or display properly. \nWe recommend that you download Firefox, Chrome or Safari for viewing ScoutTrax.org.');
+			}
+			else
+				if($.support.opacity === false)//check to see if browser supports CSS3
+			{
 				alert('This browser is not supported by ScoutTrax.\n  You may continue to explore using this browser, but many features will not work or display properly. \nWe recommend that you download Firefox, Chrome or Safari for viewing ScoutTrax.org.');
 			}
 		});
@@ -152,7 +157,7 @@
 		</div>
 		<div id="centerlogo"  class="row">
 			<a id='nav-home' title='Home' href='home.html'>
-				<img alt='Scout Trax Logo' src='images/book/Scout_Trax_logo.png'>
+				<img alt='Scout Trax Logo' src='images/scouttrax_logo.png'>
 			</a>
 		</div>
 		<div id="centerbottom" class="row" >

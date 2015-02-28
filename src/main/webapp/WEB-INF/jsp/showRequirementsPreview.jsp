@@ -7,9 +7,6 @@
 	<head>
 	<title>Users</title>
 		<style type="text/css">
-			@import "css/data_table.css";
-			@import "css/TableTool.css";
-			
 			span.hilite { font-weight: bold; }
 			#page1 {
 				background-color: #454;

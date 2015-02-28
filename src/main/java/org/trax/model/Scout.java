@@ -178,6 +178,15 @@ public class Scout extends User implements Comparable<Scout>
 		// Get age based on year
 		int age = today.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
 
+		
+		boolean bornInJanuary = dateOfBirth.get(Calendar.MONTH)==0;
+		boolean todayInDecember = today.get(Calendar.MONTH)==11;
+		if (bornInJanuary && todayInDecember)
+		{
+			//this could be prebirthday reminder for December, January birthday, 
+			age++;
+		}
+
 		return age;
 	}
 	

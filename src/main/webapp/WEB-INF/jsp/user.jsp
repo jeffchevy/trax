@@ -102,13 +102,14 @@
 	</table>
 		
 	</form:form>
-	<script type="text/javascript" src="js/jquery.maskedinput-custom-1.3.js"></script>
+	<script type="text/javascript" src="js/new/jquery.mask.js"></script>
+	<!-- <script type="text/javascript" src="js/jquery.maskedinput-custom-1.3.js"></script> -->
 	<script type="text/javascript">
 			$(document).ready(function()
 			{
-				$("#phone").mask("?(999) 999-9999");
-				$("#workPhone").mask("?(999) 999-9999");
-				$("#cellPhone").mask("?(999) 999-9999");
+				$("#phone").mask("(000) 000-0000", {placeholder: "(___) ___-____"});
+				$("#workPhone").mask("(000) 000-0000", {placeholder: "(___) ___-____"});
+				$("#cellPhone").mask("(000) 000-0000", {placeholder: "(___) ___-____"});
 				if($('#position').find('option[value="Cubmaster"]').length > 0)
 				{
 					//change to record the cub position instead of the scout position

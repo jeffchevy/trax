@@ -203,9 +203,15 @@ public class ImportServiceImpl implements ImportService
 					// not found create a new one
 					organization = organizationDao.findById(organization.getId(), false);
 					scout = new Scout(organization, unit, firstName, middleName, lastName, nameSuffix, leader.getZip());
+					scout.setUnitCopy(unit);//each scout must have his own
+					traxService.addRanks(scout);
 				}
 
-				traxService.addRanks(scout);
+				if (scout.getRetired())
+				{
+					/** if the user is retired, and they are importing, go ahead and re activate	 */
+					scout.setRetired(false);
+				}
 
 				Collection<AwardCompletion> ac = scoutAwardMap.get(scoutFullname);
 				Map scoutNotFoundAwards = updateScoutAwards(leader, scout, ac);
@@ -254,7 +260,7 @@ public class ImportServiceImpl implements ImportService
 
 					if (dbAward.getDateCompleted() != null)
 					{
-						continue;
+						continue; //just believe the one in scouttrax
 					}
 
 					dbAward.setDateCompleted(awardCompletion.getCompletionDate());
@@ -468,10 +474,11 @@ public class ImportServiceImpl implements ImportService
 						// need to read the next
 						// line before we will have to read the 2nd line to get the
 						// rest of the data
-						if (completionDateString.equals(""))
+						if (completionDateString.equals("") || scoutSpansPageBreak(scoutAwardMap, fullname))
 						{
 							continue;
 						}
+						
 						// we now have the complete award record for one award
 						// collect all the awards for one boy,
 						awardName = awardName.replace("*", "").trim();
@@ -492,6 +499,28 @@ public class ImportServiceImpl implements ImportService
 		}
 		reader.close();
 		return scoutAwardMap;
+	}
+
+	private boolean scoutSpansPageBreak(Map<String, Collection<AwardCompletion>> scoutAwardMap, String fullname)
+	{
+		for (String scoutFullname : scoutAwardMap.keySet())
+		{
+			if(! scoutFullname.equals(fullname))
+			{
+				//either we are switching scouts, or a scout record splits a page
+				//Charles Frederick
+				//McGuire 10/16/2013 Rifle Shooting
+				//Charles Frederick 07/19/2014 Space Exploration
+				//Internet Advancement - Unit Advancement Summary Page 9 of 13
+				//file://E:\Websites\InternalServices\System\ConversionServer\SystemService\Input\A9A02... 1/24/2015
+				//McGuire
+				if (scoutFullname.startsWith(fullname))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isDate(String element) 
@@ -546,9 +575,7 @@ public class ImportServiceImpl implements ImportService
 		if (unit == null)
 		{
 			// add a new one
-			unit = new Unit();
-			unit.setTypeOfUnit(baseUnitTypeDao.find(unitTypeName));
-			unit.setNumber(unitNumber);
+			unit = new Unit(baseUnitTypeDao.find(unitTypeName), unitNumber, organization);
 			organization.getUnits().add(unit);
 		}
 		organization.setName(getToken(text, coKey, districtKey));

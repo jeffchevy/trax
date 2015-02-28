@@ -51,10 +51,11 @@ public class Unit implements Serializable
     {
     }
 	
-    public Unit(BaseUnitType typeOfUnit, Integer number)
+    public Unit(BaseUnitType typeOfUnit, Integer number, Organization organization)
 	{
     	this.setNumber(number);
     	this.setTypeOfUnit(typeOfUnit);
+    	this.setOrganization(organization);
 	}
 
 	
@@ -122,7 +123,7 @@ public class Unit implements Serializable
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			System.out.println("There appears to be a problem with the data, TODO fix this, right now just printing out the stack trace!");
+			System.out.println("There appears to be a problem with the data, TODO fix this!" +e.getMessage());
 			//e.printStackTrace();
 		}
 		return new HashCodeBuilder().append(getId()).toHashCode();

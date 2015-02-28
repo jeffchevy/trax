@@ -161,7 +161,7 @@ public class AwardTag extends TagSupport
 			{
 				imageSource = "images/awards/"+awardConfig.getName();
 			}
-			writer.write("<span id='"+activePageId+"'/>");// Column 1
+			writer.write("<span id='"+activePageId+"'></span>\n");// Column 1
 			writer.write("<div id='page1' class='cell'>\n");// Column 1
 			
 			writer.write("	<div class='table'>\n"); //for all of column 1
@@ -391,13 +391,16 @@ public class AwardTag extends TagSupport
 		{
 			//select Award for completion
 			boolean hasEarned = award.getDateCompleted() != null;
+			boolean hasPurchased = award.getDatePurchased() != null;
+			boolean hasAwarded = award.getDateAwarded() != null;
+			
 			if(!hasEarned && !(award.getAwardConfig() instanceof RankConfig))
 			{	
 				writer.write("<div class='row'>");
 				writer.write("<div class='cell'>");
 				String inProgress = (award.getInProgress() == true) ? "checked='checked' ":"";
 				writer.write("		<input id='awardinprogress' "+inProgress+"class='requirementcheckbox' type='checkbox' title='Check to pass mark as in progress'/>");
-				writer.write("<label for='awardinprogress'>&nbsp</label>");
+				writer.write("<label for='awardinprogress'>&nbsp;</label>");
 				writer.write("</div>");//cell
 				writer.write("<div title='Click this checkbox to start working on this award' class='cell awardheader'>In Progress</div><div class='cell'>");
 				writer.write("</div>");//cell
@@ -405,11 +408,19 @@ public class AwardTag extends TagSupport
 			}
 			writer.write("<div class='row'>");
 			writer.write("<div class='cell'>");
+			
 			String earned = hasEarned ? "checked='checked' ":"";
+			String purchased = hasPurchased ? "checked='checked' ":"";
+			String awarded = hasAwarded ? "checked='checked' ":"";
+			
 			writer.write("		<input id='awardearned' "+earned+"class='requirementcheckbox' type='checkbox' title='Check to mark award as earned'/>");
-			writer.write("<label for='awardearned'>&nbsp</label>");
+			writer.write("<label for='awardearned'>&nbsp;</label>");
 			writer.write("</div>");
-			writer.write("<div class='cell awardheader'>Earned</div>");
+			writer.write("<div class='cell awardheader'>Earned"
+					+"<div><input type='checkbox' "+purchased+" title='Check to mark award as purchased' id='awardpurchasedcheckbox'>"
+					+"<label for='awardpurchasedcheckbox'> </label>Purchased</div>" 
+					+"<div style=''><input type='checkbox' "+awarded+" title='Check to mark award as awarded' id='awardawardedcheckbox'>"
+					+"<label for='awardawardedcheckbox'> </label>Awarded</div></div>");
 			
 			String dateCompletedString = "";
 			String title="";

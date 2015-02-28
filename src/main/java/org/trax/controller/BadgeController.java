@@ -38,11 +38,9 @@ import org.trax.model.cub.PinConfig;
 import org.trax.service.TraxService;
 
 @Controller
-public class BadgeController
+public class BadgeController extends AbstractScoutController 
 {
 	protected static final Format formatter = new SimpleDateFormat("MM/dd/yyyy");
-    @Autowired
-    private TraxService traxService;
 
     @RequestMapping(value="/badge.html", method=RequestMethod.GET)
     public String showBadges(Map<String, Object> model)
@@ -265,6 +263,26 @@ public class BadgeController
 		return "redirect:selectBadge.html?badgeConfigId="+ ++awardConfigId;
 	}
 	
+
+	@RequestMapping(value = "/getRankMeritBadges.html", method = RequestMethod.GET)
+	public @ResponseBody
+	String reportTable(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String htmlString = "";
+		try
+		{
+			Award award = (Award) request.getSession().getAttribute("award");
+			List<Scout> scouts = getScouts(request);
+			
+			htmlString = traxService.getRankMeritBadges(award.getAwardConfig().getName(), scouts);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+		return htmlString;
+	}
 
 }
 

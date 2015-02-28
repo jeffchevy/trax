@@ -68,10 +68,10 @@ public class Leader extends User
 		VARSITY_COMMITTEE_CHAIR ("Varsity Committee Chair"), 
 		VARSITY_COMMITTEE_MEMBER ("Varsity Committee Member"), 
 		
-		VENTURE_ADVISOR ("Venture Advisor"),
-		VENTURE__ASSISTANT_ADVISOR ("Venture Assistant Advisor"),
-		VENTURE_COMMITTEE_CHAIR ("Venture Committee Chair"), 
-		VENTURE_COMMITTEE_MEMBER ("Venture Committee Member"),
+		VENTURE_ADVISOR ("Venturing Advisor"),
+		VENTURE__ASSISTANT_ADVISOR ("Venturing Associate Advisor"),
+		VENTURE_COMMITTEE_CHAIR ("Venturing Committee Chair"), 
+		VENTURE_COMMITTEE_MEMBER ("Venturing Committee Member"),
 
 		CHAPLAIN ("Chaplain"),
 		CHARTERED_ORGANIZATIONAL_REP ("Chartered Organization Representative"),

@@ -1,6 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script src="js/jquery-ui-1.10.0.custom.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom.min.js"></script>
 	
 	<script type="text/javascript">
 			$(document).ready(function()
@@ -10,7 +11,7 @@
 					$.get('loadstatecouncils.html', {state: $(this).val()}, function(councilNames)
 					{
 						$('#council').html(councilNames);
-					});
+					})
 				});
 				$('#type').change(function()
 				{

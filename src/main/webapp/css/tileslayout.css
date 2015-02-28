@@ -1,0 +1,771 @@
+
+input#awardpurchasedcheckbox[type=checkbox],
+	input#awardawardedcheckbox[type=checkbox],
+	input#awardearned[type=checkbox],
+	input#awardinprogress[type=checkbox],
+	input#allscouts[type=checkbox],
+	input.requirementscheckbox[type=checkbox],
+	#scouts input[type=checkbox]
+	{
+		display:none;
+	}
+
+	input#awardinprogress[type=checkbox] + label, 
+	input#awardinprogress[type=checkbox]:checked + label,
+	input#awardearned[type=checkbox] + label, 
+	input#awardearned[type=checkbox]:checked + label,
+	input.requirementscheckbox[type=checkbox] + label, 
+	input.requirementscheckbox[type=checkbox]:checked + label
+	{
+	    background: url("../images/book/CheckboxUnselected.png") no-repeat;
+	    height: 28px;
+	    width: 30px;
+	    display: inline-block;
+	    padding: 0 2px 0 0;
+	    vertical-align: middle;
+	}
+	
+	input#awardearned[type=checkbox]:checked + label,
+ 	input#awardinprogress[type=checkbox]:checked + label,
+ 	input.requirementscheckbox[type=checkbox]:checked + label
+	{
+	    background: url("../images/book/CheckboxSelected.png") no-repeat;
+	}
+	
+	input.indeterminate[type=checkbox] + label
+	{
+	    background: url("../images/book/CheckboxPartial.png") no-repeat !important;
+	    height: 30px;
+	    width: 30px;
+	    display: inline-block;
+	    padding: 0 2px 0 0;
+	    vertical-align: middle;
+	}
+	
+	input#awardpurchasedcheckbox[type=checkbox] + label,
+	input#awardpurchasedcheckbox[type=checkbox]:checked + label,
+	input#awardawardedcheckbox[type=checkbox] + label,
+	input#awardawardedcheckbox[type=checkbox]:checked + label,
+	input#allscouts[type=checkbox] + label,
+	#scouts input[type=checkbox] + label,
+	#scoutList input[type=checkbox] + label
+    {
+       background: url("../images/book/CheckboxUnselected16.png") no-repeat;
+       height: 16px;
+       width: 16px;
+       display: inline-block;
+       padding: 0 0 0 0px;
+    }
+   
+    input#awardpurchasedcheckbox[type=checkbox]:checked + label,
+    input#awardawardedcheckbox[type=checkbox]:checked + label,
+	input#allscouts[type=checkbox]:checked + label,
+   	#scouts input[type=checkbox]:checked + label,
+   	#scoutList input[type=checkbox]:checked + label
+    {
+        background: url("../images/book/CheckboxSelected16.png") no-repeat;
+        height: 16px;
+        width: 16px;
+        display:inline-block;
+        padding: 0 0 0 0px;
+    }
+	.verticalalign {
+		vertical-align: middle;
+	}
+	
+	#unitTypeName {
+		font-size: 12px;
+		padding-left: 0;
+	}
+		
+	.errors { color: red; font-size: 1.2em; white-space: nowrap; }
+	body {
+		color: white;
+	}
+	.awardimage {
+		max-width: 100px;
+		max-height: 100px;
+	}
+	
+	.inprogresslabel, #earnedlabel, #sponsorlabel {
+		font-weight: bold;
+		font-size: 1.4em;
+		color: white;
+		text-align: center;
+	}
+	
+	#earnedlabel{
+		position:absolute;
+		top:	100px;
+		left:	18%;
+		z-index: 1;
+	}
+	
+	body {
+		background: #000;
+		padding: 0px;
+		margin: 0px;
+		font-family: Arial,"Trebuchet MS",Helvetica,Sans-Serif;
+	    font-size: 12px;
+	    font-style: normal;
+	    font-weight: normal;
+	}
+	p {
+		font-family: Arial,"Trebuchet MS",Helvetica,Sans-Serif;
+	    font-size: 12px;
+	    font-style: normal;
+	    background: white;
+	    border: 1px black;
+	    color: black;
+	    text-align: left;
+	    margin: 1px;
+	    padding: 2px;
+	}
+	.table, .row, .cell {
+		/*border: 1px solid white;*/
+	}
+	#awardList {
+		background: none repeat scroll 0 0 white;
+	    border: thin solid;
+	    color: black;
+	    margin: 0 0 5px 22px;
+	    padding: 0 7px;
+	    text-align: left;
+	}
+	
+	
+	#campEntryList tr, #serviceEntryList tr, #leadershipEntryList tr {
+		text-align: left;
+	}
+	#campEntryList td, #serviceEntryList td, #leadershipEntryList td {
+		border: thin solid black;
+		background: white;
+		color: black;
+	}
+	#campEntryList, #serviceEntryList, #leadershipEntryList {
+		width: 100%;
+	}
+	
+	.table {
+		display: table;
+		/*width: 100%;*/
+	}
+	
+	.row {
+		display: table-row;
+	}
+	.image {
+		border: none;
+	    padding-bottom: 5px;
+	}
+	.cell {
+		display: table-cell;
+		text-align: right;
+		vertical-align: top;
+	}
+	#footer{width:100%}
+	.tablefooter {
+		border: 1px solid black;
+		text-align: center;
+		background-color: white;
+		width: 50%;
+	}
+	
+	.smalllabel {
+		color: #454;
+		font-size: 1em;
+	}
+	.biglabel {
+		color: #454;
+		font: 1em bold;
+	}
+	
+	.dropshadow {
+	 -moz-box-shadow: 9px 6px 6px #333; /* Firefox */
+	 -webkit-box-shadow: 9px 6px 6px #333; /* Safari/Chrome */
+	 box-shadow: 9px 6px 6px #333; /* Opera and other CSS3 supporting browsers */
+	 -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#333')";/* IE 8 */
+	 : progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#333');/* IE 5.5 - 7 */ 
+	} 
+	#mainmenu {
+		width: 130px;
+		padding-right: 20px;
+		min-width: 130px;
+background: none repeat scroll 0 0 #000000;	}
+	div#mainmenu2 {
+		position: absolute;
+		top: 0;
+	}
+	#earned {
+		height: 128px;
+	 	text-align: center;
+	    padding-top: 10px;
+	    background: none repeat scroll 0 0 #000000;
+	}
+	#topmiddle {
+	    background: none repeat scroll 0 0 #000000;
+	}
+	#rightcolumn {
+	    background: none repeat scroll 0 0 #000000;
+	}
+	#scoutnamesColumn {
+	    background: none repeat scroll 0 0 #000000;
+	}
+	.meritbadge {
+		margin: 5px;
+	}
+	
+	#rankmenu {
+		
+	}
+	
+	#awardTitles {
+		color: #ddd;
+		text-shadow: 4px 4px 6px #000000;
+		background-color: rgba(0,0,0,0.2);
+		text-align: center;
+	}
+	#pagequote, .darkbackground {
+		color: #ddd;
+		text-shadow: 4px 4px 6px #000000;
+		font-size: 2em;
+		background-color: rgba(0,0,0,0.5);
+		text-align: center;
+		padding: 0.5em;
+		margin: 1.5em;
+		border-radius: 15px;
+		-moz-border-radius: 15px;
+	}
+	.awardheader {
+	    background-color: rgba(0, 0, 0, 0.7);
+	    border-left: thin solid black;
+	    border-top: thin solid black;
+	    color: white;
+	    font-size: 1.4em;
+	    padding-left: 5px;
+	    text-align: left;
+	    vertical-align: middle;
+	}
+	
+	#pages {
+		width: 100%;
+	}
+	
+	/*#content {
+		position: absolute;
+	    top: 150px;
+	    width: 1200px;
+	    z-index: 1;
+	}*/
+			
+	#troopList, #leaderList, #scoutList {
+		color: black;
+		background-color: white;
+		border: solid thin black;
+		width: 100%;
+		text-align: left;
+	}
+	
+	#troopList td, #leaderList td, #scoutList td {
+		border-left: solid thin #888;
+		border-bottom: solid thin #888;
+	}
+	
+	#troopList thead, .scoutTable thead, #leaderList thead, #scoutList thead {
+		background-color: #CCCCAA;
+		color: black;
+		border-bottom: solid thin #000;
+		text-align: center;
+	}
+	#import {
+		float: right;
+		margin: 20px;
+		padding:20px;
+	}
+
+	#pagetwo {
+	    margin-top: 80px;
+	}
+	#personalInfo {
+	}
+	#reminder {
+	
+	}
+	
+	#updateprofilepicture {
+	    color: white;
+	    position: relative;
+	    top: 0.5em;
+	    background: none repeat scroll 0 0 black;
+	    color: #FFFFFF;
+	    height: 20px;
+	    opacity: 0.7;
+	    padding: 0 7px 0 23px;
+	    right: 1px;
+	    top: 0;
+	}
+		
+	#scoutimage, div#awardimagediv{
+		width: 100px; 
+	}
+	img#scoutimage, #awardimage { /*mirror reflections*/
+		margin: 0 0 10px 5px;
+		max-height: 140px;
+	    max-width: 100px;
+	}
+	img { border: none; }
+	#previousnextaward {
+		text-align: center;
+	}
+	
+	div#awardTitles{
+		width: 100%;
+		height: 100px; 
+		padding-top: 25px;
+		vertical-align: top;
+	}
+	p#awardname, p#subtitle, #awardLink {
+		color: white;
+		background: transparent;
+		text-transform: uppercase;
+		font-family: simplex, herman, georgia;
+	    font-size: 2.2em;
+	    font-style: normal;
+	    font-weight: bold;
+	    text-align: center;
+	    margin: 0;
+    	padding: 0;
+	}
+	p#subtitle {
+		font-size: 1.5em;
+		text-transform: none;
+	}
+	
+	#awardLink {
+		text-transform: none;
+		font-size: 1.2em;
+	}
+	#sponsor {
+		background:  no-repeat center top transparent;
+		height: 95px;
+	}
+	
+	#inprogress {
+		height: 9em;
+		width: 12em;
+		background: #000;
+	}
+	#rank a:link,#rank a:visited {
+	    color: black;
+	    text-decoration: none;
+	    padding: 0 7px;
+	    border-left: thin white solid;
+	    border-top: thin white solid;
+	    border-right: thin white solid;
+	}
+	#rank li {
+		display: inline;
+	}
+	#rank {
+	    background-color: #cca;
+		list-style: none outside none;
+		font-size: 1.3em;
+		text-align: left;
+		margin: 0;
+	    padding: 0;
+	}
+	#show {
+		display: inline;
+	}
+	.active {
+	   border-left: medium solid red !important;
+	    border-right: medium solid red !important;
+	    border-top: medium solid red !important;
+	    background: #454 !important;
+		padding: 0 3px;
+		color: #EEE !important;
+	}
+	
+	#nav {
+		list-style: none outside none;
+		width: auto;
+		margin: 0;
+		padding: 0;
+	}
+	
+	#nav li {
+		
+	}
+	
+	#scouts {
+		width: 10em;
+		font-size: 1.3em;
+		margin: 0;
+		padding: 0;
+	}
+	li.allscouts {
+		background: #454;
+		color: #711 important!;
+	}
+	#scoutnames {
+		padding-top: 2px;
+		text-align: left !important;
+		background: #000000;
+	}
+	
+	#scouts li {
+		list-style: none outside none;
+		text-align: left;
+		background-color: #777;
+	}
+	
+	#scouts a:link, #scouts a:visited {
+		color: white;
+		text-decoration: none;
+		margin: 0;
+		padding: 0;
+	}
+	#scouts .selectedscout {
+	    background-color: #444 !important;
+	}
+	
+	.selectedscout {
+	    color: white;
+	    font-weight: bold;
+	    border: thin solid red;
+	    background-color: #444 !important;
+	} 
+	
+	.doublecheck {
+		border: thin solid red !important;
+	}
+	#nav-home, #nav-troop, #nav-advancement, #nav-calendar, #nav-email, #nav-shirt, #nav-report, #nav-scoutreport, #nav-training, #nav-guide
+	{
+		display: block;
+		font-size: 1.6em;
+		height: 120px;
+		width: 130px;
+	}
+	
+	#nav-home {
+		padding: 0px 0 0 0px;
+	}
+	#nav-home img{
+		padding: 0px 0 0 0px;
+		width: 175px;
+	}
+	
+	#nav-troop {
+		padding: 50px 0 0 5px;
+	}
+	
+	#nav-advancement {
+		background: url("../images/book/Book Button.png") no-repeat center top transparent;
+		padding: 0 0 0 23px;
+	}
+	
+	#nav-tools {
+		background: url("../images/book/tool.png") no-repeat center top transparent;
+		display: block;
+		font-size: 1.6em;
+		height: 30px;
+		width: 40px;
+	}
+	
+	#nav-calendar {
+		background: url("../images/book/CalendarButton.png") no-repeat center top transparent;
+		padding: 0 0 0 15px
+	}
+	
+	#nav-email {
+		background: url("../images/book/email.png") no-repeat center top transparent;
+	}
+	
+	#nav-training {
+		background: url("../images/book/training.png") no-repeat center top transparent;
+	}
+	#nav-guide {
+		background: url("../images/book/usermanual.png") no-repeat center top transparent;
+	}
+	#nav-shirt {
+		background: url("../images/book/shirt.png") no-repeat center top transparent;
+		padding: 0 0 0 20px;
+	}
+	
+	#nav-report, #nav-scoutreport {
+		background: url("../images/book/report.png") no-repeat center top transparent;
+		padding: 0 0 0 20px;
+	}
+	
+	#nav-sash {
+		background: url("../images/book/sash.png") no-repeat center top transparent;
+		display: block;
+		font-size: 1.6em;
+		height: 122px;
+		width: 90px;
+	}
+	.cleared
+	{
+		float: none;
+		clear: both;
+		margin: 0;
+		padding: 0;
+		border: none;
+		font-size:1px;
+	}
+	.requirementcheckbox {
+	 	width:	1.4em;
+	 	margin:	0 0 5px 0;
+	}
+	.requirementtext {
+	    border: thin solid;
+	    color: black;
+	    margin: 0 0 5px 22px;
+	    padding: 0 7px;
+	    text-align: left;
+	    width: 85%;
+	}
+	#page1 .requirementtext {
+		background: linear-gradient(to right, white, white, white, #ccc 100%) repeat scroll 0 0 rgba(255, 255, 255, 1);
+	}
+	#page2 .requirementtext {
+		background: linear-gradient(to left, white, white, white, #ccc 100%) repeat scroll 0 0 rgba(255, 255, 255, 1);
+	}
+	.center
+	{
+		margin-left:auto;
+		margin-right:auto;
+		width:40%;
+	}
+	#electiveLink{
+		margin-left: 10px;
+		background-color: rgba(0, 0, 0, 0);
+		color: #FFA;
+    	white-space: nowrap;
+    	font-size: 1.1em;
+    	text-decoration: none;
+    	padding: 0px;
+	}
+	#pinLinkDiv {
+		margin-top: 10px;
+	}
+	
+	#pinLink {
+		margin-left: 20px;
+		background-color: rgba(0, 0, 0, 0.5);
+		color: #FFA;
+    	white-space: nowrap;
+    	font-size: 1.3em;
+    	text-decoration: none;
+    	border-radius: 15px 15px 15px 15px;
+    	padding: 0.5em;
+	}
+	.numberedRequirement {
+		background: none repeat scroll 0 0 #FFFFAA !important;
+    	font-weight: bold;
+	}
+	.doFollowingRequirement{
+		background: none repeat scroll 0 0 	#CCEEFF !important;
+    	font-weight: bold;
+	}
+	
+	.datebox, #awarddatebox {
+		background: #B0D1B2;
+	    border: thin solid black;
+	    margin: 0;
+	    padding: 0 5px;
+	    text-align: left;
+	    width: 5.6em;
+	    color: black;
+	    font-size: 12px;
+	}
+	
+	#page1 .datebox, #awarddatebox {
+		background: -moz-linear-gradient(right center , #334533, #B0D1B2) repeat scroll 0 0 transparent;
+		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#334533), to(#B0D1B2));
+	}
+	.dataTables_filter {
+		margin-right: 27px;
+	}
+	div.spacercolumn {
+		background: none repeat scroll 0 0 transparent;
+	    color: transparent;
+	}
+	
+	#scout_info {
+		height: 9em;
+	}
+	
+	.requirementCount {
+		color: wheat;
+	    font-size: 1.2em;
+	    left: -30px;
+	    position: relative;
+	    top: 20px;
+	    background-color: rgba(0,0,0,0.8);
+	    padding: 0 5px;
+	}
+	
+	.meritbadgelink {
+		border: none;
+		color: black;
+		text-align: center;
+	}
+	
+	rr #scoutrightpocket , Boy_Scout_left_sleeve ,#scoutleftsleeve,#scoutrightsleeve,
+	#venturerleftpocket,#venturerrightpocket,#venturerleftsleeve,#venturerrightsleeve {
+		width: 250px;
+		height: 410px;
+		border: thick solid black;
+	}
+	
+	#scoutleftpocket {
+		background: url("../images/shirt/Boy_Scout_left_pocket.png") no-repeat center top transparent;
+	}
+	#scoutrightpocket {
+		background: url("../images/shirt/Boy_Scout_left_sleeve_(Boy_Scouts_of_America).png") no-repeat center top transparent;
+	}
+	#scoutleftsleeve {
+		background: url("../images/shirt/Boy_Scout_left_sleeve.png") no-repeat center top transparent;
+	}
+	#scoutrightsleeve {
+		background: url("../images/shirt/Boy_Scout_right_sleeve.png") no-repeat center top transparent;
+	}
+	#venturerleftpocket {
+		background: url("../images/shirt/Venturer_left_pocket.png") no-repeat center top transparent;
+	}
+	#venturerrightpocket {
+		background: url("../images/shirt/Venturer_right_pocket.png") no-repeat center top transparent;
+	}
+	#venturerleftsleeve {
+		background: url("../images/shirt/Venturer_left_sleeve.png") no-repeat center top transparent;
+	}
+	#venturerrightsleeve {
+		background: url("../images/shirt/Venturer_right_sleeve.png") no-repeat center top transparent;
+	}
+	.ranktab {
+		background: #ABA;
+	}
+	
+	.logtab {
+		background: #787;
+	}
+	.hidden, .errors, label.error {
+		position: absolute;
+		left: 0px;
+		top: -500px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+	th.sorting_asc {
+		background: url("../images/sort_asc.png") no-repeat scroll right center #797;
+	}
+	th.sorting_desc {
+		background: url("../images/sort_desc.png") no-repeat scroll right center #797;
+	}
+	.bottom {
+		font-size: 1.8em;
+	}
+	caption {
+		font-size: 1.5em;
+		color: #fff;
+		background: #343;
+	}
+	.dataTables_filter {
+	    float: right;
+	    text-align: right;
+	    width: 50%;
+	    margin-right: 20px;
+		margin-bottom: 30px;
+	}
+	
+	<!-- For the timeout - we want to force people to click a button, so hide the close link in the toolbar -->
+	a.ui-dialog-titlebar-close { display:none }
+	
+	.edit_profilepicture {
+	    background: none repeat scroll 0 0 #000000;
+	    color: #FFFFFF;
+	    display: none;
+	    height: 20px;
+	    opacity: 0.7;
+	    padding: 6px 7px 0 23px;
+	    position: absolute;
+	    right: 1px;
+	    top: 0;
+	}	
+	.profile-picture:hover {
+	    text-decoration: none;
+	}
+	.profile-picture:hover .edit_profilepicture {
+	    display: block;
+	}
+	.profile-picture img {
+	    display: block;
+	    margin: auto;
+	    max-width: 180px;
+	}
+	.profile-picture span {
+	    background-color: #000000;
+	    height: 800px;
+	    opacity: 0.3;
+	    position: absolute;
+	    right: 0;
+	    top: 0;
+	    width: 1px;
+	}
+	.edit_profilepicture {
+	    background: none repeat scroll 0 0 #000000;
+	    color: #FFFFFF;
+	    display: none;
+	    height: 20px;
+	    opacity: 0.7;
+	    padding: 6px 7px 0 23px;
+	    position: absolute;
+	    right: 1px;
+	    top: 0;
+	}
+	.edit_profilepicture:hover {
+	    opacity: 0.95;
+	}
+	span.edit_profilepicture_icon {
+	    background: url("http://static.ak.fbcdn.net/rsrc.php/v1/yA/r/QbfalTL4SQ2.png") no-repeat scroll left 4px transparent;
+	    height: 18px;
+	    left: 7px;
+	    opacity: 0.95;
+	    position: absolute;
+	    top: 4px;
+	    width: 18px;
+	}	
+	
+	.link {
+		color: white;
+		text-align: left;
+		text-decoration: none;
+		background: #252525;
+		border: thin solid #111;
+		padding: 4px;
+	}
+	a:visited#feedback, a:active#feedback, 
+	a:visited#logout, a:active#logout
+	{
+		color: #888;
+	}
+	
+	.spinner {
+	    position: fixed;
+	    top: 50%;
+	    left: 50%;
+	    margin-left: -50px; /* half width of the spinner gif */
+	    margin-top: -50px; /* half height of the spinner gif */
+	    text-align:center;
+	    z-index:10000;
+	    overflow: auto;
+	    width: 100px; /* width of the spinner gif */
+	    height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+	}
+	
+	#rowspacer {
+		width: 100%;
+		height: 30px;
+	}

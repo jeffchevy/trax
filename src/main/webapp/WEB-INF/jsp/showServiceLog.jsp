@@ -7,19 +7,13 @@
 	<head>
 	<title>Service Log</title>
 		<style type="text/css">
-			@import "css/data_table.css";
-			@import "css/TableTool.css";
 			#page1 {
 				background-color: #454;
 				height: 550px;
 				background-image: none;
 			}
 		</style>
-		<link rel="stylesheet" href="css/jquery.ui.datepicker.css">
-		<link rel="stylesheet" href="css/jquery.ui.theme.css">
-		<link rel="stylesheet" href="css/jquery.ui.all.css">
-		<link rel="stylesheet" href="css/jquery.ui.base.css">
-		<link rel="stylesheet" href="css/jquery.ui.core.css"> 
+		<link rel="stylesheet" href="css/jquery-ui.all.css">
 		
 		<script type="text/javascript">
 			$(document).ready(function()

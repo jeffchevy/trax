@@ -135,7 +135,7 @@ public class DisplayBadgesTag extends TagSupport
 			int columnPad = col - (badges.size() % col);
 			for (int j = 0; j < columnPad; j++)
 			{
-				writer.write("<td>&nbsp</td>");
+				writer.write("<td>&nbsp;</td>");
 			}
 			writer.write("</tr>");
 			writer.write("</tbody>");

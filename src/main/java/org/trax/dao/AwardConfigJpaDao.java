@@ -1,6 +1,7 @@
 package org.trax.dao;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.jfree.util.Log;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.trax.dto.RankTrail;
@@ -110,5 +112,44 @@ public class AwardConfigJpaDao extends GenericJpaDao<AwardConfig, Long> implemen
 			}
 
 		return rankTrail;
+	}
+	
+	/**
+	 * get merit badges required for ranks
+	 *  sorted by required first, and ordered by earliest completed
+	 * @param userId
+	 * @param skipRequireds - the number to start at
+	 * @param maxRequireds - the number of requireds to return
+	 * 
+	 * @param skipNonRequired - the number of nonrequireds to skip
+	 * @param maxNonRequireds - the number of nonrequireds to return
+	 * @return
+	 * so for a star, the parameters are (userid, 0, 4, 0, 2)
+	 *    for a life,  (userid, 4, 3, 2, 3)
+	 *    for an eagle, (userid, 7, 5, 9) 
+	 */
+	@Override
+	public List<String> getRankMeritBadges(Long userId, int skipRequireds, int maxRequireds, int skipNonRequireds, int maxNonRequireds ) {
+
+		List<String> awardNames = new ArrayList<String>();
+		try
+		{
+			String sql = "(select ac.name from  user u, awardconfig ac, award a where ac.kind ='B'"
+					+" and ac.id=a.awardconfigid and a.scoutid=u.id and u.id="+userId+" and ac.required=true and dateCompleted is not null " +
+							"order by datecompleted limit "+skipRequireds+", "+maxRequireds+" )"
+					+" union"
+					+" (select ac.name from  user u, awardconfig ac, award a where ac.kind ='B'"
+					+" and ac.id=a.awardconfigid and a.scoutid=u.id and u.id="+userId+" and ac.required=false and dateCompleted is not null " +
+					"		order by datecompleted limit "+skipNonRequireds+", "+maxNonRequireds+" ) ";
+			Query query = entityManager.createNativeQuery(sql);
+			awardNames = query.getResultList();
+		}
+		catch (Exception e)
+		{
+			//log an error but keep going this is not critical
+			Log.error("Failed to get Meritbadges for a rank ", e);
+		}
+
+		return awardNames;
 	}
 }

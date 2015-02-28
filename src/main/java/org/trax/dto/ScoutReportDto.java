@@ -1,5 +1,6 @@
 package org.trax.dto;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.trax.model.Award;
@@ -9,7 +10,6 @@ import org.trax.model.ServiceLogEntry;
 
 public class ScoutReportDto
 {
-	private Integer monthsToEighteen;
 	private Set<Award> awards;
 	private Set<CampLogEntry> campEntries;
 	private Set<LeadershipLogEntry> leadershipEntries;
@@ -18,6 +18,7 @@ public class ScoutReportDto
 	private Integer bsaMemberId;
 	private String positionName;
 	private boolean isCub=false;
+	private Date birthday;
 
 	public Set<Award> getAwards()
 	{
@@ -89,16 +90,6 @@ public class ScoutReportDto
 		this.bsaMemberId = bsaMemberId;
 	}
 
-	public Integer getMonthsToEighteen()
-	{
-		return monthsToEighteen;
-	}
-
-	public void setMonthsToEighteen(Integer monthsToEighteen)
-	{
-		this.monthsToEighteen = monthsToEighteen;
-	}
-
 	public void setCub(boolean isCub)
 	{
 		this.isCub = isCub;
@@ -107,6 +98,16 @@ public class ScoutReportDto
 	public boolean isCub()
 	{
 		return isCub;
+	}
+
+	public Date getBirthday()
+	{
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday)
+	{
+		this.birthday = birthday;
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.jfree.util.Log;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -80,7 +82,7 @@ public class ReportController extends AbstractScoutController
 				scoutDto.setCampEntries(scout.getCampEntries());
 				scoutDto.setServiceEntries(scout.getServiceEntries());
 				scoutDto.setLeadershipEntries(scout.getLeadershipEntries());
-				scoutDto.setMonthsToEighteen(getMonthsDifference(scout.getBirthDate()));
+				scoutDto.setBirthday(scout.getBirthDate());
 				scoutReports.add(scoutDto);
 			}
 		}
@@ -89,19 +91,6 @@ public class ReportController extends AbstractScoutController
 		mav.addObject("requiredMeritBadges", requiredMeritBadges);
 
 		return mav;
-	}
-
-	private static final Integer getMonthsDifference(Date date1)
-	{
-		if (date1 == null)
-		{
-			return null;
-		}
-		Calendar startCalendar = Calendar.getInstance();
-		Date now = startCalendar.getTime();
-		int m1 = date1.getYear() * 12 + date1.getMonth();
-		int m2 = now.getYear() * 12 + now.getMonth();
-		return (18 * 12) - (m2 - m1 + 1);
 	}
 
 	@RequestMapping(value = "/report.html", method = RequestMethod.GET)
@@ -182,10 +171,14 @@ public class ReportController extends AbstractScoutController
 							// String complete = (String)
 							// (award.getDateCompleted() == null ? percent + "%"
 							// : formatter.format(award.getDateCompleted()));
-							if (onOrBetween(award.getDateCompleted(), startDate, endDate) || hasBeadsAndArrows)
+							boolean withinDateRange = onOrBetween(award.getDateCompleted(), startDate, endDate);
+							if (withinDateRange || hasBeadsAndArrows)
 							{
-								String formattedDate = award.getDateCompleted() == null ? "" : formatter.format(award.getDateCompleted());
-								NameComplete nameComplete = new NameComplete(scoutName, formattedDate);
+								boolean canShowDate = award.getDateCompleted() != null && withinDateRange;
+								String formattedDate = canShowDate ? formatter.format(award.getDateCompleted()) : "";
+								boolean awarded = award.getDateAwarded()!=null;
+								boolean purchased = award.getDatePurchased()!=null;
+								NameComplete nameComplete = new NameComplete(scoutName, formattedDate, awarded, purchased);
 								if (scout.getUnit().isCub())
 								{
 									if (award.getAwardConfig() instanceof BeltLoopConfig)
@@ -199,7 +192,7 @@ public class ReportController extends AbstractScoutController
 									else if (award.getAwardConfig() instanceof CubRankElectiveConfig)
 									{
 										String beadsText = generateArrowPointTexts(award, startDate, endDate);
-										nameComplete = new NameComplete(scoutName, nameComplete.getComplete() + beadsText);
+										nameComplete = new NameComplete(scoutName, nameComplete.getComplete() + beadsText, awarded, purchased);
 										addNameComplete(electiveMap, indexAndName, nameComplete);
 									}
 									else if (award.getAwardConfig() instanceof ActivityBadgeConfig)
@@ -209,16 +202,14 @@ public class ReportController extends AbstractScoutController
 									else if (award.getAwardConfig() instanceof CubRankConfig)
 									{
 										String beadsText = generateBeadsText(award, startDate, endDate);
-										nameComplete = new NameComplete(scoutName, nameComplete.getComplete() + beadsText);
+										nameComplete = new NameComplete(scoutName, nameComplete.getComplete() + beadsText, awarded, purchased);
 										// rankCount++;
 										// if they earn the award, they
 										// automatically get the beads
 										// if(isWolf){wolfBeadCount=4;}else{bearBeadCount=4;}
 										addNameComplete(rankScoutMap, indexAndName, nameComplete);
 									}
-									else if (award.getAwardConfig() instanceof AwardConfig)// cub
-																							// and
-																							// scout
+									else if (award.getAwardConfig() instanceof AwardConfig)// cub and scout
 									{
 										// awardCount++;
 										addNameComplete(awardScoutMap, indexAndName, nameComplete);
@@ -305,7 +296,9 @@ public class ReportController extends AbstractScoutController
 			int completedBefore = 0;
 			for (Requirement requirement : award.getRequirements())
 			{
-				if (Character.isDigit(requirement.getRequirementConfig().getText().charAt(0)))
+				String text = requirement.getRequirementConfig().getText();
+				if (text !=null && !text.isEmpty()
+					&& Character.isDigit(text.charAt(0)))
 				{
 					if (onOrBefore(requirement.getDateCompleted(), startDate))
 					{
@@ -317,13 +310,8 @@ public class ReportController extends AbstractScoutController
 					}
 				}
 			}
-			numberedRequirements = numberedRequirements > 12 ? 12 : numberedRequirements; // don't
-																							// count
-																							// more
-																							// than
-																							// 12
-																							// for
-																							// bear
+			// don't count more than 12 for bear
+			numberedRequirements = numberedRequirements > 12 ? 12 : numberedRequirements; 
 			int numberOfBeads = numberedRequirements / 3;
 			if (numberOfBeads != 0)
 			{
@@ -510,47 +498,66 @@ public class ReportController extends AbstractScoutController
 		}
 	}
 	
-	
-	@RequestMapping("/toFirstClass.html")
+	/*display the page
+	 * 
+	 */
+	@RequestMapping(value = "/toFirstClass.html", method = RequestMethod.GET)
+	public ModelAndView toFirstClass(HttpServletRequest request, Map<String, Object> model)
+	{
+		try
+		{
+			model.put("htmlTables", getTrailReport(request));
+		}
+		catch (Exception e)
+		{
+			 model.put("errorMessage", "Error: "+e.getMessage()); 
+		}
+		return new ModelAndView("toFirstClass", model);
+	}
+	/*
+	 * ajax call with the actual data
+	 */
+	@RequestMapping("/toFirstClassReport.html")
 	@ResponseBody public String toFirstClassReport(HttpServletRequest request) throws Exception
+	{
+		String htmlString = null;
+		try
+		{
+			htmlString = getTrailReport(request);
+		}
+		catch (Exception e)
+		{
+			Log.error("Failed to get report table: "+e.getMessage());
+		}
+
+		return htmlString;
+	}
+
+	private String getTrailReport(HttpServletRequest request) throws Exception
 	{
 		String htmlString = "";
 
-		List<Scout> scouts = (List<Scout>) request.getSession().getAttribute("scouts");
-		Scout selectedScout = null;
-		for (Scout scout : scouts)
-		{
-			if (scout.isChecked() || scout.isSelected())
-			{
-				selectedScout = scouts.get(0);
-				break;
-			}
-		}
+		Scout selectedScout = getSelectedScout(request);
 
 		if(selectedScout==null)
 		{
 			return "No Scouts Selected";
 		}
-		
-		List<AwardConfig> awardConfigs = new ArrayList<AwardConfig>();
-		for (Award award : selectedScout.getAwards())
-		{
-			if (selectedScout.getUnit().isCub())
-			{
-				if (award.getAwardConfig() instanceof CubRankConfig)
-				{
-					awardConfigs.add(award.getAwardConfig());
-				}
-			}
-			else if ("Tenderfoot".equals(award.getAwardConfig().getName()) || "Scout".equals(award.getAwardConfig().getName())
-							|| "Second Class".equals(award.getAwardConfig().getName()) || "First Class".equals(award.getAwardConfig().getName()))
-			{
-				awardConfigs.add(award.getAwardConfig());
-			}
-		}
 
-		htmlString = generateJsonReportTable(request, htmlString, awardConfigs);
-		
+		if (selectedScout.getUnit().isCub())
+		{
+			String tableCaption = "Bobcat to Bear Report";
+			if (selectedScout.getOrganization().getHasTigers())
+			{
+				tableCaption = "Tiger to Bear Report";
+			}
+			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(request, null, tableCaption)+"</div>";
+		}
+		else
+		{
+			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(request, null, "Scout to First Class")+"</div>";
+		}
+	
 		return htmlString;
 	}
 
@@ -570,10 +577,9 @@ public class ReportController extends AbstractScoutController
 		{
 			Award award = (Award) request.getSession().getAttribute("award");
 
-			List<AwardConfig> awardConfigs = new ArrayList<AwardConfig>();
-			awardConfigs.add(award.getAwardConfig());
+			award.getAwardConfig();
 
-			htmlString = generateReportTable(request, htmlString, awardConfigs);
+			htmlString = generateTranslatedReportTable(request, award.getAwardConfig().getId(), award.getAwardConfig().getName());
 		}
 		catch (Exception e)
 		{
@@ -582,130 +588,143 @@ public class ReportController extends AbstractScoutController
 		}
 		return htmlString;
 	}
-
-	private String generateReportTable(HttpServletRequest request, String htmlString, List<AwardConfig> awardConfigs) throws Exception
+	
+	/**put the scout names as the table column header and the requirements as the row headers
+	 * @param currentAwardConfigId null if not  */
+	private String generateTranslatedReportTable(HttpServletRequest request, Long currentAwardConfigId, String tableCaption) throws Exception
 	{
-
-		List<Scout> scouts = (List<Scout>) request.getSession().getAttribute("scouts");
+		String htmlString = "";
+		List<Scout> scouts = getScouts(request);
 		String completedTd = "<td class='completed' title='Completed'>X</td>";
 		String emptyTd = "<td>&nbsp;</td>";
 		String canSelectTd = "<td class='completed' title='Completed'></td>";
 
-		Map<Long, AwardConfig> awardConfigMap = new HashMap<Long, AwardConfig>();
-		for (AwardConfig awardConfig : awardConfigs)
+		htmlString += "<table id='ScoutToFirstClassTable' class='awardReportTable dataTable' cellspacing='0'>\n" +
+						"<caption>"+tableCaption+"</caption>"; 
+				// build the header row
+		htmlString += "<thead><tr>";
+		htmlString += "	<th class='header' title='Requirements'></th>";
+		htmlString = buildScoutHeaderHtml(htmlString, scouts);
+
+		Map<Long, Map<Long, Set<Long>>> scoutAwardList = null;
+		if (currentAwardConfigId==null)
 		{
-			awardConfigMap.put(awardConfig.getId(), awardConfig);
+			if (tableCaption.contains("First"))
+			{
+				scoutAwardList = traxService.getToFirstClass(scouts);
+			}
+			else
+			{
+				scoutAwardList = traxService.getToBear(scouts);
+			}
 		}
-		Map<Long, Map<Long, Set<Long>>> scoutAwardList = traxService.getScoutsAwardList(scouts, awardConfigMap.keySet());
+		else
+		{
+			Set<Long> awardConfigs = new HashSet<Long>();
+			awardConfigs.add(currentAwardConfigId);
+			scoutAwardList = traxService.getScoutsAwardList(scouts, awardConfigs);
+		}
 		if (scoutAwardList == null)
 		{
 			return "";
 		}
 
-		//int requirementColumnCount = getTotalRequirementCount(scoutAwardList);
-		//int userRowCount = scoutAwardList.keySet().size();
-		//String[][] tableArray = new String[userRowCount][requirementColumnCount];
-		if (scoutAwardList != null)
+		htmlString += "<tbody>";
+		Map<Long, Set<Long>> awardRequirementList = scoutAwardList.get(scoutAwardList.keySet().iterator().next());
+		for (Long awardConfigId : awardRequirementList.keySet())
 		{
-			Map<Long, Set<Long>> awardRequirementList = scoutAwardList.get(scoutAwardList.keySet().iterator().next());
-			for (Long awardConfigId : awardRequirementList.keySet())
+			AwardConfig awardConfig = traxService.getAwardConfig(awardConfigId);
+			htmlString += "<tr class='awardNameRow'><td>"+awardConfig.getName()+"</td>";
+			for (Scout scout : scouts) //TODO got to be a better way
 			{
-				AwardConfig awardConfig = awardConfigMap.get(awardConfigId);
-
-				// for all of column 1
-				htmlString += "<table id='summaryTable' cellspacing='0' class='dataTable'>\n"; 
-				// build the header row
-				htmlString += "<tr>";
-				htmlString += "	<th class='header' title'Name'>&nbsp;</th>";
-				for (RequirementConfig requirementConfig : awardConfig.getRequirementConfigs())
+				if (scout.isChecked() || scout.isSelected())
 				{
-					if (requirementConfig.getCanSelect())
-					{
-						String text = requirementConfig.getText();
-						// get max stringlen of 20
-						String title = text.trim().length() < 20 ? text : text.trim().substring(0, 20); 
-						htmlString += "\n<th class='rotateheader'><div><span>\n" + title + "</span></div></th>";
-					}
-					else
-					{
-						htmlString += canSelectTd;
-					}
+					//put initials
+					String[] split = scout.getFullName().split("(?<=[\\S])[\\S]*\\s*");
+					htmlString += "<td title='"+scout.getFullName()+"'>"+split[0]+split[1]+"</td>";
 				}
-				htmlString += "</tr>"; // end row
+			}
+			htmlString += "</tr>";
 
+			for (RequirementConfig requirementConfig : awardConfig.getRequirementConfigs())
+			{
+				htmlString += "\n<tr>";
+				if (requirementConfig.getCanSelect())
+				{
+					String text = requirementConfig.getText();
+					// get max stringlen of 20
+					String title = text.trim().length() < 35 ? text : text.trim().substring(0, 35); 
+					htmlString += "\n<td class='rowheader' title='"+text+"'>\n" + (currentAwardConfigId==null?text:text) + "</td>";
+				}
+				else
+				{
+					htmlString += canSelectTd;
+				}
+				
 				for (Scout scout : scouts)
 				{
 					if (scoutAwardList.containsKey(scout.getId()) || scout.isChecked())
 					{
-						htmlString += "<tr>";
-						htmlString += "<td class='rowheader'>" + scout.getFullName() + "</td>";
 						// get all the award config ids for this scout
 						Map<Long, Set<Long>> awardAndRequirementsMap = scoutAwardList.get(scout.getId());
-
-						// its possible they have earned the award, but no requirements are checked off
-						// in this case we should show all requirements checked off
-						boolean awardComplete = traxService.isAwardComplete(scout.getId(), awardConfigId);
 						
-						if (awardComplete || awardAndRequirementsMap == null)
+						// they have some requirements checked off - mark that here
+						Set<Long> scoutAwardConfigIds = awardAndRequirementsMap.keySet();
+
+						// should always be true!
+						if (scoutAwardConfigIds.contains(awardConfig.getId())) 
 						{
-							//its either all or none - handle that here
-							for (RequirementConfig rc : awardConfig.getRequirementConfigs())
+							Set<Long> scoutRequirementConfigIdList = awardAndRequirementsMap.get(awardConfig.getId());
+							if (requirementConfig.getCanSelect())
 							{
-								if (rc.getCanSelect())
+								if (scoutRequirementConfigIdList.contains(requirementConfig.getId()))
 								{
-									htmlString += (awardComplete) ? completedTd : emptyTd;
+									// found the matching requirement
+									htmlString += completedTd;
 								}
 								else
 								{
-									htmlString += canSelectTd;
+									htmlString += emptyTd;
 								}
+							}
+							else
+							{
+								htmlString += canSelectTd;
 							}
 						}
 						else
 						{
-							// they have some requirements checked off - mark that here
-							Set<Long> scoutAwardConfigIds = awardAndRequirementsMap.keySet();
-
-							for (RequirementConfig rc : awardConfig.getRequirementConfigs())
-							{
-								// should always be true!
-								if (scoutAwardConfigIds.contains(awardConfig.getId())) 
-								{
-									Set<Long> scoutRequirementConfigIdList = awardAndRequirementsMap.get(awardConfig.getId());
-									if (rc.getCanSelect())
-									{
-										if (scoutRequirementConfigIdList.contains(rc.getId()))
-										{
-											// found the matching requirement
-											htmlString += completedTd;
-										}
-										else
-										{
-											htmlString += emptyTd;
-										}
-									}
-									else
-									{
-										htmlString += canSelectTd;
-									}
-								}
-								else
-								{
-									// the boy does not have this award
-									htmlString += emptyTd;
-								}
-							}
+							// the boy does not have this award
+							htmlString += emptyTd;
 						}
-						htmlString += "</tr>"; // row
 					}
 				}
-				htmlString += "</table>"; // table
-				request.getSession().setAttribute("todaysDate", new Date());
-			}
-		}
+				htmlString += "</tr>"; // row
+			} //end of that row of requirementconfigs for all boys
+		}//end of awards
+		
+		htmlString += "</table>"; // table
+		request.getSession().setAttribute("todaysDate", new Date());
+		
 		return htmlString;
 	}
 
+	private String buildScoutHeaderHtml(String htmlString, List<Scout> scouts)
+	{
+		for (Scout scout : scouts)
+		{
+			if (scout.isChecked() || scout.isSelected())
+			{
+				String text = scout.getFullName();//requirementConfig.getText();
+				// get max stringlen of 20
+				String title = text;//text.trim().length() < 25 ? text : text.trim().substring(0, 25); 
+				htmlString += "\n<th class='rotateheader'><div><span title='"+text+"'>\n" + title + "</span></div></th>";
+			}
+		}
+		htmlString += "</tr></thead>"; // end row
+		return htmlString;
+	}
+/*
 	private String generateJsonReportTable(HttpServletRequest request, String htmlString, List<AwardConfig> awardConfigs) throws Exception
 	{
 
@@ -848,7 +867,7 @@ public class ReportController extends AbstractScoutController
 		}
 		return htmlString;
 	}
-
+*/
 	
 	/**
 	 * scout |- list of Awards |- list of requirements

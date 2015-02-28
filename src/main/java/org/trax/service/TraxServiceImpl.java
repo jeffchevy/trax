@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,6 @@ import org.trax.model.Scout.CubPosition;
 import org.trax.model.Scout.ScoutPosition;
 import org.trax.model.ServiceLogEntry;
 import org.trax.model.Unit;
-import org.trax.model.UnitType;
 import org.trax.model.User;
 import org.trax.model.cub.ActivityBadge;
 import org.trax.model.cub.ActivityBadgeConfig;
@@ -177,35 +177,24 @@ public class TraxServiceImpl implements TraxService
 			}
 			scout.getLeadershipEntries().add(logEntry);
 		}
-		// 
-		
+		//
+
 		scout.setCreationDate(new Date());
-		
-		/* IF THIS CODE IS ADDED THE USER NO LONGER SAVES???
-		 * TODO don't know why this is not saving, but we need to have the org
-			be part of the unit for comparisons, so adding it here
+
+		/*
+		 * IF THIS CODE IS ADDED THE USER NO LONGER SAVES??? TODO don't know why
+		 * this is not saving, but we need to have the org be part of the unit
+		 * for comparisons, so adding it here
 		 * 
-		 * scout.getUnit().setOrganization(scout.getOrganization());
-		if (scout.getUnit().getId() == 0)
-		{
-			//see if it exists
-			try
-			{
-				for (Unit unit : scout.getOrganization().getUnits())
-				{
-					if (unit.getTypeOfUnit().getName().equals(scout.getUnit().getTypeOfUnit().getName()))
-					{
-						scout.setUnit(unit);
-						break;
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				// the unit does not exist for this org, thats ok, the save below will create a new one
-				e.printStackTrace();
-			}
-		}*/
+		 * scout.getUnit().setOrganization(scout.getOrganization()); if
+		 * (scout.getUnit().getId() == 0) { //see if it exists try { for (Unit
+		 * unit : scout.getOrganization().getUnits()) { if
+		 * (unit.getTypeOfUnit().
+		 * getName().equals(scout.getUnit().getTypeOfUnit().getName())) {
+		 * scout.setUnit(unit); break; } } } catch (Exception e) { // the unit
+		 * does not exist for this org, thats ok, the save below will create a
+		 * new one e.printStackTrace(); } }
+		 */
 		userDao.saveUser(scout);
 		// return scout;
 	}
@@ -277,30 +266,31 @@ public class TraxServiceImpl implements TraxService
 		if (user.getUnit() == null)
 		{
 			// not sure which it is, just set it to the first
-			user.setUnit(user.getOrganization().getUnits().iterator().next());
+			user.setUnitCopy(user.getOrganization().getUnits().iterator().next());
 		}
 		else
-		// the entered a unit, make sure it jives with the db
+		// they entered a unit, make sure it jives with the db
 		{
-			boolean hasUnit=false;
+			boolean hasUnit = false;
 			for (Unit unit : user.getOrganization().getUnits())
 			{
 				if (unit.getTypeOfUnit() == user.getUnit().getTypeOfUnit())
 				{
-					hasUnit=true;
-					// if the unittypes are the same, use the same unit, and
-					// unit number regardless of what they entered. That way if they enter the wrong unit number we do not keep creating units
-					user.setUnit(unit);
+					hasUnit = true;
+					//@TODO This should provide a default and allow them to override, FIX ME 2/5/2015
+					// if the unittypes are the same, use the same unit information, and
+					// unit number regardless of what they entered. 
+					user.setUnitCopy(unit);
 					break;
 				}
 			}
-			if(!hasUnit)
+			if (!hasUnit)
 			{
 				user.getOrganization().getUnits().add(user.getUnit());
 				organizationDao.merge(user.getOrganization());
 			}
 		}
-		if (user.getUnit().getOrganization()==null)
+		if (user.getUnit().getOrganization() == null)
 		{
 			user.getUnit().setOrganization(user.getOrganization());
 		}
@@ -330,9 +320,8 @@ public class TraxServiceImpl implements TraxService
 			Leader mainLeader = getActiveSeniorLeader(dbOrg.getId(), orgUnit.getNumber());
 			if (mainLeader != null)
 			{
-				throw new Exception(orgUnit.getTypeOfUnit().getName() + " " + orgUnit.getNumber()
-						+ " has already been registered, contact " + mainLeader.getFullName() + " at "
-						+ mainLeader.getEmail() + " to be invited to join.");
+				throw new Exception(orgUnit.getTypeOfUnit().getName() + " " + orgUnit.getNumber() + " has already been registered, contact " + mainLeader.getFullName() + " at "
+								+ mainLeader.getEmail() + " to be invited to join.");
 			}
 			else
 			{
@@ -345,9 +334,7 @@ public class TraxServiceImpl implements TraxService
 				}
 
 				// Set<Unit> units = new HashSet<Unit>();
-				Unit unit = new Unit();
-				unit.setNumber(orgUnit.getNumber());
-				unit.setTypeOfUnit(orgUnit.getTypeOfUnit());
+				Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), dbOrg);
 				if (dbOrg.getUnits().size() > 0)
 				{
 					dbOrg.getUnits().remove(dbOrg.getUnits().iterator().next());
@@ -369,12 +356,9 @@ public class TraxServiceImpl implements TraxService
 		org.setHasTigers(orgUnit.getHasTigers());
 
 		Set<Unit> units = new HashSet<Unit>();
-		Unit unit = new Unit();
-		unit.setNumber(orgUnit.getNumber());
-		unit.setTypeOfUnit(orgUnit.getTypeOfUnit());
+		Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), org);
 		units.add(unit);
 		org.setUnits(units);
-		
 
 		return organizationDao.saveOrg(org);
 	}
@@ -383,24 +367,25 @@ public class TraxServiceImpl implements TraxService
 	{
 		List<Leader> leaders = userDao.getLeaders(organizationId, unitNumber);
 		Leader seniorLeader = null;
-		if(leaders.isEmpty())
+		if (leaders.isEmpty())
 		{
-			//transferring a second boy, and the leader has not activated his account yet, go ahead and try again to retrieve the leader
+			// transferring a second boy, and the leader has not activated his
+			// account yet, go ahead and try again to retrieve the leader
 			leaders = userDao.getLeaders(organizationId, false);
 		}
 		for (Leader leader : leaders)
 		{
-			/* This may be a transfer if possible check the boys birthdate, if he is just turning 11, get the 11 year scout master, and make sure
-			 * the leader has logged in lately
-			 * @TODOif (leader.getLastLoginDate().)
-			{
-				
-			}
-			*/
-			if (leader.getPosition() == LeaderPosition.ELEVEN_YEAR_OLD_SCOUT_MASTER 
-					|| leader.getPosition() == LeaderPosition.SCOUT_MASTER
-					|| leader.getPosition() == LeaderPosition.VARSITY_COACH
-					|| leader.getPosition() == LeaderPosition.VENTURE_ADVISOR)
+			/*
+			 * This may be a transfer if possible check the boys birthdate, if
+			 * he is just turning 11, get the 11 year scout master, and make
+			 * sure the leader has logged in lately
+			 * 
+			 * @TODOif (leader.getLastLoginDate().) {
+			 * 
+			 * }
+			 */
+			if (leader.getPosition() == LeaderPosition.ELEVEN_YEAR_OLD_SCOUT_MASTER || leader.getPosition() == LeaderPosition.SCOUT_MASTER
+							|| leader.getPosition() == LeaderPosition.VARSITY_COACH || leader.getPosition() == LeaderPosition.VENTURE_ADVISOR)
 			{
 				seniorLeader = leader;
 				break;
@@ -423,8 +408,7 @@ public class TraxServiceImpl implements TraxService
 		User user = userDao.findById(credentials.getUserId(), false);
 		if (user == null)
 		{
-			throw new Exception("Failed to find the user with this username " + credentials.getUsername() + " "
-					+ credentials.getUserId());
+			throw new Exception("Failed to find the user with this username " + credentials.getUsername() + " " + credentials.getUserId());
 			// credentials.getUsername()
 		}
 		String encodedPassword = passwordEncoder.encodePassword(credentials.getPassword(), credentials.getUsername());
@@ -492,7 +476,7 @@ public class TraxServiceImpl implements TraxService
 		}
 		return scoutPositions;
 	}
-	
+
 	public List<RankTrail> getTrailToFirstClass(Collection<Scout> scouts)
 	{
 		List<RankTrail> rankTrail = awardConfigDao.getRankTrailToFirstClass();
@@ -500,23 +484,26 @@ public class TraxServiceImpl implements TraxService
 		{
 			if (scout.isChecked() || scout.isSelected())
 			{
-				for (RankTrail rankTrail2 : rankTrail) {
-					for (Award award : scout.getAwards()) {
-						for (Requirement requirement : award.getRequirements()) {
-							if(rankTrail2.getRequirementConfigId()==requirement.getRequirementConfig().getId()){
-								
+				for (RankTrail rankTrail2 : rankTrail)
+				{
+					for (Award award : scout.getAwards())
+					{
+						for (Requirement requirement : award.getRequirements())
+						{
+							if (rankTrail2.getRequirementConfigId() == requirement.getRequirementConfig().getId())
+							{
+
 							}
 						}
 					}
-					//if()
+					// if()
 				}
-				//scoutIds.add(scout.getId());
+				// scoutIds.add(scout.getId());
 			}
 		}
 		return null;
 	}
 
-	
 	// preserve transient data when refreshing
 	public Scout refreshScout(Scout scout)
 	{
@@ -580,8 +567,7 @@ public class TraxServiceImpl implements TraxService
 		return userDao.getByOrganizationId(organizationId, isCub);
 	}
 
-	public Award updateAwardInprogress(List<Scout> scouts, AwardConfig awardConfig, boolean setAwardInprogress)
-			throws Exception
+	public Award updateAwardInprogress(List<Scout> scouts, AwardConfig awardConfig, boolean setAwardInprogress) throws Exception
 	{
 		Award thisScoutsAward = null;
 		for (Scout scout : scouts)
@@ -658,8 +644,36 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	public Award updateAward(User signOffLeader, List<Scout> scouts, AwardConfig awardConfig, Date dateCompleted,
-			boolean completingAward) throws Exception
+	@Override
+	public void updateAwardPurchased(List<Scout> scouts, Award award, boolean isChecked) throws Exception
+	{
+		for (Scout scout : scouts)
+		{
+			scout = refreshScout(scout); // refresh
+			if (scout.isChecked() || scout.isSelected())
+			{
+				award = awardDao.getScoutAward(scout.getId(), award.getAwardConfig().getId());
+				award.setDatePurchased(isChecked ? new Date() : null);
+			}
+		}
+	}
+
+	@Override
+	public void updateAwardAwarded(List<Scout> scouts, Award award, boolean isChecked) throws Exception
+	{
+		for (Scout scout : scouts)
+		{
+			scout = refreshScout(scout); // refresh
+			if (scout.isChecked() || scout.isSelected())
+			{
+				award = awardDao.getScoutAward(scout.getId(), award.getAwardConfig().getId());
+				award.setDateAwarded(isChecked ? new Date() : null);
+			}
+		}
+	}
+
+	@Override
+	public Award updateAward(User signOffLeader, List<Scout> scouts, AwardConfig awardConfig, Date dateCompleted, boolean completingAward) throws Exception
 	{
 		Award thisScoutsAward = null;
 
@@ -698,7 +712,8 @@ public class TraxServiceImpl implements TraxService
 					 */
 					thisScoutsAward = saveNewScoutAward(scout, thisScoutsAward);
 				}
-				else // award is being removed!
+				else
+				// award is being removed!
 				{
 					thisScoutsAward = awardDao.getById(thisScoutsAward.getId());// refresh
 					removeRequirements(thisScoutsAward);
@@ -718,99 +733,94 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Transactional
-	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted,
-			Set<Requirement> requirements)
+	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted, Set<Requirement> requirements)
 	{
 		Award award = null;
 		// must start with Cubs
 		if (awardConfig instanceof BeltLoopConfig)
 		{
-			award = new BeltLoop(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new BeltLoop(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof PinConfig)
 		{
-			award = new Pin(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new Pin(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof CubRankElectiveConfig)
 		{
-			award = new CubRankElective(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new CubRankElective(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof ActivityBadgeConfig)
 		{
-			award = new ActivityBadge(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new ActivityBadge(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof CubRankConfig)
 		{
-			award = new CubRank(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new CubRank(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof CubAwardConfig)
 		{
-			award = new CubAward(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new CubAward(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		// now scouts
 		else if (awardConfig instanceof BadgeConfig)
 		{
-			award = new Badge(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new Badge(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof RankConfig)
 		{
-			award = new Rank(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new Rank(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof DutyToGodConfig)
 		{
-			award = new DutyToGod(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new DutyToGod(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else if (awardConfig instanceof AwardConfig)
 		{
-			award = new Award(awardConfig, dateCompleted, null, requirements, signOffLeader);
+			award = new Award(awardConfig, dateCompleted, null, null, requirements, signOffLeader);
 		}
 		else
 		{
-			award = new Course(awardConfig, dateCompleted, null, signOffLeader);
+			award = new Course(awardConfig, dateCompleted, null, null, signOffLeader);
 		}
 
 		return award;
 	}
 
-	public Award updateRequirement(long requirementConfigId, boolean isRequirementChecked, User signOffLeader,
-			AwardConfig awardConfig, List<Scout> scouts, String passedOffDateString) throws Exception
+	public Award updateRequirement(long requirementConfigId, boolean isRequirementChecked, User signOffLeader, AwardConfig awardConfig, List<Scout> scouts,
+					String passedOffDateString) throws Exception
 	{
 		Award thisScoutsAward = null;
 		try
 		{
 			for (Scout scout : scouts)
 			{
-				if (scout.isChecked() || scout.isSelected())// || scouts.size()==1)
+				if (scout.isChecked() || scout.isSelected())// ||
+															// scouts.size()==1)
 				{
 					if (isRequirementChecked)
 					{
-						thisScoutsAward = completeOneScoutsRequirement(requirementConfigId, signOffLeader, awardConfig,
-								scout, passedOffDateString);
+						thisScoutsAward = completeOneScoutsRequirement(requirementConfigId, signOffLeader, awardConfig, scout, passedOffDateString);
 					}
 					else
 					{
-						thisScoutsAward = removeOneScoutsRequirement(requirementConfigId, signOffLeader, awardConfig,
-								scout);
+						thisScoutsAward = removeOneScoutsRequirement(requirementConfigId, signOffLeader, awardConfig, scout);
 					}
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			// model.addAttribute(ERROR_MESSAGE,"Failed to update requirement "+e.getMessage());
 			e.printStackTrace();
 		}
 		return thisScoutsAward;
 	}
 
-	public Award completeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig,
-			Scout scout, String dateString) throws Exception
+	public Award completeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig, Scout scout, String dateString) throws Exception
 	{
 		scout = refreshScout(scout);
 		Award thisScoutsAward = (Award) awardDao.getScoutAward(scout.getId(), awardConfig.getId());
-		Date dateCompleted = (dateString == null || dateString.trim().length() == 0) ? new Date() : formatter
-				.parse(dateString);
+		Date dateCompleted = (dateString == null || dateString.trim().length() == 0) ? new Date() : formatter.parse(dateString);
 
 		if (thisScoutsAward != null)
 		{
@@ -856,16 +866,14 @@ public class TraxServiceImpl implements TraxService
 				}
 				else
 				{
-					throw new Exception(
-							"As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
+					throw new Exception("As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
 				}
 			}
 		}
 		return thisScoutsAward;
 	}
 
-	public Award removeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig,
-			Scout scout) throws Exception
+	public Award removeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig, Scout scout) throws Exception
 	{
 		Award thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
 		if (thisScoutsAward != null)
@@ -881,15 +889,13 @@ public class TraxServiceImpl implements TraxService
 		else
 		// if (!hasAward)
 		{
-			throw new Exception("Failed to find the award[" + awardConfig.getName() + "] awardConfigId["
-					+ awardConfig.getId() + "] scoutId[" + scout.getId() + "]");
+			throw new Exception("Failed to find the award[" + awardConfig.getName() + "] awardConfigId[" + awardConfig.getId() + "] scoutId[" + scout.getId() + "]");
 		}
 
 		return thisScoutsAward;
 	}
 
-	private void addRequirementToExistingAward(Date dateCompleted, Long requirementConfigId, User signOffLeader,
-			Award thisScoutsAward) throws Exception
+	private void addRequirementToExistingAward(Date dateCompleted, Long requirementConfigId, User signOffLeader, Award thisScoutsAward) throws Exception
 	{
 		// didn't find the requirement add a new one
 		RequirementConfig rc = requirementConfigDao.findById(requirementConfigId, false);
@@ -911,8 +917,7 @@ public class TraxServiceImpl implements TraxService
 		}
 		else
 		{
-			throw new Exception(
-					"As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
+			throw new Exception("As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
 		}
 	}
 
@@ -941,8 +946,7 @@ public class TraxServiceImpl implements TraxService
 		}
 		else
 		{
-			throw new Exception(
-					"As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
+			throw new Exception("As a scout your are not authorized to complete this requirement, it must be done by an adult scout leader");
 		}
 		return award;
 	}
@@ -1027,6 +1031,11 @@ public class TraxServiceImpl implements TraxService
 
 	}
 
+	/**
+	 * if the type of unit is changing, make sure this is a valid unit for this org
+	 * @param user
+	 * @param dbUser
+	 */
 	private void updateUnit(User user, User dbUser)
 	{
 		if (dbUser.getUnit().getTypeOfUnit() != user.getUnit().getTypeOfUnit())
@@ -1038,17 +1047,16 @@ public class TraxServiceImpl implements TraxService
 				if (unit.getTypeOfUnit() == user.getUnit().getTypeOfUnit())
 				{
 					newUnit = unit;
-					dbUser.setUnit(newUnit);
+					dbUser.setUnitCopy(newUnit);
 					break;
 				}
 			}
 			if (newUnit == null)
 			{
 				// did not find it, add it
-				newUnit = new Unit(user.getUnit().getTypeOfUnit(), user.getUnit().getNumber());
+				newUnit = new Unit(user.getUnit().getTypeOfUnit(), user.getUnit().getNumber(), dbUser.getOrganization());
 				units.add(newUnit);
-				dbUser.getOrganization().setUnits(units);// not sure if this is
-															// necessary
+				dbUser.getOrganization().setUnits(units);// not sure if this is necessary
 				organizationDao.persist(dbUser.getOrganization());
 				dbUser.setUnit(newUnit);
 			}
@@ -1292,39 +1300,39 @@ public class TraxServiceImpl implements TraxService
 	public String transferScout(long scoutId, Leader newLeader, String councilName) throws Exception
 	{
 		// send a message, create the new unit and change the scouts unit
-		String successMessage ="";
+		String successMessage = "";
 		Scout scout = (Scout) userDao.findById(scoutId, false);
-		Leader foundLeader = (Leader)userDao.findById(newLeader.getId(), false);
+		Leader foundLeader = (Leader) userDao.findById(newLeader.getId(), false);
 		Organization organization = null;
 		try
 		{
-			if (foundLeader == null) //they have not yet signed up for ScoutTrax
+			if (foundLeader == null) // they have not yet signed up for ScoutTrax
 			{
-				
 				// save org
-				Set<Unit> units = new HashSet<Unit>();
-				Unit unit = new Unit();
-				unit.setNumber(newLeader.getUnit().getNumber());
-				//read from db, to make sure all fields are populated
-				BaseUnitType typeOfUnit = unitTypeDao.findById(newLeader.getUnit().getTypeOfUnit().getId(), false);
-				
-				unit.setTypeOfUnit(typeOfUnit);
-				units.add(unit);
 				organization = new Organization();
+				Set<Unit> units = new HashSet<Unit>();
+				
+				// read from db, to make sure all fields are populated
+				BaseUnitType typeOfUnit = unitTypeDao.findById(newLeader.getUnit().getTypeOfUnit().getId(), false);
+				Unit leaderUnit = new Unit(typeOfUnit, newLeader.getUnit().getNumber(), organization);
+				units.add(leaderUnit);
 				organization.setUnits(units);
 				organization.setCity(newLeader.getCity());
 				organization.setState(newLeader.getState());
-				organization.setName("");
+				organization.setName("");//will be populated if they import
 				organization.setCouncil(councilName);
 				organization = organizationDao.saveOrg(organization);
-	
+				leaderUnit.setOrganization(organization);
+				
 				// save leader
-				newLeader.getUnit().setTypeOfUnit(typeOfUnit);
+				newLeader.setUnit(leaderUnit);
 				newLeader.setOrganization(organization);
 				newLeader = (Leader) saveUser(newLeader);
 				// update scout
 				scout.setOrganization(organization);
-				scout.setUnit(newLeader.getUnit());
+				//Its important that units match, but that they are not the same, because when a scout moves others get moved with him.
+				Unit scoutUnit = new Unit(leaderUnit.getTypeOfUnit(),leaderUnit.getNumber(), leaderUnit.getOrganization());
+				scout.setUnit(scoutUnit);
 				userDao.save(scout);
 				// now that everything is saved, send email
 				mailService.sendTransferRegistration(newLeader, scout);
@@ -1339,24 +1347,24 @@ public class TraxServiceImpl implements TraxService
 				{
 					if (unit.getNumber().equals(foundLeader.getUnit().getNumber()))
 					{
-						scout.setUnit(unit);
+						//Its important that units match, but that they are not the same, because when a scout moves others get moved with him.
+						Unit scoutUnit = new Unit(unit.getTypeOfUnit(),unit.getNumber(), unit.getOrganization());
+						scout.setUnit(scoutUnit);
 						break;
 					}
 				}
-	
+
 				userDao.save(scout);
 				// now that everything is saved, send email
 				mailService.sendTransfer(foundLeader, scout);
 			}
-	
-			successMessage = "Successfully transferred " + scout.getFullName() + " to new "
-					+ scout.getUnit().getTypeOfUnit().getName() + " " + scout.getUnit().getNumber() + " "
-					+ (organization.getName() == null ? "" : organization.getName() + " ") + "in the " + organization.getCity() + ", "
-					+ organization.getState();
+
+			successMessage = "Successfully transferred " + scout.getFullName() + " to new " + scout.getUnit().getTypeOfUnit().getName() + " " + scout.getUnit().getNumber() + " "
+							+ (organization.getName() == null ? "" : organization.getName() + " ") + "in the " + organization.getCity() + ", " + organization.getState();
 		}
 		catch (Exception e)
 		{
-			successMessage = "Failed to transfer Scout. "+e.getLocalizedMessage();
+			successMessage = "Failed to transfer Scout. " + e.getLocalizedMessage();
 		}
 		logger.info(successMessage);
 
@@ -1392,7 +1400,7 @@ public class TraxServiceImpl implements TraxService
 			User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 			AwardConfig courseConfig = courseConfigDao.findById(courseConfigId, false);
-			newCourse = new Course(courseConfig, new Date(), null, signOffLeader);
+			newCourse = new Course(courseConfig, new Date(), null, null, signOffLeader);
 			User leader = userDao.findById(userId, false); // refresh
 			newCourse = saveNewLeaderCourse(leader, newCourse);
 		}
@@ -1404,7 +1412,7 @@ public class TraxServiceImpl implements TraxService
 		CourseConfig courseConfig = awardConfigDao.getCourseByName(courseName);
 		User user = userDao.findById(userId, false);
 		User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Course newCourse = new Course(courseConfig, completionDate, null, signOffLeader);
+		Course newCourse = new Course(courseConfig, completionDate, null, null, signOffLeader);
 		user.getAwards().add(newCourse);
 		userDao.persist(user);
 	}
@@ -1477,24 +1485,174 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Map<Long, Map<Long, Set<Long>>> getScoutsAwardList(List<Scout> scouts, Set<Long> awardList)
-			throws Exception 
+	public Map<Long, Map<Long, Set<Long>>> getToFirstClass(List<Scout> scouts) throws Exception
+	{
+		Set<Long> awardList = new HashSet<Long>();
+		awardList.add(awardConfigDao.getByName("Scout").getId());// scout
+		awardList.add(awardConfigDao.getByName("Tenderfoot").getId());// tf
+		awardList.add(awardConfigDao.getByName("Second Class").getId());// 2c
+		awardList.add(awardConfigDao.getByName("First Class").getId());// 1c
+
+		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		if (scoutIds.isEmpty())
+		{
+			return null;
+		}
+		return userDao.getScoutsAwardList(scoutIds, awardList);
+	}
+
+	@Override
+	public Map<Long, Map<Long, Set<Long>>> getToBear(List<Scout> scouts)
+	{
+		
+		Set<Long> awardList = new LinkedHashSet<Long>();
+		
+		awardList.add(awardConfigDao.getByName("Bobcat").getId());
+		if (scouts.get(0).getOrganization().hasTigers())
+		{
+			awardList.add(awardConfigDao.getByName("Tiger Cub").getId());
+		}
+		awardList.add(awardConfigDao.getByName("Wolf").getId());
+		awardList.add(awardConfigDao.getByName("Bear").getId());
+
+		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		if (scoutIds.isEmpty())
+		{
+			return null;
+		}
+		return userDao.getScoutsAwardList(scoutIds, awardList);
+	}
+
+	@Override
+	public Map<Long, Map<Long, Set<Long>>> getScoutsAwardList(List<Scout> scouts, Set<Long> awardList) throws Exception
+	{
+		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		if (scoutIds.isEmpty())
+		{
+			return null;
+		}
+		return userDao.getScoutsAwardList(scoutIds, awardList);
+	}
+
+	/**
+	 * order this by awards first, the table headers will be the boys names, the
+	 * row headers will be the award and requirement text
+	 */
+	// @Override
+	public Map<Long, Map<Long, Set<Long>>> getAwardScoutsList(List<Scout> scouts, Set<Long> awardList)
+	{
+		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		if (scoutIds.isEmpty())
+		{
+			return null;
+		}
+		return userDao.getScoutsAwardList(scoutIds, awardList);
+	}
+
+	private List<Long> getSelectedScoutIds(List<Scout> scouts)
 	{
 		List<Long> scoutIds = new ArrayList<Long>();
-		for (Scout scout : scouts) {
-			if(scout.isChecked())
+		for (Scout scout : scouts)
+		{
+			if (scout.isChecked() || scout.isSelected())
 			{
 				scoutIds.add(scout.getId());
 			}
 		}
-		if (scoutIds.isEmpty() || scoutIds.size()==1) {
-			return null; //don't do anything if only one or none 
-		}
-		return userDao.getScoutsAwardList(scoutIds, awardList);
+		return scoutIds;
 	}
+
 	@Override
-	public boolean isAwardComplete(Long scoutId, Long awardConfigId) 
+	public boolean isAwardComplete(Long scoutId, Long awardConfigId)
 	{
 		return userDao.isAwardComplete(scoutId, awardConfigId);
+	}
+
+	@Override
+	public String getRankMeritBadges(String rankName, List<Scout> scouts)
+	{
+		String htmlString = "";
+		List<String> requiredAwardNames = new ArrayList<String>();
+
+		Scout theScout = null;
+		for (Scout scout : scouts)
+		{
+			scout = refreshScout(scout);
+			if (scout.isSelected() || scout.isChecked())
+			{
+				if (theScout == null)
+				{
+					theScout = scout;
+				}
+				else
+				{
+					// more than one selected don't do anything
+					theScout = null;
+				}
+			}
+		}
+		if (theScout != null)
+		{
+
+			if (rankName.equals("Star"))
+			{
+				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 0, 4, 0, 2);
+				if (!requiredAwardNames.isEmpty())
+				{
+					htmlString = "3. Earn 6 merit badges; including 4 from the required list for Eagle.\n" + "<hr><p style='background: #dd6;'>You have earned "
+									+ requiredAwardNames.size() + " of 6 needed for your Star Rank: \n" + requiredAwardNames + "</p>";
+				}
+			}
+			else if (rankName.equals("Life"))
+			{
+				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 4, 3, 2, 2);
+				if (!requiredAwardNames.isEmpty())
+				{
+					htmlString = "3. Earn five more merit badges (so that you have 11 in all), including any three more"
+									+ " from the required list for Eagle. (See the Eagle Rank Requirements," + " number 3, for this list.)"
+									+ " \nA Scout may choose any of the 17 required merit badges in the 13 categories to fulfill this requirement.\n"
+									+ "<hr><p style='background: #dd6;'>You have earned " + requiredAwardNames.size() + " of 5 needed for your Life Rank: \n" + requiredAwardNames
+									+ "</p>";
+				}
+			}
+			else if (rankName.equals("Eagle"))
+			{
+				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 0, 13, 0, 0);
+				if (!requiredAwardNames.isEmpty())
+				{
+					htmlString = "3. Earn a total of 21 merit badges; including the following: <br>" + "     a. First Aid<br>" + "     b. Citizenship in the Community<br>"
+									+ "     c. Citizenship in the Nation<br>" + "     d. Citizenship in the World<br>" + "     e. Communications<br>"
+									+ "     f. Personal Fitness<br>" + "     g. Emergency Preparedness OR Lifesaving<br>" + "     h. Environmental Science OR Sustainability<br>"
+									+ "     i. Personal Management<br>" + "     j. Swimming OR Hiking OR Cycling<br>" + "     k. Camping<br>" + "     l. Family Life<br>"
+									+ "     m. Cooking (2014)<br>";
+
+					for (String earnedAwardName : requiredAwardNames)
+					{
+						if (htmlString.contains(earnedAwardName))
+						{
+							htmlString = htmlString.replace(earnedAwardName, "<b>" + earnedAwardName + "</b>");
+						}
+					}
+					if (!requiredAwardNames.isEmpty())
+					{
+						htmlString += "<hr><p style='background: #dd6;'>You have earned " + requiredAwardNames.size()
+										+ " of 13 Required Meritbadges for your Eagle Rank. (Yours will appear in bold font.)</p>";
+					}
+				}
+
+				List<String> electiveNames = new ArrayList<String>();
+				electiveNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 0, 0, 0, 8);
+				if (!electiveNames.isEmpty())
+				{
+					if (!electiveNames.isEmpty())
+					{
+						htmlString += "<hr><p style='background: #dd6;'>You have earned " + electiveNames.size() + " of 8 elective Meritbadges needed for your Eagle Rank: \n"
+										+ electiveNames + "</p>";
+					}
+				}
+			}
+		}
+
+		return htmlString;
 	}
 }

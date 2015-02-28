@@ -1,9 +1,8 @@
+<!doctype html>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 
-"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 	<title>ScoutTrax.org Free online scout advancement tracking.</title>
@@ -15,7 +14,7 @@
 	requirements, camping, leadership, scout master, scout leader, scout book, rank, Eagle, Eagle Scout, user friendly, easy, 
 	simple, parents, Awards, camping, service, Merit Badge, email, den, safe, secure, advancement, BSA, LDS, Duty to God, email, report "/>
 	<meta name="description" content="ScoutTrax.org is a FREE online scout management software for your Den, Pack, Troop, Team and Crew. This software is available for cub scout, boy scouts ages 7-21."/> 
-	<script type="text/javascript" src="js/jquery-1.9.js"></script>
+	<script type="text/javascript"js/jquery.js type="text/javascript"></script>
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-37757159-1']);
@@ -68,7 +67,13 @@
 			    $( "#successMessage" ).dialog("open");
 			}
 			*/
-			if($.support.opacity === false)//check to see if browser supports CSS3
+			
+		
+			if(navigator.appName == 'Microsoft Internet Explorer') {//check to see if browser supports CSS3
+				alert('This browser is not supported by ScoutTrax.\n  You may continue to explore using this browser, but many features will not work or display properly. \nWe recommend that you download Firefox, Chrome or Safari for viewing ScoutTrax.org.');
+			}
+			else
+			if($.support.opacity === false) {//check to see if browser supports CSS3
 				alert('This browser is not supported by ScoutTrax.\n  You may continue to explore using this browser, but many features will not work or display properly. \nWe recommend that you download Firefox, Chrome or Safari for viewing ScoutTrax.org.');
 			}
 		});

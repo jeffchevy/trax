@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import org.jfree.util.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.trax.dao.ScoutUnitTypeDao;
-import org.trax.dao.cub.CubUnitTypeDao;
 import org.trax.form.ScoutForm;
 import org.trax.form.UnitForm;
 import org.trax.form.UploadItem;
@@ -37,20 +34,11 @@ import org.trax.model.RankConfig;
 import org.trax.model.Requirement;
 import org.trax.model.Scout;
 import org.trax.model.User;
-import org.trax.model.cub.CubRank;
 import org.trax.model.cub.CubRankConfig;
-import org.trax.model.cub.CubRankElectiveConfig;
-import org.trax.service.ImportService;
 
 @Controller
 public class ScoutsController extends AbstractScoutController
 {
-	@Autowired
-	private ImportService importService;
-	@Autowired
-	private CubUnitTypeDao cubUnitTypeDao;
-	@Autowired
-	private ScoutUnitTypeDao unitTypeDao;
 	/*
 	 * get all boys and leaders
 	 */
@@ -71,14 +59,6 @@ public class ScoutsController extends AbstractScoutController
 		return new UploadItem();
 	}
 	
-    /*@ModelAttribute("unitTypes")
-    public List<? extends BaseUnitType> getUnitTypes(Map<String, Object> model)
-    {
-    	//@TODO should not have to put it in the model?
-	   model.put("unitTypes", traxService.getUnitTypes());
-	   return traxService.getUnitTypes();
-    }*/
-   
 	@RequestMapping("/advancement.html")
 	public String showAdvancement(HttpServletRequest request, Map<String, Object> model) throws Exception
 	{
@@ -93,108 +73,116 @@ public class ScoutsController extends AbstractScoutController
 			// if it can't save, thats ok, just continue
 		}
 		boolean isCub = user.getUnit().isCub();
-		//request.getSession().setAttribute("isCub", isCub);
-		request.getSession().setAttribute("unitTypes", traxService.getUnitTypes());
 		String returnType = isCub?"cubAdvancement":"advancement";
-		request.getSession().setAttribute("navigationItem", returnType);
-
-		Scout scout = (Scout)request.getSession().getAttribute(SCOUT);
-		Award award = (Award)request.getSession().getAttribute(AWARD);
-		
-		if (user instanceof Leader)
+		try
 		{
-			request.getSession().setAttribute(UserController.ORGANIZATION, user.getOrganization());
-			//save the unit type so we display the users for this leader
-			String unitTypeName = isCub?"Pack":"All";
-			if(user.getOrganization().getUnits().size()>1)
-			{
-				unitTypeName = user.getUnit().getTypeOfUnit().getName();
-			}
-			Log.info("@@@getting unitTypeName of "+unitTypeName);
-			request.getSession().setAttribute("unitTypeName", unitTypeName);
+			//request.getSession().setAttribute("isCub", isCub);
+			request.getSession().setAttribute("unitTypes", traxService.getUnitTypes());
+			request.getSession().setAttribute("navigationItem", returnType);
+
+			Scout scout = (Scout)request.getSession().getAttribute(SCOUT);
+			Award award = (Award)request.getSession().getAttribute(AWARD);
 			
-			List<Scout> scouts = getScouts(request);
-			if (scouts == null || scouts.size()==0)
+			if (user instanceof Leader)
 			{
-				//only get them, if they are not there, otherwise we lose the selected scouts
-				scouts = traxService.getScouts(user.getOrganization().getId(), unitTypeName);
-				if(scouts.size() == 0)
+				request.getSession().setAttribute(UserController.ORGANIZATION, user.getOrganization());
+				//save the unit type so we display the users for this leader
+				String unitTypeName = isCub?"Pack":"All";
+				if(user.getOrganization().getUnits().size()>1)
 				{
-					//could not find by leaders unittypename, try to get all
-					unitTypeName = isCub?"Pack":"All";
-					scouts = traxService.getScouts(user.getOrganization().getId(), unitTypeName);
-					request.getSession().setAttribute("unitTypeName", unitTypeName);
+					unitTypeName = user.getUnit().getTypeOfUnit().getName();
 				}
-				request.getSession().setAttribute(SCOUTS, scouts);
+				Log.info("@@@getting unitTypeName of "+unitTypeName);
+				request.getSession().setAttribute("unitTypeName", unitTypeName);
 				
+				List<Scout> scouts = getScouts(request);
+				if (scouts == null || scouts.size()==0)
+				{
+					//only get them, if they are not there, otherwise we lose the selected scouts
+					scouts = traxService.getScouts(user.getOrganization().getId(), unitTypeName);
+					if(scouts.size() == 0)
+					{
+						//could not find by leaders unittypename, try to get all
+						unitTypeName = isCub?"Pack":"All";
+						scouts = traxService.getScouts(user.getOrganization().getId(), unitTypeName);
+						request.getSession().setAttribute("unitTypeName", unitTypeName);
+					}
+					request.getSession().setAttribute(SCOUTS, scouts);
+					
+				}
+				
+				if (scouts.size() == 0)
+				{
+					//no scouts go to manage the troop to add troop members
+					return "redirect:troopManage.html";
+				}
+				
+				if(scout==null)
+				{
+					//set defaults
+					for (Scout theScout : scouts)
+					{
+						if (theScout.isSelected() || theScout.isChecked())
+						{
+							scout = theScout;
+							break;
+						}
+					}
+					if (scout==null)
+					{
+						//none selected make it the first one
+						scout = scouts.iterator().next();
+					}
+				}
+				scout = traxService.refreshScout(scout); //refresh
 			}
-	 		
-			if (scouts.size() == 0)
+			else if(user instanceof Scout)
 			{
-				//no scouts go to manage the troop to add troop members
-				return "redirect:troopManage.html";
+				((Scout) user).setSelected(true);
+				scout = traxService.refreshScout((Scout)user);
 			}
 			
-			if(scout==null)
+			request.getSession().setAttribute("awards", scout.getAwards());
+			if(scout.getAwards()==null)
 			{
-				//set defaults
-				for (Scout theScout : scouts)
+				throw new Exception("Award configuration data has not been loaded.");
+			}
+			while(award==null)
+			{
+				for (Award scoutAward : scout.getAwards())
 				{
-					if (theScout.isSelected() || theScout.isChecked())
+					if (isCub && scoutAward.getAwardConfig() instanceof CubRankConfig)
 					{
-						scout = theScout;
+						award = scoutAward;
+						break;
+					}
+					else if (!isCub && scoutAward.getAwardConfig() instanceof RankConfig)
+					{
+						award = scoutAward;
 						break;
 					}
 				}
-				if (scout==null)
-				{
-					//none selected make it the first one
-					scout = scouts.iterator().next();
+				if (award==null && isCub) {
+					//somehow they have a cub with scout ranks, that ok, but add cub ranks
+					traxService.addRanks(scout);
+					request.getSession().setAttribute("awards", scout.getAwards());
 				}
 			}
-			scout = traxService.refreshScout(scout); //refresh
-		}
-		else if(user instanceof Scout)
-		{
-			((Scout) user).setSelected(true);
-			scout = traxService.refreshScout((Scout)user);
-		}
-		
-		request.getSession().setAttribute("awards", scout.getAwards());
-		if(scout.getAwards()==null)
-		{
-			throw new Exception("Award configuration data has not been loaded.");
-		}
-		while(award==null)
-		{
-			for (Award scoutAward : scout.getAwards())
+			model.put("unit", user.getOrganization());
+			request.getSession().setAttribute(AWARD, award);
+			if(award!=null)
 			{
-				if (isCub && scoutAward.getAwardConfig() instanceof CubRankConfig)
-				{
-					award = scoutAward;
-					break;
-				}
-				else if (!isCub && scoutAward.getAwardConfig() instanceof RankConfig)
-				{
-					award = scoutAward;
-					break;
-				}
+				//AWARD SHOULD NEVER BE NULL, BUT THERE IS A BUG WHERE CUBS UNIT TYPE WAS CHANGED TO SCOUTS, SO SKIP THIS TO GET IT GOING MAY 15, 2014
+				Map<Long, Long> requirementConfigIdCount = traxService.getAggregateCount(award.getAwardConfig().getId(), getScouts(request));
+				model.put("requirementConfigIdAndCount", requirementConfigIdCount);
 			}
-			if (award==null && isCub) {
-				//somehow they have a cub with scout ranks, that ok, but add cub ranks
-				traxService.addRanks(scout);
-				request.getSession().setAttribute("awards", scout.getAwards());
-			}
+			request.getSession().setAttribute(SCOUT, scout);
 		}
-		model.put("unit", user.getOrganization());
-		request.getSession().setAttribute(AWARD, award);
-		if(award!=null)
+		catch (Exception e)
 		{
-			//AWARD SHOULD NEVER BE NULL, BUT THERE IS A BUG WHERE CUBS UNIT TYPE WAS CHANGED TO SCOUTS, SO SKIP THIS TO GET IT GOING MAY 15, 2014
-			Map<Long, Long> requirementConfigIdCount = traxService.getAggregateCount(award.getAwardConfig().getId(), getScouts(request));
-			model.put("requirementConfigIdAndCount", requirementConfigIdCount);
+			model.put(ERROR_MESSAGE,"Error when trying to show Award: "+e.getMessage());
+			e.printStackTrace();
 		}
-		request.getSession().setAttribute(SCOUT, scout);
 		
 		return returnType;
 	}
@@ -296,7 +284,6 @@ public class ScoutsController extends AbstractScoutController
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			model.put(ERROR_MESSAGE,"Failed to find or create the award "+e.getMessage());
 			e.printStackTrace();
 		}
@@ -373,6 +360,30 @@ public class ScoutsController extends AbstractScoutController
 		}
 		return "redirect:advancement.html";
 	}
+	/*
+	 * ajax call when a award Complete checkbox is checked, or unchecked
+	 */
+	@RequestMapping(value = "/awardpurchased.html", method = RequestMethod.GET)
+    public void awardPurchased(HttpServletRequest request,
+    		HttpServletResponse response, 
+    		@RequestParam(value = "ischecked", required = true) boolean isChecked) 
+	throws Exception
+    {
+		Award award = (Award)request.getSession().getAttribute(AWARD);
+		traxService.updateAwardPurchased(getScouts(request), award, isChecked);
+    }
+	/*
+	 * ajax call when a award Complete checkbox is checked, or unchecked
+	 */
+	@RequestMapping(value = "/awardawarded.html", method = RequestMethod.GET)
+    public void awardAwarded(HttpServletRequest request,
+    		HttpServletResponse response, 
+    		@RequestParam(value = "ischecked", required = true) boolean isChecked) 
+	throws Exception
+    {
+		Award award = (Award)request.getSession().getAttribute(AWARD);
+		traxService.updateAwardAwarded(getScouts(request), award, isChecked);
+    }
 	/*
 	 * ajax call when a requirement checkbox is checked, or unchecked
 	 */

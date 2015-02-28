@@ -51,7 +51,7 @@
 				<td colspan='2' style="padding:20px">	
 					<p style="color: red;">To verify the scout record is correct, click <a href="http://www.scouttrax.org/login.html">here</a> or on the image below to login.</p>
 					<a href="http://www.scouttrax.org/login.html">		
-						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/scouttraxPatch.png">
 					</a>
 				</td>
 			</tr>						

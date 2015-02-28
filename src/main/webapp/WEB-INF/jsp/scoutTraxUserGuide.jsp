@@ -1,6 +1,7 @@
-<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/redmond/jquery-ui.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery-ui-1.10.0.custom.js"></script>
- <script type="text/javascript" src="js/jquery.video.popup.js"></script>
+<link type="text/css" href="css/jquery-ui.all.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.youtubepopup.min.js"></script>
 
  <script type="text/javascript">
 	$(document).ready(function()
@@ -8,12 +9,14 @@
 		$('#username').focus();	
 		$('#about').click(function(){
                    window.open('scoutTraxUserGuide.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
-           });	
-           $('a.youtube').YouTubePopup({ 
-            	autoplay: 1, 
-            	hideTitleBar: true,
-            	clickOutsideClose: true
-            	});
+        });	
+        $('a.youtube').YouTubePopup({ 
+     	   autoplay: 1, 
+         	hideTitleBar: true,
+         	clickOutsideClose: true,
+         	fullscreen: 1,
+         	showBorder: false
+         });
 	});
 </script>
 

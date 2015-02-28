@@ -26,4 +26,5 @@ public interface AwardConfigDao extends GenericDao<AwardConfig, Long>
 	public CourseConfig getCourseByName(String courseName);
 	public Collection<CubAwardConfig> getCubAwards();
 	public List<RankTrail> getRankTrailToFirstClass();
+	List<String> getRankMeritBadges(Long userId, int skipRequireds, int maxRequireds, int skipNonRequireds, int maxNonRequireds);
 }

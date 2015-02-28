@@ -15,8 +15,8 @@ public class Course extends Award
 		super();
 	}
 	
-	public Course(AwardConfig awardConfig, Date dateCompleted, String reminders, User signOffLeader)
+	public Course(AwardConfig awardConfig, Date dateCompleted, String reminders, String event, User signOffLeader)
 	{
-		super(awardConfig, dateCompleted, reminders, null, signOffLeader);
+		super(awardConfig, dateCompleted, reminders, event, null, signOffLeader);
 	}
 }

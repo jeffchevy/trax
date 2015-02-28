@@ -132,6 +132,17 @@ public class InProgressTag extends TagSupport
 						}
 						else //ScoutUnit, only show scout awards
 						{
+							if (awardConfig instanceof BeltLoopConfig
+								|| awardConfig instanceof PinConfig
+								|| awardConfig instanceof CubRankElectiveConfig
+								|| awardConfig instanceof ActivityBadgeConfig
+								|| awardConfig instanceof CubRankConfig
+								|| awardConfig instanceof DutyToGodConfig
+								|| awardConfig instanceof CubAwardConfig)
+							{
+								continue;
+							}
+							
 							if (awardConfig instanceof RankConfig)
 							{
 								if (noMoreRanks == false)
@@ -172,9 +183,9 @@ public class InProgressTag extends TagSupport
 				if(mbCount > 0)
 				{
 					writer.write("<div class='inprogresslabel'>In Progress ("+mbCount+")</div>");
-			        writer.write("<ul id='inprogressAwards' class='jcarousel-skin-tango'>");
+	        		writer.write("<div id='inprogressAwards' class='jcarousel-skin-tango'><ul>");
 			        writer.write(htmlLists);
-	        		writer.write("</ul><div class='inprogresslabel'>In Progress</div>");
+	        		writer.write("</ul></div><div class='inprogresslabel'>In Progress</div>");
 				}
 			}
 		}
