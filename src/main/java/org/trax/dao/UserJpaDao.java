@@ -431,7 +431,7 @@ public class UserJpaDao extends GenericJpaDao<User, Long> implements UserDao
 	public User getUserByFullnameAndOrg(String firstName, String middleName, String lastName, long organizationId)
 	{
 		List<User> userList = null;
-		String firstLastOrg = "from User user where user.firstName = :firstName and user.lastName = :lastName and user.organization.id = :organizationId";
+		String firstLastOrg = "from Scout user where user.firstName = :firstName and user.lastName = :lastName and user.organization.id = :organizationId";
 		String notRetired = " and retired = 0";
 		String middleNull = " and user.middleName is null";
 		String middle = " and user.middleName = :middleName";
