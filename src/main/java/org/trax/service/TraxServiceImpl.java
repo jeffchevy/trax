@@ -146,10 +146,10 @@ public class TraxServiceImpl implements TraxService
 	@Autowired
 	private BaseUnitTypeDao baseUnitTypeDao;
 
-	private List<LeaderPosition> leaderPositions;
-	private List<CubLeaderPosition> cubLeaderPositions;
-	private List<ScoutPosition> scoutPositions;
-	private List<CubPosition> cubPositions;
+	private final List<LeaderPosition> leaderPositions;
+	private final List<CubLeaderPosition> cubLeaderPositions;
+	private final List<ScoutPosition> scoutPositions;
+	private final List<CubPosition> cubPositions;
 
 	public TraxServiceImpl()
 	{
@@ -159,18 +159,20 @@ public class TraxServiceImpl implements TraxService
 		cubPositions = Arrays.asList(CubPosition.values());
 	}
 
-	public User getUserByUsername(String username)
+	@Override
+    public User getUserByUsername(final String username)
 	{
 		return userDao.getUserByUsername(username);
 	}
 
-	public void saveScout(Scout scout) throws Exception
+	@Override
+    public void saveScout(final Scout scout) throws Exception
 	{
 		addRanks(scout);
 		if (scout.getPosition() != null)
 		{
 			// need to update the leadership log
-			LeadershipLogEntry logEntry = createLeadershipLogEntry(scout.getPosition());
+			final LeadershipLogEntry logEntry = createLeadershipLogEntry(scout.getPosition());
 			if (scout.getLeadershipEntries() == null)
 			{
 				scout.setLeadershipEntries(new HashSet<LeadershipLogEntry>());
@@ -185,7 +187,7 @@ public class TraxServiceImpl implements TraxService
 		 * IF THIS CODE IS ADDED THE USER NO LONGER SAVES??? TODO don't know why
 		 * this is not saving, but we need to have the org be part of the unit
 		 * for comparisons, so adding it here
-		 * 
+		 *
 		 * scout.getUnit().setOrganization(scout.getOrganization()); if
 		 * (scout.getUnit().getId() == 0) { //see if it exists try { for (Unit
 		 * unit : scout.getOrganization().getUnits()) { if
@@ -199,24 +201,25 @@ public class TraxServiceImpl implements TraxService
 		// return scout;
 	}
 
-	public void addRanks(Scout scout)
+	@Override
+    public void addRanks(final Scout scout)
 	{
 		// give the new scout ranks to fill but only add them if they are not
 		// already there
 		if (scout.getAwards() == null || scout.getAwards().size() == 0)
 		{
-			Set<Award> ranks = new HashSet<Award>();
+			final Set<Award> ranks = new HashSet<Award>();
 
 			if (scout.getUnit().isCub())
 			{
 
-				List<CubRankConfig> rankConfigs = cubRankConfigDao.findAll();
-				for (CubRankConfig rankConfig : rankConfigs)
+				final List<CubRankConfig> rankConfigs = cubRankConfigDao.findAll();
+				for (final CubRankConfig rankConfig : rankConfigs)
 				{
 					// only add tiger rank if the organization hasTigers
 					if (!rankConfig.getName().startsWith("Tiger") || scout.getOrganization().hasTigers())
 					{
-						Award rank = new CubRank();
+						final Award rank = new CubRank();
 						rank.setAwardConfig(rankConfig);
 						ranks.add(rank);
 					}
@@ -225,10 +228,10 @@ public class TraxServiceImpl implements TraxService
 			}
 			else
 			{
-				List<RankConfig> rankConfigs = rankConfigDao.findAll();
-				for (RankConfig rankConfig : rankConfigs)
+				final List<RankConfig> rankConfigs = rankConfigDao.findAll();
+				for (final RankConfig rankConfig : rankConfigs)
 				{
-					Award rank = new Rank();
+					final Award rank = new Rank();
 					rank.setAwardConfig(rankConfig);
 					ranks.add(rank);
 				}
@@ -237,9 +240,10 @@ public class TraxServiceImpl implements TraxService
 		}
 	}
 
-	public User saveAndRegisterUser(User user) throws Exception
+	@Override
+    public User saveAndRegisterUser(final User user) throws Exception
 	{
-		User myUser = saveUser(user);
+		final User myUser = saveUser(user);
 		if (!(myUser instanceof Scout))
 		{
 			mailService.sendNewUser(myUser);
@@ -247,12 +251,13 @@ public class TraxServiceImpl implements TraxService
 		return myUser;
 	}
 
-	public User saveUser(User user) throws Exception
+	@Override
+    public User saveUser(final User user) throws Exception
 	{
 		Collection<Role> roles = user.getRoles();
 		if (user instanceof Leader)
 		{
-			Role role = new Role(ROLE_LEADER);
+			final Role role = new Role(ROLE_LEADER);
 			if (roles == null)
 			{
 				roles = new HashSet<Role>();
@@ -272,14 +277,14 @@ public class TraxServiceImpl implements TraxService
 		// they entered a unit, make sure it jives with the db
 		{
 			boolean hasUnit = false;
-			for (Unit unit : user.getOrganization().getUnits())
+			for (final Unit unit : user.getOrganization().getUnits())
 			{
 				if (unit.getTypeOfUnit() == user.getUnit().getTypeOfUnit())
 				{
 					hasUnit = true;
 					//@TODO This should provide a default and allow them to override, FIX ME 2/5/2015
 					// if the unittypes are the same, use the same unit information, and
-					// unit number regardless of what they entered. 
+					// unit number regardless of what they entered.
 					user.setUnitCopy(unit);
 					break;
 				}
@@ -295,29 +300,32 @@ public class TraxServiceImpl implements TraxService
 			user.getUnit().setOrganization(user.getOrganization());
 		}
 		user.setCreationDate(new Date());
-		User myUser = userDao.save(user);
+		final User myUser = userDao.save(user);
 
 		return myUser;
 	}
 
 	// preserve transient data when refreshing
-	public Organization refreshOrganization(Long organizationId)
+	@Override
+    public Organization refreshOrganization(final Long organizationId)
 	{
-		return (Organization) organizationDao.findById(organizationId, false);
+		return organizationDao.findById(organizationId, false);
 	}
 
-	public Organization getUnit(long id)
+	@Override
+    public Organization getUnit(final long id)
 	{
 
 		return organizationDao.findById(id, false);
 	}
 
-	public Organization saveOrganization(OrgUnit orgUnit) throws Exception
+	@Override
+    public Organization saveOrganization(final OrgUnit orgUnit) throws Exception
 	{
-		Organization dbOrg = organizationDao.getOrganization(orgUnit.getNumber(), orgUnit.getCouncil(), orgUnit.getTypeOfUnit());
+		final Organization dbOrg = organizationDao.getOrganization(orgUnit.getNumber(), orgUnit.getCouncil(), orgUnit.getTypeOfUnit());
 		if (dbOrg != null)
 		{
-			Leader mainLeader = getActiveSeniorLeader(dbOrg.getId(), orgUnit.getNumber());
+			final Leader mainLeader = getActiveSeniorLeader(dbOrg.getId(), orgUnit.getNumber());
 			if (mainLeader != null)
 			{
 				throw new Exception(orgUnit.getTypeOfUnit().getName() + " " + orgUnit.getNumber() + " has already been registered, contact " + mainLeader.getFullName() + " at "
@@ -334,7 +342,7 @@ public class TraxServiceImpl implements TraxService
 				}
 
 				// Set<Unit> units = new HashSet<Unit>();
-				Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), dbOrg);
+				final Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), dbOrg);
 				if (dbOrg.getUnits().size() > 0)
 				{
 					dbOrg.getUnits().remove(dbOrg.getUnits().iterator().next());
@@ -347,7 +355,7 @@ public class TraxServiceImpl implements TraxService
 
 		}
 		// The organization was not found, create a new one
-		Organization org = new Organization();
+		final Organization org = new Organization();
 		org.setCity(orgUnit.getCity());
 		org.setCouncil(orgUnit.getCouncil());
 		org.setName(orgUnit.getName());
@@ -355,15 +363,16 @@ public class TraxServiceImpl implements TraxService
 		org.setState(orgUnit.getState());
 		org.setHasTigers(orgUnit.getHasTigers());
 
-		Set<Unit> units = new HashSet<Unit>();
-		Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), org);
+		final Set<Unit> units = new HashSet<Unit>();
+		final Unit unit = new Unit(orgUnit.getTypeOfUnit(), orgUnit.getNumber(), org);
 		units.add(unit);
 		org.setUnits(units);
 
 		return organizationDao.saveOrg(org);
 	}
 
-	public Leader getActiveSeniorLeader(long organizationId, int unitNumber)
+	@Override
+    public Leader getActiveSeniorLeader(final long organizationId, final int unitNumber)
 	{
 		List<Leader> leaders = userDao.getLeaders(organizationId, unitNumber);
 		Leader seniorLeader = null;
@@ -373,15 +382,15 @@ public class TraxServiceImpl implements TraxService
 			// account yet, go ahead and try again to retrieve the leader
 			leaders = userDao.getLeaders(organizationId, false);
 		}
-		for (Leader leader : leaders)
+		for (final Leader leader : leaders)
 		{
 			/*
 			 * This may be a transfer if possible check the boys birthdate, if
 			 * he is just turning 11, get the 11 year scout master, and make
 			 * sure the leader has logged in lately
-			 * 
+			 *
 			 * @TODOif (leader.getLastLoginDate().) {
-			 * 
+			 *
 			 * }
 			 */
 			if (leader.getPosition() == LeaderPosition.ELEVEN_YEAR_OLD_SCOUT_MASTER || leader.getPosition() == LeaderPosition.SCOUT_MASTER
@@ -403,15 +412,16 @@ public class TraxServiceImpl implements TraxService
 
 	}
 
-	public User saveCredentials(UserCredentialsForm credentials) throws Exception
+	@Override
+    public User saveCredentials(final UserCredentialsForm credentials) throws Exception
 	{
-		User user = userDao.findById(credentials.getUserId(), false);
+		final User user = userDao.findById(credentials.getUserId(), false);
 		if (user == null)
 		{
 			throw new Exception("Failed to find the user with this username " + credentials.getUsername() + " " + credentials.getUserId());
 			// credentials.getUsername()
 		}
-		String encodedPassword = passwordEncoder.encodePassword(credentials.getPassword(), credentials.getUsername());
+		final String encodedPassword = passwordEncoder.encodePassword(credentials.getPassword(), credentials.getUsername());
 		user.setPassword(encodedPassword);
 		user.setAccountEnabled(true);
 		user.setUsername(credentials.getUsername());
@@ -441,7 +451,8 @@ public class TraxServiceImpl implements TraxService
 	// return results;
 	// }
 
-	public List getLeaderPositions()
+	@Override
+    public List getLeaderPositions()
 	{
 		boolean isCub = false;
 		User user = null;
@@ -450,7 +461,7 @@ public class TraxServiceImpl implements TraxService
 			user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			isCub = user.getUnit().isCub();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			// TODO Ignore for now, but we need to know the user type
 			// default to boy scouts
@@ -458,7 +469,8 @@ public class TraxServiceImpl implements TraxService
 		return getLeaderPositions(isCub);
 	}
 
-	public List getLeaderPositions(boolean isCub)
+	@Override
+    public List getLeaderPositions(final boolean isCub)
 	{
 		if (isCub)
 		{
@@ -467,9 +479,10 @@ public class TraxServiceImpl implements TraxService
 		return leaderPositions;
 	}
 
-	public List getScoutPositions()
+	@Override
+    public List getScoutPositions()
 	{
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (user.getUnit().isCub())
 		{
 			return cubPositions;
@@ -477,18 +490,18 @@ public class TraxServiceImpl implements TraxService
 		return scoutPositions;
 	}
 
-	public List<RankTrail> getTrailToFirstClass(Collection<Scout> scouts)
+	public List<RankTrail> getTrailToFirstClass(final Collection<Scout> scouts)
 	{
-		List<RankTrail> rankTrail = awardConfigDao.getRankTrailToFirstClass();
-		for (Scout scout : scouts)
+		final List<RankTrail> rankTrail = awardConfigDao.getRankTrailToFirstClass();
+		for (final Scout scout : scouts)
 		{
 			if (scout.isChecked() || scout.isSelected())
 			{
-				for (RankTrail rankTrail2 : rankTrail)
+				for (final RankTrail rankTrail2 : rankTrail)
 				{
-					for (Award award : scout.getAwards())
+					for (final Award award : scout.getAwards())
 					{
-						for (Requirement requirement : award.getRequirements())
+						for (final Requirement requirement : award.getRequirements())
 						{
 							if (rankTrail2.getRequirementConfigId() == requirement.getRequirementConfig().getId())
 							{
@@ -505,10 +518,11 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	// preserve transient data when refreshing
-	public Scout refreshScout(Scout scout)
+	@Override
+    public Scout refreshScout(Scout scout)
 	{
-		boolean isChecked = scout.isChecked();
-		boolean isSelected = scout.isSelected();
+		final boolean isChecked = scout.isChecked();
+		final boolean isSelected = scout.isSelected();
 		scout = getScout(scout.getId());
 		scout.setSelected(isSelected);
 		scout.setChecked(isChecked);
@@ -516,58 +530,66 @@ public class TraxServiceImpl implements TraxService
 		return scout;
 	}
 
-	public Scout getScout(Long id)
+	public Scout getScout(final Long id)
 	{
-		User user = userDao.findById(id, false);
+		final User user = userDao.findById(id, false);
 		return (Scout) user;
 	}
 
-	public AwardConfig getAwardConfig(long awardConfigId)
+	@Override
+    public AwardConfig getAwardConfig(final long awardConfigId)
 	{
 		return awardConfigDao.findById(awardConfigId, false);
 	}
 
-	public AwardConfig getAwardConfig(String name)
+	@Override
+    public AwardConfig getAwardConfig(final String name)
 	{
 		return awardConfigDao.getByName(name);
 	}
 
-	public PinConfig getPinConfig(String awardName)
+	@Override
+    public PinConfig getPinConfig(final String awardName)
 	{
 		return pinConfigDao.getByName(awardName);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param awardConfigId
 	 * @param scouts
 	 * @return map where the key is the requirementConfigId and the value is the
 	 *         count of scouts that have earned that requirement
 	 */
-	public Map<Long, Long> getAggregateCount(long awardConfigId, Collection<Scout> scouts)
+	@Override
+    public Map<Long, Long> getAggregateCount(final long awardConfigId, final Collection<Scout> scouts)
 	{
-		Map<Long, Long> requirementMap = userDao.getAggregateCount(awardConfigId, scouts);
+		final Map<Long, Long> requirementMap = userDao.getAggregateCount(awardConfigId, scouts);
 
 		return requirementMap;
 	}
 
-	public List<Scout> getScouts(long organizationId, String unitTypeName)
+	@Override
+    public List<Scout> getScouts(final long organizationId, final String unitTypeName)
 	{
-		BaseUnitType unitType = baseUnitTypeDao.find(unitTypeName);
+		final BaseUnitType unitType = baseUnitTypeDao.find(unitTypeName);
 		return userDao.getScouts(organizationId, unitType);
 	}
 
-	public Collection<Leader> getLeaders(long organizationId, boolean isCub)
+	@Override
+    public Collection<Leader> getLeaders(final long organizationId, final boolean isCub)
 	{
 		return userDao.getLeaders(organizationId, isCub);
 	}
 
-	public Collection<User> getUsers(long organizationId, boolean isCub)
+	@Override
+    public Collection<User> getUsers(final long organizationId, final boolean isCub)
 	{
 		return userDao.getByOrganizationId(organizationId, isCub);
 	}
 
-	public Award updateAwardInprogress(List<Scout> scouts, AwardConfig awardConfig, boolean setAwardInprogress) throws Exception
+	@Override
+    public Award updateAwardInprogress(final List<Scout> scouts, final AwardConfig awardConfig, final boolean setAwardInprogress) throws Exception
 	{
 		Award thisScoutsAward = null;
 		for (Scout scout : scouts)
@@ -606,7 +628,8 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	public Award updateAwardEarned(List<Scout> scouts, AwardConfig awardConfig, boolean isAwardEarned) throws Exception
+	@Override
+    public Award updateAwardEarned(final List<Scout> scouts, final AwardConfig awardConfig, final boolean isAwardEarned) throws Exception
 	{
 		Award thisScoutsAward = null;
 
@@ -616,7 +639,7 @@ public class TraxServiceImpl implements TraxService
 			if (scout.isChecked() || scout.isSelected())
 			{
 				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
-				User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				final User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				if (thisScoutsAward != null)
 				{
 					if (isAwardEarned)
@@ -645,7 +668,7 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public void updateAwardPurchased(List<Scout> scouts, Award award, boolean isChecked) throws Exception
+	public void updateAwardPurchased(final List<Scout> scouts, Award award, final boolean isChecked) throws Exception
 	{
 		for (Scout scout : scouts)
 		{
@@ -659,7 +682,7 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public void updateAwardAwarded(List<Scout> scouts, Award award, boolean isChecked) throws Exception
+	public void updateAwardAwarded(final List<Scout> scouts, Award award, final boolean isChecked) throws Exception
 	{
 		for (Scout scout : scouts)
 		{
@@ -673,7 +696,7 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Award updateAward(User signOffLeader, List<Scout> scouts, AwardConfig awardConfig, Date dateCompleted, boolean completingAward) throws Exception
+	public Award updateAward(final User signOffLeader, final List<Scout> scouts, final AwardConfig awardConfig, final Date dateCompleted, final boolean completingAward) throws Exception
 	{
 		Award thisScoutsAward = null;
 
@@ -727,13 +750,13 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted)
+	private Award createAward(final User signOffLeader, final AwardConfig awardConfig, final Date dateCompleted)
 	{
 		return createAward(signOffLeader, awardConfig, dateCompleted, new HashSet<Requirement>());
 	}
 
 	@Transactional
-	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted, Set<Requirement> requirements)
+	private Award createAward(final User signOffLeader, final AwardConfig awardConfig, final Date dateCompleted, final Set<Requirement> requirements)
 	{
 		Award award = null;
 		// must start with Cubs
@@ -786,13 +809,14 @@ public class TraxServiceImpl implements TraxService
 		return award;
 	}
 
-	public Award updateRequirement(long requirementConfigId, boolean isRequirementChecked, User signOffLeader, AwardConfig awardConfig, List<Scout> scouts,
-					String passedOffDateString) throws Exception
+	@Override
+    public Award updateRequirement(final long requirementConfigId, final boolean isRequirementChecked, final User signOffLeader, final AwardConfig awardConfig, final List<Scout> scouts,
+					final String passedOffDateString) throws Exception
 	{
 		Award thisScoutsAward = null;
 		try
 		{
-			for (Scout scout : scouts)
+			for (final Scout scout : scouts)
 			{
 				if (scout.isChecked() || scout.isSelected())// ||
 															// scouts.size()==1)
@@ -808,7 +832,7 @@ public class TraxServiceImpl implements TraxService
 				}
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			// model.addAttribute(ERROR_MESSAGE,"Failed to update requirement "+e.getMessage());
 			e.printStackTrace();
@@ -816,15 +840,15 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	public Award completeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig, Scout scout, String dateString) throws Exception
+	public Award completeOneScoutsRequirement(final long requirementConfigId, final User signOffLeader, final AwardConfig awardConfig, Scout scout, final String dateString) throws Exception
 	{
 		scout = refreshScout(scout);
-		Award thisScoutsAward = (Award) awardDao.getScoutAward(scout.getId(), awardConfig.getId());
-		Date dateCompleted = (dateString == null || dateString.trim().length() == 0) ? new Date() : formatter.parse(dateString);
+		Award thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
+		final Date dateCompleted = (dateString == null || dateString.trim().length() == 0) ? new Date() : formatter.parse(dateString);
 
 		if (thisScoutsAward != null)
 		{
-			for (Requirement req : thisScoutsAward.getRequirements())
+			for (final Requirement req : thisScoutsAward.getRequirements())
 			{
 				if (req.getRequirementConfig().getId() == requirementConfigId && req.getDateCompleted() != null)
 				{
@@ -838,7 +862,7 @@ public class TraxServiceImpl implements TraxService
 		{
 			// could be cached by hibernate
 
-			for (Award award : scout.getAwards())
+			for (final Award award : scout.getAwards())
 			{
 				if (award.getAwardConfig().getId() == awardConfig.getId())
 				{
@@ -853,12 +877,12 @@ public class TraxServiceImpl implements TraxService
 			if (thisScoutsAward == null)
 			{
 				// didn't find the award add a new one
-				RequirementConfig rc = requirementConfigDao.findById(requirementConfigId, false);
-				boolean isAuthorized = !(scout.getId() == signOffLeader.getId() && rc.getLeaderAuthorized());
+				final RequirementConfig rc = requirementConfigDao.findById(requirementConfigId, false);
+				final boolean isAuthorized = !(scout.getId() == signOffLeader.getId() && rc.getLeaderAuthorized());
 				if (isAuthorized)
 				{
-					Requirement r = new Requirement(rc, dateCompleted, signOffLeader);
-					Set<Requirement> requirements = new HashSet<Requirement>();
+					final Requirement r = new Requirement(rc, dateCompleted, signOffLeader);
+					final Set<Requirement> requirements = new HashSet<Requirement>();
 					requirements.add(r);
 					thisScoutsAward = createAward(signOffLeader, awardConfig, null, requirements);
 					thisScoutsAward.setInProgress(true);
@@ -873,12 +897,12 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	public Award removeOneScoutsRequirement(long requirementConfigId, User signOffLeader, AwardConfig awardConfig, Scout scout) throws Exception
+	public Award removeOneScoutsRequirement(final long requirementConfigId, final User signOffLeader, final AwardConfig awardConfig, final Scout scout) throws Exception
 	{
-		Award thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
+		final Award thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
 		if (thisScoutsAward != null)
 		{
-			for (Requirement req : thisScoutsAward.getRequirements())
+			for (final Requirement req : thisScoutsAward.getRequirements())
 			{
 				if (req.getRequirementConfig().getId() == requirementConfigId)
 				{
@@ -895,18 +919,18 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	private void addRequirementToExistingAward(Date dateCompleted, Long requirementConfigId, User signOffLeader, Award thisScoutsAward) throws Exception
+	private void addRequirementToExistingAward(final Date dateCompleted, final Long requirementConfigId, final User signOffLeader, Award thisScoutsAward) throws Exception
 	{
 		// didn't find the requirement add a new one
-		RequirementConfig rc = requirementConfigDao.findById(requirementConfigId, false);
-		Requirement r = new Requirement(rc, dateCompleted, signOffLeader);
-		boolean isAuthorized = signOffLeader instanceof Leader || !rc.getLeaderAuthorized();
+		final RequirementConfig rc = requirementConfigDao.findById(requirementConfigId, false);
+		final Requirement r = new Requirement(rc, dateCompleted, signOffLeader);
+		final boolean isAuthorized = signOffLeader instanceof Leader || !rc.getLeaderAuthorized();
 		if (isAuthorized)
 		{
-			Collection<Requirement> requirements = thisScoutsAward.getRequirements();
+			final Collection<Requirement> requirements = thisScoutsAward.getRequirements();
 			requirements.add(r);
 			// cast to AwardConfig, Can't be a Training here
-			AwardConfig awardConfig = (AwardConfig) thisScoutsAward.getAwardConfig();
+			final AwardConfig awardConfig = thisScoutsAward.getAwardConfig();
 			if (awardConfig.getRequirementConfigs().size() == thisScoutsAward.getRequirements().size())
 			{
 				// all are selected
@@ -921,9 +945,9 @@ public class TraxServiceImpl implements TraxService
 		}
 	}
 
-	private Award removeRequirement(Award award, User signOffLeader, Requirement req) throws Exception
+	private Award removeRequirement(Award award, final User signOffLeader, final Requirement req) throws Exception
 	{
-		boolean isAuthorized = signOffLeader instanceof Leader || !req.getRequirementConfig().getLeaderAuthorized();
+		final boolean isAuthorized = signOffLeader instanceof Leader || !req.getRequirementConfig().getLeaderAuthorized();
 		if (isAuthorized)
 		{
 			award.getRequirements().remove(req);
@@ -951,17 +975,19 @@ public class TraxServiceImpl implements TraxService
 		return award;
 	}
 
-	public User getUserByNameAndOrganization(String firstName, String lastName, Organization org)
+	@Override
+    public User getUserByNameAndOrganization(final String firstName, final String lastName, final Organization org)
 	{
 		return userDao.getUserByNameAndOrg(firstName, lastName, org.getId());
 	}
 
-	public User getUserById(long userId)
+	@Override
+    public User getUserById(final long userId)
 	{
 		return userDao.findById(userId, false);
 	}
 
-	private Award saveNewScoutAward(Scout scout, Award award)
+	private Award saveNewScoutAward(Scout scout, final Award award)
 	{
 		scout = refreshScout(scout); // refresh
 		if (!scout.getAwards().contains(award))
@@ -982,9 +1008,10 @@ public class TraxServiceImpl implements TraxService
 		return award;
 	}
 
-	public void updateLeader(Leader user) throws Exception
+	@Override
+    public void updateLeader(final Leader user) throws Exception
 	{
-		Leader dbUser = (Leader) userDao.findById(user.getId(), false);
+		final Leader dbUser = (Leader) userDao.findById(user.getId(), false);
 		dbUser.setFirstName(user.getFirstName());
 		dbUser.setLastName(user.getLastName());
 		dbUser.setBsaMemberId(user.getBsaMemberId());
@@ -1002,9 +1029,10 @@ public class TraxServiceImpl implements TraxService
 		userDao.persist(dbUser);
 	}
 
-	public void updateScout(Scout scout)
+	@Override
+    public void updateScout(final Scout scout)
 	{
-		Scout dbUser = (Scout) userDao.findById(scout.getId(), false);
+		final Scout dbUser = (Scout) userDao.findById(scout.getId(), false);
 		dbUser.setFirstName(scout.getFirstName());
 		dbUser.setMiddleName(scout.getMiddleName());
 		dbUser.setLastName(scout.getLastName());
@@ -1014,7 +1042,7 @@ public class TraxServiceImpl implements TraxService
 		if (dbUser.getPosition() == null && scout.getPosition() != null)
 		{
 			// need to update the leadership log
-			LeadershipLogEntry logEntry = createLeadershipLogEntry(scout.getPosition());
+			final LeadershipLogEntry logEntry = createLeadershipLogEntry(scout.getPosition());
 			dbUser.getLeadershipEntries().add(logEntry);
 		}
 		dbUser.setPosition(scout.getPosition());
@@ -1036,13 +1064,13 @@ public class TraxServiceImpl implements TraxService
 	 * @param user
 	 * @param dbUser
 	 */
-	private void updateUnit(User user, User dbUser)
+	private void updateUnit(final User user, final User dbUser)
 	{
 		if (dbUser.getUnit().getTypeOfUnit() != user.getUnit().getTypeOfUnit())
 		{
-			Set<Unit> units = dbUser.getOrganization().getUnits();
+			final Set<Unit> units = dbUser.getOrganization().getUnits();
 			Unit newUnit = null;
-			for (Unit unit : units)
+			for (final Unit unit : units)
 			{
 				if (unit.getTypeOfUnit() == user.getUnit().getTypeOfUnit())
 				{
@@ -1065,22 +1093,22 @@ public class TraxServiceImpl implements TraxService
 
 	/**
 	 * when a user is created or updated with a position
-	 * 
+	 *
 	 * @param scout
 	 * @return
 	 */
-	private LeadershipLogEntry createLeadershipLogEntry(ScoutPosition position)
+	private LeadershipLogEntry createLeadershipLogEntry(final ScoutPosition position)
 	{
-		LeadershipLogEntry logEntry = new LeadershipLogEntry();
-		Calendar startCalendar = Calendar.getInstance();
-		Date currentDate = startCalendar.getTime();
+		final LeadershipLogEntry logEntry = new LeadershipLogEntry();
+		final Calendar startCalendar = Calendar.getInstance();
+		final Date currentDate = startCalendar.getTime();
 
-		Calendar endCalendar = Calendar.getInstance();
+		final Calendar endCalendar = Calendar.getInstance();
 		endCalendar.add(Calendar.MONTH, 6); // guess at 6 months, they will have
 											// to update later
-		Date endDate = endCalendar.getTime();
+		final Date endDate = endCalendar.getTime();
 
-		User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		logEntry.setPosition(position);
 		logEntry.setStartDate(currentDate);
@@ -1091,59 +1119,70 @@ public class TraxServiceImpl implements TraxService
 		return logEntry;
 	}
 
-	public Collection<BadgeConfig> getAllBadges()
+	@Override
+    public Collection<BadgeConfig> getAllBadges()
 	{
-		return (Collection<BadgeConfig>) awardConfigDao.getAllBadges();
+		return awardConfigDao.getAllBadges();
 	}
 
-	public Collection<DutyToGodConfig> getScoutDtgs()
+	@Override
+    public Collection<DutyToGodConfig> getScoutDtgs()
 	{
-		Collection<DutyToGodConfig> scoutDtgs = awardConfigDao.getScoutDtgs();
-		return (Collection<DutyToGodConfig>) scoutDtgs;
+		final Collection<DutyToGodConfig> scoutDtgs = awardConfigDao.getScoutDtgs();
+		return scoutDtgs;
 	}
 
-	public Collection<CubAwardConfig> getCubAwards()
+	@Override
+    public Collection<CubAwardConfig> getCubAwards()
 	{
-		return (Collection<CubAwardConfig>) awardConfigDao.getCubAwards();
+		return awardConfigDao.getCubAwards();
 	}
 
-	public Collection<CubDutyToGodConfig> getCubDtgs()
+	@Override
+    public Collection<CubDutyToGodConfig> getCubDtgs()
 	{
-		return (Collection<CubDutyToGodConfig>) awardConfigDao.getCubDtgs();
+		return awardConfigDao.getCubDtgs();
 	}
 
-	public Collection<AwardConfig> getAllAwards()
+	@Override
+    public Collection<AwardConfig> getAllAwards()
 	{
-		return (Collection<AwardConfig>) awardConfigDao.getAllAwards();
+		return awardConfigDao.getAllAwards();
 	}
 
-	public Collection<RankConfig> getAllPalms()
+	@Override
+    public Collection<RankConfig> getAllPalms()
 	{
-		return (Collection<RankConfig>) awardConfigDao.getAllPalms();
+		return awardConfigDao.getAllPalms();
 	}
 
-	public List<BeltLoopConfig> getAllBeltLoops()
+	@Override
+    public List<BeltLoopConfig> getAllBeltLoops()
 	{
 		return beltLoopConfigDao.findAll();
 	}
 
-	public List<PinConfig> getAllPins()
+	@Override
+    public List<PinConfig> getAllPins()
 	{
 		return pinConfigDao.findAll();
 	}
 
-	public List<ActivityBadgeConfig> getAllActivityBadges()
+	@Override
+    public List<ActivityBadgeConfig> getAllActivityBadges()
 	{
 		return activityBadgeConfigDao.findAll();
 	}
 
-	public Award getAward(long awardId)
+	@Override
+    public Award getAward(final long awardId)
 	{
-		Award award = awardDao.findById(awardId, false);
+		final Award award = awardDao.findById(awardId, false);
 		return award;
 	}
 
-	public void saveServiceLog(List<Scout> scouts, ServiceLogEntry logEntry)
+	@Override
+    public void saveServiceLog(final List<Scout> scouts, final ServiceLogEntry logEntry)
 	{
 		for (Scout scout : scouts)
 		{
@@ -1156,7 +1195,8 @@ public class TraxServiceImpl implements TraxService
 		}
 	}
 
-	public void saveCampLog(List<Scout> scouts, CampLogEntry logEntry)
+	@Override
+    public void saveCampLog(final List<Scout> scouts, final CampLogEntry logEntry)
 	{
 		for (Scout scout : scouts)
 		{
@@ -1169,7 +1209,8 @@ public class TraxServiceImpl implements TraxService
 		}
 	}
 
-	public void saveLeadershipLog(List<Scout> scouts, LeadershipLogEntry logEntry)
+	@Override
+    public void saveLeadershipLog(final List<Scout> scouts, final LeadershipLogEntry logEntry)
 	{
 		for (Scout scout : scouts)
 		{
@@ -1177,8 +1218,8 @@ public class TraxServiceImpl implements TraxService
 			{
 				scout = refreshScout(scout); // refresh
 
-				Calendar endCalendar = Calendar.getInstance();
-				Date currentDate = endCalendar.getTime();
+				final Calendar endCalendar = Calendar.getInstance();
+				final Date currentDate = endCalendar.getTime();
 				if (logEntry.getEndDate() == null || logEntry.getEndDate().compareTo(currentDate) > 0)
 				{
 					// still in this position, update the scout record
@@ -1191,10 +1232,10 @@ public class TraxServiceImpl implements TraxService
 		}
 	}
 
-	public Award removeRequirements(Award award)
+	public Award removeRequirements(final Award award)
 	{
-		Set<Requirement> rs = award.getRequirements();
-		for (Requirement requirement : rs)
+		final Set<Requirement> rs = award.getRequirements();
+		for (final Requirement requirement : rs)
 		{
 			requirementDao.remove(requirement);
 		}
@@ -1207,36 +1248,41 @@ public class TraxServiceImpl implements TraxService
 	 * TODO add this to the database, for now just the ones friends will use
 	 * http://www.angelfire.com/wy/gilwell/links.html
 	 */
-	public List<Council> getCouncilsByState(String stateName)
+	@Override
+    public List<Council> getCouncilsByState(final String stateName)
 	{
 		return councilDao.getByState(stateName);
 	}
 
-	public void retireUser(long userId)
+	@Override
+    public void retireUser(final long userId)
 	{
-		User user = userDao.findById(userId, false);
+		final User user = userDao.findById(userId, false);
 		user.setRetired(true);
 		userDao.save(user);
 	}
 
-	public List<User> getUserByEmail(String email)
+	@Override
+    public List<User> getUserByEmail(final String email)
 	{
 		return userDao.findByEmail(email);
 	}
 
-	public void sendPasswordReset(User realUser)
+	@Override
+    public void sendPasswordReset(final User realUser)
 	{
 		try
 		{
 			mailService.sendPasswordReset(realUser);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			logger.error(e.getMessage(), e);
 		}
 	}
 
-	public User getUserFromPasscode(String userIdKey, String passcode)
+	@Override
+    public User getUserFromPasscode(final String userIdKey, final String passcode)
 	{
 		String userIdString = null;
 
@@ -1244,40 +1290,43 @@ public class TraxServiceImpl implements TraxService
 		{
 			userIdString = SimpleEncrypter.decrypt(userIdKey, passcode);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			logger.error(e.getMessage(), e);
 		}
-		User user = userDao.findById(Long.valueOf(userIdString).longValue(), false);
+		final User user = userDao.findById(Long.valueOf(userIdString).longValue(), false);
 		return user;
 	}
 
-	public Award findOrCreateNewScoutAward(long scoutId, long awardConfigId) throws Exception
+	@Override
+    public Award findOrCreateNewScoutAward(final long scoutId, final long awardConfigId) throws Exception
 	{
 		Award award = awardDao.getScoutAward(scoutId, awardConfigId);
 
 		if (award == null)
 		{
-			AwardConfig awardConfig = awardConfigDao.findById(awardConfigId, false);
+			final AwardConfig awardConfig = awardConfigDao.findById(awardConfigId, false);
 			award = createAward(null, awardConfig, null);
 		}
 		return award;
 	}
 
-	public Map<String, Map<String, List<String>>> getScoutsUpdates(User user)
+	@Override
+    public Map<String, Map<String, List<String>>> getScoutsUpdates(final User user)
 	{
 		return userDao.getScoutsUpdates(user);
 	}
 
-	public List<String> getUnitLeaderEmails(String council, BaseUnitType typeOfUnit, Integer number)
+	@Override
+    public List<String> getUnitLeaderEmails(final String council, final BaseUnitType typeOfUnit, final Integer number)
 	{
-		List<User> users = userDao.getByUnit(council, typeOfUnit, number);
-		List<String> emails = new ArrayList<String>();
-		for (User user : users)
+		final List<User> users = userDao.getByUnit(council, typeOfUnit, number);
+		final List<String> emails = new ArrayList<String>();
+		for (final User user : users)
 		{
 			if (user instanceof Leader)
 			{
-				String email = user.getEmail();
+				final String email = user.getEmail();
 				if (email != null)
 				{
 					emails.add(email);
@@ -1287,22 +1336,25 @@ public class TraxServiceImpl implements TraxService
 		return emails;
 	}
 
-	public Organization findOrganization(Integer unitNumber, String councilName, BaseUnitType baseUnitType)
+	@Override
+    public Organization findOrganization(final Integer unitNumber, final String councilName, final BaseUnitType baseUnitType)
 	{
 		return organizationDao.getOrganization(unitNumber, councilName, baseUnitType);
 	}
 
-	public User refreshUser(long leaderId)
+	@Override
+    public User refreshUser(final long leaderId)
 	{
 		return userDao.findById(leaderId, false);
 	}
 
-	public String transferScout(long scoutId, Leader newLeader, String councilName) throws Exception
+	@Override
+    public String transferScout(final long scoutId, Leader newLeader, final String councilName) throws Exception
 	{
 		// send a message, create the new unit and change the scouts unit
 		String successMessage = "";
-		Scout scout = (Scout) userDao.findById(scoutId, false);
-		Leader foundLeader = (Leader) userDao.findById(newLeader.getId(), false);
+		final Scout scout = (Scout) userDao.findById(scoutId, false);
+		final Leader foundLeader = (Leader) userDao.findById(newLeader.getId(), false);
 		Organization organization = null;
 		try
 		{
@@ -1310,11 +1362,11 @@ public class TraxServiceImpl implements TraxService
 			{
 				// save org
 				organization = new Organization();
-				Set<Unit> units = new HashSet<Unit>();
-				
+				final Set<Unit> units = new HashSet<Unit>();
+
 				// read from db, to make sure all fields are populated
-				BaseUnitType typeOfUnit = unitTypeDao.findById(newLeader.getUnit().getTypeOfUnit().getId(), false);
-				Unit leaderUnit = new Unit(typeOfUnit, newLeader.getUnit().getNumber(), organization);
+				final BaseUnitType typeOfUnit = unitTypeDao.findById(newLeader.getUnit().getTypeOfUnit().getId(), false);
+				final Unit leaderUnit = new Unit(typeOfUnit, newLeader.getUnit().getNumber(), organization);
 				units.add(leaderUnit);
 				organization.setUnits(units);
 				organization.setCity(newLeader.getCity());
@@ -1323,7 +1375,7 @@ public class TraxServiceImpl implements TraxService
 				organization.setCouncil(councilName);
 				organization = organizationDao.saveOrg(organization);
 				leaderUnit.setOrganization(organization);
-				
+
 				// save leader
 				newLeader.setUnit(leaderUnit);
 				newLeader.setOrganization(organization);
@@ -1331,7 +1383,7 @@ public class TraxServiceImpl implements TraxService
 				// update scout
 				scout.setOrganization(organization);
 				//Its important that units match, but that they are not the same, because when a scout moves others get moved with him.
-				Unit scoutUnit = new Unit(leaderUnit.getTypeOfUnit(),leaderUnit.getNumber(), leaderUnit.getOrganization());
+				final Unit scoutUnit = new Unit(leaderUnit.getTypeOfUnit(),leaderUnit.getNumber(), leaderUnit.getOrganization());
 				scout.setUnit(scoutUnit);
 				userDao.save(scout);
 				// now that everything is saved, send email
@@ -1343,12 +1395,12 @@ public class TraxServiceImpl implements TraxService
 				// update scout
 				scout.setOrganization(organization);
 				// the id is missing in the leaders unit -not sure why???
-				for (Unit unit : organization.getUnits())
+				for (final Unit unit : organization.getUnits())
 				{
 					if (unit.getNumber().equals(foundLeader.getUnit().getNumber()))
 					{
 						//Its important that units match, but that they are not the same, because when a scout moves others get moved with him.
-						Unit scoutUnit = new Unit(unit.getTypeOfUnit(),unit.getNumber(), unit.getOrganization());
+						final Unit scoutUnit = new Unit(unit.getTypeOfUnit(),unit.getNumber(), unit.getOrganization());
 						scout.setUnit(scoutUnit);
 						break;
 					}
@@ -1362,7 +1414,7 @@ public class TraxServiceImpl implements TraxService
 			successMessage = "Successfully transferred " + scout.getFullName() + " to new " + scout.getUnit().getTypeOfUnit().getName() + " " + scout.getUnit().getNumber() + " "
 							+ (organization.getName() == null ? "" : organization.getName() + " ") + "in the " + organization.getCity() + ", " + organization.getState();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			successMessage = "Failed to transfer Scout. " + e.getLocalizedMessage();
 		}
@@ -1371,53 +1423,56 @@ public class TraxServiceImpl implements TraxService
 		return successMessage;
 	}
 
-	public void updateLoginDate(long userId)
+	@Override
+    public void updateLoginDate(final long userId)
 	{
-		User loggedInUser = refreshUser(userId);
+		final User loggedInUser = refreshUser(userId);
 		loggedInUser.setLastLoginDate(new Date());
 		userDao.persist(loggedInUser);
 	}
 
-	public void addTraining(long courseId, Collection<Long> userIds, Date courseDate)
+	@Override
+    public void addTraining(final long courseId, final Collection<Long> userIds, final Date courseDate)
 	{
 		try
 		{
-			Collection<User> users = userDao.getByIds(userIds);
+			final Collection<User> users = userDao.getByIds(userIds);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			logger.error(e.getMessage(), e);
 		}
 	}
 
 	// TODO remove this
-	public Course updateCourseEarned(List<Long> userIds, long courseConfigId, boolean isAwardEarned) throws Exception
+	public Course updateCourseEarned(final List<Long> userIds, final long courseConfigId, final boolean isAwardEarned) throws Exception
 	{
 		Course newCourse = null;
 
-		for (Long userId : userIds)
+		for (final Long userId : userIds)
 		{
-			User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			final User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-			AwardConfig courseConfig = courseConfigDao.findById(courseConfigId, false);
+			final AwardConfig courseConfig = courseConfigDao.findById(courseConfigId, false);
 			newCourse = new Course(courseConfig, new Date(), null, null, signOffLeader);
-			User leader = userDao.findById(userId, false); // refresh
+			final User leader = userDao.findById(userId, false); // refresh
 			newCourse = saveNewLeaderCourse(leader, newCourse);
 		}
 		return newCourse;
 	}
 
-	public void addCourse(String courseName, long userId, Date completionDate)
+	@Override
+    public void addCourse(final String courseName, final long userId, final Date completionDate)
 	{
-		CourseConfig courseConfig = awardConfigDao.getCourseByName(courseName);
-		User user = userDao.findById(userId, false);
-		User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Course newCourse = new Course(courseConfig, completionDate, null, null, signOffLeader);
+		final CourseConfig courseConfig = awardConfigDao.getCourseByName(courseName);
+		final User user = userDao.findById(userId, false);
+		final User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final Course newCourse = new Course(courseConfig, completionDate, null, null, signOffLeader);
 		user.getAwards().add(newCourse);
 		userDao.persist(user);
 	}
 
-	private Course saveNewLeaderCourse(User user, Course course)
+	private Course saveNewLeaderCourse(final User user, final Course course)
 	{
 		user.getAwards().add(course);
 		userDao.persist(user);
@@ -1425,38 +1480,42 @@ public class TraxServiceImpl implements TraxService
 		return course;
 	}
 
-	public Collection<CourseConfig> getAllCourses()
+	@Override
+    public Collection<CourseConfig> getAllCourses()
 	{
 		return awardConfigDao.getAllCourses();
 	}
 
-	public List<Course> getCourses(Leader leader)
+	@Override
+    public List<Course> getCourses(final Leader leader)
 	{
 		return awardDao.getCourses(leader);
 	}
 
-	public List<BadgeConfig> getRequiredMeritBadges()
+	@Override
+    public List<BadgeConfig> getRequiredMeritBadges()
 	{
 		return badgeConfigDao.getRequired();
 	}
 
-	public List<? extends BaseUnitType> getUnitTypes(boolean isCub)
+	@Override
+    public List<? extends BaseUnitType> getUnitTypes(final boolean isCub)
 	{
 		List<? extends BaseUnitType> unitTypes;
 		if (isCub)
 		{
-			List<? extends BaseUnitType> someUnitTypes = new ArrayList();
+			final List<? extends BaseUnitType> someUnitTypes = new ArrayList();
 			unitTypes = cubUnitTypeDao.findAll();
 
 			try
 			{
-				User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				if (!user.getOrganization().getHasTigers())
 				{
 					unitTypes.remove(1); // the first one is Tiger
 				}
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				// do nothing, SecurityContextHolder has not been initalized yet
 			}
@@ -1468,15 +1527,16 @@ public class TraxServiceImpl implements TraxService
 		return unitTypes;
 	}
 
-	public List<? extends BaseUnitType> getUnitTypes()
+	@Override
+    public List<? extends BaseUnitType> getUnitTypes()
 	{
-		boolean isCub = false;
+		final boolean isCub = false;
 		try
 		{
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			return getUnitTypes(user.getUnit().isCub());
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			// TODO Ignore for now, but we need to know the user type
 			// default to boy scouts
@@ -1485,15 +1545,15 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Map<Long, Map<Long, Set<Long>>> getToFirstClass(List<Scout> scouts) throws Exception
+	public Map<Long, Map<Long, Set<Long>>> getToFirstClass(final List<Scout> scouts) throws Exception
 	{
-		Set<Long> awardList = new HashSet<Long>();
+		final Set<Long> awardList = new HashSet<Long>();
 		awardList.add(awardConfigDao.getByName("Scout").getId());// scout
 		awardList.add(awardConfigDao.getByName("Tenderfoot").getId());// tf
 		awardList.add(awardConfigDao.getByName("Second Class").getId());// 2c
 		awardList.add(awardConfigDao.getByName("First Class").getId());// 1c
 
-		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		final List<Long> scoutIds = getSelectedScoutIds(scouts);
 		if (scoutIds.isEmpty())
 		{
 			return null;
@@ -1502,11 +1562,11 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Map<Long, Map<Long, Set<Long>>> getToBear(List<Scout> scouts)
+	public Map<Long, Map<Long, Set<Long>>> getToBear(final List<Scout> scouts)
 	{
-		
-		Set<Long> awardList = new LinkedHashSet<Long>();
-		
+
+		final Set<Long> awardList = new LinkedHashSet<Long>();
+
 		awardList.add(awardConfigDao.getByName("Bobcat").getId());
 		if (scouts.get(0).getOrganization().hasTigers())
 		{
@@ -1515,7 +1575,7 @@ public class TraxServiceImpl implements TraxService
 		awardList.add(awardConfigDao.getByName("Wolf").getId());
 		awardList.add(awardConfigDao.getByName("Bear").getId());
 
-		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		final List<Long> scoutIds = getSelectedScoutIds(scouts);
 		if (scoutIds.isEmpty())
 		{
 			return null;
@@ -1524,9 +1584,9 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Map<Long, Map<Long, Set<Long>>> getScoutsAwardList(List<Scout> scouts, Set<Long> awardList) throws Exception
+	public Map<Long, Map<Long, Set<Long>>> getScoutsAwardList(final List<Scout> scouts, final Set<Long> awardList) throws Exception
 	{
-		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		final List<Long> scoutIds = getSelectedScoutIds(scouts);
 		if (scoutIds.isEmpty())
 		{
 			return null;
@@ -1539,9 +1599,10 @@ public class TraxServiceImpl implements TraxService
 	 * row headers will be the award and requirement text
 	 */
 	// @Override
-	public Map<Long, Map<Long, Set<Long>>> getAwardScoutsList(List<Scout> scouts, Set<Long> awardList)
+	@Override
+    public Map<Long, Map<Long, Set<Long>>> getAwardScoutsList(final List<Scout> scouts, final Set<Long> awardList)
 	{
-		List<Long> scoutIds = getSelectedScoutIds(scouts);
+		final List<Long> scoutIds = getSelectedScoutIds(scouts);
 		if (scoutIds.isEmpty())
 		{
 			return null;
@@ -1549,10 +1610,10 @@ public class TraxServiceImpl implements TraxService
 		return userDao.getScoutsAwardList(scoutIds, awardList);
 	}
 
-	private List<Long> getSelectedScoutIds(List<Scout> scouts)
+	private List<Long> getSelectedScoutIds(final List<Scout> scouts)
 	{
-		List<Long> scoutIds = new ArrayList<Long>();
-		for (Scout scout : scouts)
+		final List<Long> scoutIds = new ArrayList<Long>();
+		for (final Scout scout : scouts)
 		{
 			if (scout.isChecked() || scout.isSelected())
 			{
@@ -1563,13 +1624,13 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public boolean isAwardComplete(Long scoutId, Long awardConfigId)
+	public boolean isAwardComplete(final Long scoutId, final Long awardConfigId)
 	{
 		return userDao.isAwardComplete(scoutId, awardConfigId);
 	}
 
 	@Override
-	public String getRankMeritBadges(String rankName, List<Scout> scouts)
+	public String getRankMeritBadges(final String rankName, final List<Scout> scouts)
 	{
 		String htmlString = "";
 		List<String> requiredAwardNames = new ArrayList<String>();
@@ -1626,7 +1687,7 @@ public class TraxServiceImpl implements TraxService
 									+ "     i. Personal Management<br>" + "     j. Swimming OR Hiking OR Cycling<br>" + "     k. Camping<br>" + "     l. Family Life<br>"
 									+ "     m. Cooking (2014)<br>";
 
-					for (String earnedAwardName : requiredAwardNames)
+					for (final String earnedAwardName : requiredAwardNames)
 					{
 						if (htmlString.contains(earnedAwardName))
 						{

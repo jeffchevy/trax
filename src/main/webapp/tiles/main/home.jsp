@@ -66,6 +66,11 @@
 		.row {
 			padding: 0;
 		}
+		.vcenter {
+		    display: inline-block;
+		    vertical-align: middle;
+		    float: none;
+		}
 	</style>
 	<link type="text/css" href="css/jquery-ui.all.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
@@ -99,8 +104,8 @@
 		<div id="centerlogo"  class="row">
 			<table>
 				<tr>
-					<td><a id="nav-home" title='Home' href='home.html'><img alt="Scout Trax Logo" src="images/scouttrax_logo.png" /></a></td>
-					<td><a id="nav-home" title='Login' href='login.html'><img class="startNow" alt="Scout Trax Login" src="images/StartNowText.png" /></a></td>
+					<td><a id="nav-home" class="vcenter" title='Home' href='home.html'><img alt="Scout Trax Logo" src="images/scouttrax_logo.png" /></a></td>
+					<td><a class="vcenter" title='Login' href='login.html'><img class="startNow" alt="Scout Trax Login" src="images/StartNowText.png" /></a></td>
 				</tr>
 			</table>
 		</div>

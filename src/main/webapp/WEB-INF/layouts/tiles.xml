@@ -69,7 +69,7 @@
     </definition>
     
 	<definition name="home" extends="simple.definition">
-        <put-attribute name="body" value="/tiles/main/home.jsp" />
+        <put-attribute name="body" value="/tiles/main/responsive/home.jsp" />
     </definition>
     <definition name="login" extends="threerowlayout.definition">
         <put-attribute name="top" value="/WEB-INF/jsp/login.jsp" />
