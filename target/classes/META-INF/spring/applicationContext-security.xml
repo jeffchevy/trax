@@ -36,7 +36,10 @@
         <intercept-url pattern="/login.html" access="permitAll"/>
         <intercept-url pattern="/css/**" filters="none" />
         <intercept-url pattern="/images/**" filters="none" />
+        <intercept-url pattern="/fonts/**" filters="none" />
         <intercept-url pattern="/js/**" filters="none" />
+        <intercept-url pattern="/bootstrap/**" filters="none" />
+        <intercept-url pattern="/fblogin.html" access="permitAll"/>
 
 		<!-- Access to all other pages need a logged in user -->
     	<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />

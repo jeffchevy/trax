@@ -23,6 +23,7 @@
 	<script src="js/jquery.js"></script>
 	
 	<script src="js/jquery-ui-1.11.2.custom.min.js" type="text/javascript"></script>
+	<script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">	
 
 	<title><tiles:insertAttribute name="title" ignore="true" />www.ScoutTrax.org Free online scout advancement tracking.</title>
@@ -68,15 +69,9 @@
 			color: red;
 			font-size: 2em;
 		}
-		.row {
-			padding: 20px;
-		}
 		#loginFormat {
 			right: 30%;
 			position: relative;
-		}
-		label, p {
-			color: black;
 		}
 		table {
 			white-space: nowrap;
@@ -95,6 +90,9 @@
 			overflow: hidden;
 		}
 	</style>
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css" type="text/css" media="screen, print">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.css" type="text/css" media="screen, print">
+	
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
@@ -151,16 +149,11 @@
 	<c:if test="${not empty successMessage}">
 		<span id='successMessage'>${successMessage}</span>
 	</c:if>	
-	<div class="table">
-		<div id="centertop" class="row">
+	<div class="container-fluid">
+		<div class="row">
 			<tiles:insertAttribute name="top" />
 		</div>
-		<div id="centerlogo"  class="row">
-			<a id='nav-home' title='Home' href='home.html'>
-				<img alt='Scout Trax Logo' src='images/scouttrax_logo.png'>
-			</a>
-		</div>
-		<div id="centerbottom" class="row" >
+		<div class="row" >
 			<tiles:insertAttribute name="bottom" />
 		</div>
 	</div>

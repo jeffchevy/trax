@@ -1,24 +1,4 @@
-<script type="text/javascript">
-	if ( $.browser 
-			&& (($.browser.mozilla && $.browser.version <=13) 
-					|| $.browser.msie )) 
-	{
-		//this is probably IE, IE shows up as Mozilla, but FF is at version 34, IE is at version 12
-		alert("Warning!\r\nInternet Explorer may cause some problems with ScoutTrax.org.\r\n The most common is requirements not being saved.\n\r We recommend using Safari, Chrome or Firefox.")
-	}
 
-
-	$(document).ready(function()
-	{ 
-		$('#username').focus();	
-		$('#about').click(function(){
-                   window.open('scoutTraxUserGuide.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
-           });	
-        $('#aboutCub').click(function(){
-                   window.open('userGuideForCubs.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
-           });
-	});
-</script>
 <style>
 input.text {
 	border: thin solid black;
@@ -41,6 +21,102 @@ input.text {
 		<span style="color: red">${SPRING_SECURITY_LAST_EXCEPTION.message}</span>
 		<!-- Login failed due to: this was always appearing so comment out until we find the problem--> 
 </c:if>
+<div class="container">
+	<div id="loginbox" style="margin-top: 50px;"
+		class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+		<div class="panel">
+			<a id='nav-home' title='Home' href='home.html'> <img
+				class='img-responsive' alt='Scout Trax Logo'
+				src='images/scouttrax_logo3.png'>
+
+			</a>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="panel-title">Sign In</div>
+				<div
+					style="float: right; font-size: 80%; position: relative; top: -10px">
+					<a href="forgot.html">Forgot password?</a>
+				</div>
+			</div>
+
+			<div style="padding-top: 30px" class="panel-body">
+
+				<div style="display: none" id="login-alert"
+					class="alert alert-danger col-sm-12"></div>
+
+				<form id="loginform" action="j_spring_security_check" method="post"
+					class="form-horizontal" role="form">
+
+					<div style="margin-bottom: 25px" class="input-group">
+						<span class="input-group-addon"><i
+							class="glyphicon glyphicon-user"></i></span> <input id="login-username"
+							type="text" class="form-control" name="j_username" value=""
+							placeholder="username or email">
+					</div>
+
+					<div style="margin-bottom: 25px" class="input-group">
+						<span class="input-group-addon"><i
+							class="glyphicon glyphicon-lock"></i></span> <input id="login-password"
+							type="password" class="form-control" name="j_password"
+							placeholder="password">
+					</div>
+					<div class="input-group">
+						<div class="checkbox">
+							<label> <input id="login-remember" type="checkbox"
+								name="remember" value="1"> Remember me
+							</label>
+						</div>
+					</div>
+					<div style="margin-top: 10px" class="form-group">
+						<!-- Button -->
+
+						<div class="col-sm-12 controls">
+							<input class='btn btn-success' type="submit" value="Sign In" />
+							<a id="btn-fblogin" href="#" class="btn btn-primary">Login
+								with Facebook</a>
+
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<div class="col-md-12 control">
+							<div
+								style="border-top: 1px solid #888; padding-top: 15px; font-size: 85%">
+								Organization not registered! <a href='organization.html'
+									title='Create a new ScoutTrax account for your pack, troop, team, crew or ship'>
+									Sign Up Here </a>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	if ( $.browser 
+			&& (($.browser.mozilla && $.browser.version <=13) 
+					|| $.browser.msie )) 
+	{
+		//this is probably IE, IE shows up as Mozilla, but FF is at version 34, IE is at version 12
+		alert("Warning!\r\nInternet Explorer may cause some problems with ScoutTrax.org.\r\n The most common is requirements not being saved.\n\r We recommend using Safari, Chrome or Firefox.")
+	}
+
+
+	$(document).ready(function()
+	{ 
+		$('#username').focus();	
+		$('#about').click(function(){
+                   window.open('scoutTraxUserGuide.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
+           });	
+        $('#aboutCub').click(function(){
+                   window.open('userGuideForCubs.html', 'About ScoutTrax', 'WIDTH=800,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=no,titlebar=no'); w.focus(); return false;
+           });
+	});
+</script>
+<!--         
 <div class="table">
 	<div id="centertop" class="row">
 	<table>
@@ -102,8 +178,7 @@ input.text {
 		</table>
 	</div>
 </div>
-
-
+-->
 
 
 

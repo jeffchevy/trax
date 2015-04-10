@@ -3,6 +3,12 @@
        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
+	<definition name="no.definition" template="/tiles/simplelayout.jsp">
+        <put-attribute name="body" value="" />
+    </definition>	
+	<definition name="fblogin" extends="no.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/fblogin.jsp" />
+	</definition>
 	<definition name="main.definition" template="/tiles/main/layout.jsp">
         <put-attribute name="header" value="/tiles/main/header.jsp" />
         <put-attribute name="navigation" value="/tiles/main/navigation.jsp" />
