@@ -9,7 +9,7 @@
 						<a href='#'>Trademarks</a> |
 						<a href='#'>Privacy Statement</a>
 						<br />
-						Copyright &copy; 2011 Scout Trax. All Rights Reserved.
+						Copyright &copy; 2015 Scout Trax. All Rights Reserved.
 					</p>
 				</div>
 			</div>

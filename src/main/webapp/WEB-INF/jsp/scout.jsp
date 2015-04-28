@@ -127,6 +127,7 @@
 									<fmt:formatDate pattern="MM/dd/yyyy" var="birthDateValue" value="${scout.birthDate}" />
 								</c:if>
 								<input name="birthDate" id="datepicker" type="text" value="${birthDateValue}" />
+								Age: <span>${scout.age}</span>
 							</td>
 							<td><form:errors cssClass="errors" path="birthDate" /></td> 
 						</tr>	
@@ -214,8 +215,8 @@
 							  				onclick="location.href='showtransfer.html?scoutId=${scout.id}&fullName=${scout.fullName}&state=${scout.organization.state}&council=${scout.organization.council}'"/>
 									</c:if>
 								</security:authorize>
-								<input class="button" type="button" name="Cancel" value="Cancel" onclick="history.back()" title="Click to cancel this update."/> 
 								<input class="button" type="submit" value="Save" title="Click to save the changes made to this record."/>
+								<input class="button" type="button" name="Cancel" value="Cancel" onclick="history.back()" title="Click to cancel this update."/> 
 							</td>
 						</tr>
 					</table>

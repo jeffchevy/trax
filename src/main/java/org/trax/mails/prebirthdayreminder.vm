@@ -10,7 +10,7 @@
 			</tr>	
 			<tr>
 				<td>
-					<p>$scout.fullName is turning $scout.age on $scout.birthday.</p>
+					<p>$scout.fullName is turning $scout.preBirthdayAge on $scout.birthday.</p>
 					<p>Don't forget to wish him Happy Birthday.</p>
 					<p>Now would be a good time to review his account and help him reach his goals at http://www.scouttrax.org</p> 
 				</td>	

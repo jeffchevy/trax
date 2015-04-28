@@ -3,7 +3,7 @@
 <head>
 	<style type="text/css">
 		body {
-			background: white;
+			background: black;
 			color: black;
 			margin: 0;
 		}
@@ -12,7 +12,8 @@
 		}
 		.table {width: 100%}
 		#centerlogo {
-			padding: 1% 45% 1% 14%;
+			margin-left: auto;
+    		margin-right: auto;
 			width:50%;
 			background: black;
 		}
@@ -53,7 +54,7 @@
 			background: white;
 		}
 		#bottomCenterImage {
-			margin: 2em auto 0 auto;
+			margin: 0.4em auto 0 auto;
 			width: 47em;
 			background: white;
 		}
@@ -62,9 +63,23 @@
 			padding:0;
 			margin:0;
 			font-family:Verdana,Arial;
+			color: white;
 		}
-		.row {
-			padding: 0;
+		#testimonials {
+			text-align:center; 
+			padding:0;
+			margin:0;
+			font-family:Verdana,Arial;
+			font-size:2em;
+		}
+		#donate {
+		}
+		#scouttraxlogo {
+			height: 445px;
+		}
+		#black {
+			background: black;
+			width: 100%;
 		}
 	</style>
 	<link type="text/css" href="css/jquery-ui.all.css" rel="stylesheet" />
@@ -94,18 +109,43 @@
 	</c:if>
 
 </head>
-<body>
+<body class='black'>
 	<div class="table">
 		<div id="centerlogo"  class="row">
 			<table>
 				<tr>
-					<td><a id="nav-home" title='Home' href='home.html'><img alt="Scout Trax Logo" src="images/scouttrax_logo.png" /></a></td>
-					<td><a id="nav-home" title='Login' href='login.html'><img class="startNow" alt="Scout Trax Login" src="images/StartNowText.png" /></a></td>
+					<td>
+						<iframe src="https://www.indiegogo.com/project/scouttrax-org/embedded/10616358" width="222px" height="445px" frameborder="0" scrolling="no"></iframe>
+					</td>
+					<td>
+					    <a id="nav-home" title='Home' href='home.html'>
+					    	<img id='scouttraxlogo' alt="Scout Trax Logo" src="images/scouttrax_logo.png" />
+					    </a>
+					</td>
+					<td>
+						<a id="nav-home" title='Login' href='login.html'>
+							<img alt="Scout Trax Login" src="images/taketour.png" />
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a title="Click here to help us implement the Cub Scout Program Updates by June 1st" href="https://www.indiegogo.com/projects/scouttrax-org/x/10616358" id="donate">
+							<img class="donate" alt="donate" src="images/donate.png" />
+						</a>
+					</td>
+					<td>
+						<a id="nav-home" title='Login' href='login.html'>
+							<img class="startNow" alt="Scout Trax Login" src="images/startnow.png" />
+						</a>
+					</td>
+					<td></td>
 				</tr>
 			</table>
 		</div>
+		<hr>
 		<div id="theList" class="row">Tiger Cub - Wolf - Bear - Webelos - 11 Year Old - Scouts - Varsity - Venture - Duty to God</div>
-		<div id="bottomCenterImage" class="row" >
+		<div id="bottomCenterImage" class="" >
 			<div class='action'>
 			<table>
 				<tr>
@@ -124,6 +164,21 @@
 					</td>
 				</tr>
 			</table>
+			</div>
+			<div class=''>
+			<table>
+				<tr>
+					<td>
+						<p id='testimonials'>be free!</p>
+						<iframe src="https://player.vimeo.com/video/126026782?title=0&byline=0&portrait=0" width="371" height="211" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+					</td>
+					<td>
+						<p id='testimonials'>Testimonials</p>
+						<iframe src="https://player.vimeo.com/video/126076298?title=0&byline=0&portrait=0" width="372" height="211" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+					</td>
+				</tr>
+			</table>
+					 
 			</div>	
 		</div>
 

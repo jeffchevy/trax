@@ -162,8 +162,6 @@ public class Scout extends User implements Comparable<Scout>
 	}
 	
 	/**
-	 * return the age as if his birthday has already occurred. This is only used for the reminders .vm files and should be moved there
-	 * @return
 	 */
 	@Transient
 	public int getAge()
@@ -177,19 +175,50 @@ public class Scout extends User implements Comparable<Scout>
 
 		// Get age based on year
 		int age = today.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
-
 		
-		boolean bornInJanuary = dateOfBirth.get(Calendar.MONTH)==0;
-		boolean todayInDecember = today.get(Calendar.MONTH)==11;
-		if (bornInJanuary && todayInDecember)
+		//now subtract, if it hasn't happened this year yet
+		if (today.get(Calendar.MONTH) < dateOfBirth.get(Calendar.MONTH)) 
 		{
-			//this could be prebirthday reminder for December, January birthday, 
-			age++;
+		    age--;  
+		} 
+		else if (today.get(Calendar.MONTH) == dateOfBirth.get(Calendar.MONTH)
+		      && today.get(Calendar.DAY_OF_MONTH) < dateOfBirth.get(Calendar.DAY_OF_MONTH)) 
+		{
+		    age--;  
 		}
-
+			
 		return age;
 	}
 	
+    /**
+     * return the age as if his birthday has already occurred. This is only used for the reminders .vm files and should be moved there
+     * @return
+     */
+    @Transient
+    public int getPreBirthdayAge()
+    {
+        // Create a calendar object with the date of birth
+        Calendar dateOfBirth = Calendar.getInstance();
+        dateOfBirth.setTime(getBirthDate());
+
+        // Create a calendar object with today's date
+        Calendar today = Calendar.getInstance();
+
+        // Get age based on year
+        int age = today.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
+
+        
+        boolean bornInJanuary = dateOfBirth.get(Calendar.MONTH)==0;
+        boolean todayInDecember = today.get(Calendar.MONTH)==11;
+        if (bornInJanuary && todayInDecember)
+        {
+            //this could be prebirthday reminder for December, January birthday, 
+            age++;
+        }
+
+        return age;
+    }
+
 	public ScoutPosition getPosition()
 	{
 		return position;

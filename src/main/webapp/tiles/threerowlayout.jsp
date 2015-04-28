@@ -156,9 +156,18 @@
 			<tiles:insertAttribute name="top" />
 		</div>
 		<div id="centerlogo"  class="row">
-			<a id='nav-home' title='Home' href='home.html'>
-				<img alt='Scout Trax Logo' src='images/scouttrax_logo.png'>
-			</a>
+			<table>
+				<tr>
+					<td>
+						<iframe src="https://www.indiegogo.com/project/scouttrax-org/embedded/10616358" width="222px" height="445px" frameborder="0" scrolling="no"></iframe>
+					</td>
+					<td>
+					    <a id="nav-home" title='Home' href='home.html'>
+					    	<img id='scouttraxlogo' alt="Scout Trax Logo" src="images/scouttrax_logo.png" />
+					    </a>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div id="centerbottom" class="row" >
 			<tiles:insertAttribute name="bottom" />
