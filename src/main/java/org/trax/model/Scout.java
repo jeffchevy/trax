@@ -168,7 +168,12 @@ public class Scout extends User implements Comparable<Scout>
 	{
 		// Create a calendar object with the date of birth
 		Calendar dateOfBirth = Calendar.getInstance();
-		dateOfBirth.setTime(getBirthDate());
+		Date birthDate2 = getBirthDate();
+		if (birthDate2==null)
+        {
+            return 0;
+        }
+        dateOfBirth.setTime(birthDate2);
 
 		// Create a calendar object with today's date
 		Calendar today = Calendar.getInstance();

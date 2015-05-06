@@ -281,7 +281,7 @@ public class MailService
 		data.put("userIdKey", userIdKey);
 		data.put("passcode", passcode);
 		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "mails/passwordReset.vm", data);
-		logger.debug("mail text: " + text);
+		logger.warn("mail text: " + text);
 
 		sendEmail(NO_REPLY_SCOUT_TRAX_ORG, user.getEmail(), "Password Reset", text, true);
 	}
