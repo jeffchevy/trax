@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -61,6 +62,9 @@ import org.trax.model.cub.BeltLoopConfig;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
 import org.trax.model.cub.PinConfig;
+import org.trax.model.cub.pu2015.ChildAwardConfig;
+import org.trax.model.cub.pu2015.Cub2015RankConfig;
+import org.trax.model.cub.pu2015.Cub2015RankElectiveConfig;
 import org.trax.util.CSVReader;
 
 @Service("importService")
@@ -672,6 +676,8 @@ public class ImportServiceImpl implements ImportService
 			// when the end of the stream has been reached, -1 is returned
 			String line = null;
 			int i = 0;
+			int idIndex = 0;
+			int parentAwardConfigIdIndex=0;
 			int nameIndex = 0;
 			int kindIndex = 0;
 			int descriptionIndex = 0;
@@ -681,17 +687,26 @@ public class ImportServiceImpl implements ImportService
 
 			while ((line = bis.readLine()) != null)
 			{
-				String[] split = line.split(",");
+				if(line.trim().length()==0)
+				{
+					//ignore blank lines
+					continue;
+				}
+				String[] split = line.split("\t");
 				if (i++ == 0)
 				{
 					// its the header
 
 					for (int j = 0; j < split.length; j++)
 					{
-						String columnName = split[j].replaceAll("\"", ""); 
+						String columnName = split[j].replaceAll("\"", "").trim(); 
 						if (columnName.equalsIgnoreCase("Kind"))
 						{
 							kindIndex = j;
+						}
+						else if (columnName.equalsIgnoreCase("Id"))
+						{
+							idIndex = j;
 						}
 						else if (columnName.equalsIgnoreCase("Name"))
 						{
@@ -713,6 +728,10 @@ public class ImportServiceImpl implements ImportService
 						{
 							linkIndex = j;
 						}
+						else if (columnName.equalsIgnoreCase("parentAwardConfigId"))
+						{
+							parentAwardConfigIdIndex = j;
+						}
 						else
 						{
 							System.out.println("****" + split[j] + " is not a valid column name");
@@ -726,10 +745,11 @@ public class ImportServiceImpl implements ImportService
 					try
 					{
 						String kind = split[kindIndex].replaceAll("\"", "");
-						String name = split[nameIndex].replaceAll("\"", "");
-						String description = split[descriptionIndex].replaceAll("\"", "");
+						String name = split[nameIndex].replaceAll("\"", "").trim();
+						String description = split[descriptionIndex].replaceAll("\"", "").trim();
 						Boolean required = split[requiredIndex].replaceAll("\"", "").equals("1");
 						int sortOrder = Integer.valueOf(split[sortOrderIndex].replaceAll("\"", ""));
+						//ignore for now, not sure how to do a selfjoin - - long parentAwardConfigId = Long.valueOf(split[parentAwardConfigIdIndex]);
 						String link=null;
 						try 
 						{
@@ -740,52 +760,26 @@ public class ImportServiceImpl implements ImportService
 							//ignore this, it is not a required field
 						}
 						AwardConfig ac = null;
-						if (kind.equals("A"))
+						switch(kind)
 						{
-							ac = new AwardConfig();
-						}
-						else if (kind.equals("B"))
-						{
-							ac = new BadgeConfig();
-						}
-						else if (kind.equals("R"))
-						{
-							ac = new RankConfig();
-						}
-						else if (kind.equals("D"))
-						{
-							ac = new DutyToGodConfig();
-						}
+							case "A": ac = new AwardConfig(); break;
+							case "B": ac = new BadgeConfig(); break;
+							case "R": ac = new RankConfig();  break;
+							case "D": ac = new DutyToGodConfig(); break;
 						//Cub
-						else if (kind.equals("C"))
-						{
-							ac = new CubRankConfig();
-						}
-						else if (kind.equals("E"))
-						{
-							ac = new CubRankElectiveConfig();
-						}
-						else if (kind.equals("G"))
-						{
-							ac = new ActivityBadgeConfig();
-						}
-						else if (kind.equals("L"))
-						{
-							ac = new BeltLoopConfig();
-						}
-						else if (kind.equals("P"))
-						{
-							ac = new PinConfig();
-						}
-						else if (kind.equals("T"))
-						{
-							ac = new CourseConfig();
-						}
-						else
-						{
+							case "C": ac = new CubRankConfig(); break;
+							case "E": ac = new CubRankElectiveConfig(); break;
+							case "G": ac = new ActivityBadgeConfig(); break;
+							case "L": ac = new BeltLoopConfig(); break; 
+							case "P": ac = new PinConfig();	break;
+							case "T": ac = new CourseConfig(); break;
+							case "I": ac = new Cub2015RankConfig(); break;
+							case "J": ac = new ChildAwardConfig(); break;
+							case "K": ac = new Cub2015RankElectiveConfig(); break;
+						default:
 							throw new Exception(kind
-									+ " is not a valid award Type, 'A', 'B', 'D', 'T' or 'R' for Scout and 'C', 'E', 'G', 'L', 'P' are acceptable");
-						}
+									+ " is not a valid award Type, 'A', 'B', 'D', 'T' or 'R' for Scout and 'C', 'E', 'G', 'L', 'P', 'I', 'J', 'K' for cub are acceptable");
+						} 
 						ac.setName(name);
 						ac.setDescription(description);
 						ac.setRequired(required);
@@ -915,7 +909,13 @@ public class ImportServiceImpl implements ImportService
 				}
 				else //its data
 				{
-					sortOrder = Integer.valueOf(split[sortOrderIndex]);
+					String sortOrderString = split[sortOrderIndex];
+					if(sortOrderString==null || sortOrderString.trim().length()==0)
+					{
+						//must be empty, continue 
+						continue;
+					}
+					sortOrder = Integer.valueOf(sortOrderString);
 					awardConfigId = Long.valueOf(split[awardConfigIdIndex]);
 					text = split[textIndex];
 					int leaderAuthorized = Integer.valueOf(split[leaderAuthorizedIndex].replaceAll("\"", ""));

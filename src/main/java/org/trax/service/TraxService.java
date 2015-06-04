@@ -69,9 +69,9 @@ public interface TraxService
 	List<PinConfig> getAllPins();
 	List<ActivityBadgeConfig> getAllActivityBadges();
 
-	Award updateAwardEarned(List<Scout> scouts, AwardConfig awardConfig, boolean isAwardEarned) throws Exception;
-	Award updateAwardInprogress(List<Scout> scouts, AwardConfig awardConfig, boolean isAwardInprogress) throws Exception;
-	Award updateAward(User signOffLeader, List<Scout> scouts, AwardConfig awardConfig, Date date, boolean isChecked) throws Exception;
+	Award updateAwardEarned(List<Scout> scouts, long awardConfigId, boolean isAwardEarned) throws Exception;
+	Award updateAwardInprogress(List<Scout> scouts, long awardConfigId, boolean isAwardInprogress) throws Exception;
+	Award updateAward(List<Scout> scouts, long awardConfigId, Date date, boolean isChecked) throws Exception;
 	Award updateRequirement(long requirementConfigId, boolean isChecked, User signOffLeader, AwardConfig awardConfig, List<Scout> scouts, String passedOffDateString) throws Exception;
 	Award getAward(long awardId);
 	void saveServiceLog(List<Scout> scouts, ServiceLogEntry logEntry);

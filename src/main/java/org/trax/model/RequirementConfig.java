@@ -1,6 +1,7 @@
 package org.trax.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -25,7 +27,9 @@ public class RequirementConfig implements Comparable<RequirementConfig>, Seriali
 	private long id;
 	private AwardConfig awardConfig;
 	private Boolean canSelect=true;
-    
+	private boolean isAward;
+	private Date earnedDate;
+	
 	public RequirementConfig(String text2, int sortOrder2, Boolean leaderAuthorized2)
 	{
 		this.setText(text2);
@@ -101,6 +105,30 @@ public class RequirementConfig implements Comparable<RequirementConfig>, Seriali
 	public void setAwardConfig(AwardConfig awardConfig)
 	{
 		this.awardConfig = awardConfig;
+	}
+	
+	/**
+	 * Image sources can be set for display purposes only
+	 * @return
+	 */
+	@Transient
+	public boolean isAward() 
+	{
+		return isAward; 
+	}
+	public void setIsAward(boolean isAward)
+	{
+		this.isAward = isAward;
+	}
+	
+	@Transient
+	public Date getEarnedDate()
+	{
+		return earnedDate;
+	}
+	public void setEarnedDate(Date earnedDate)
+	{
+		this.earnedDate = earnedDate;
 	}
 	
 	public int compareTo(RequirementConfig rc2)

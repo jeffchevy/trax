@@ -142,7 +142,7 @@ public class MailService
 		}
 		catch (Exception e)
 		{
-			logger.error("\n*** FAILED to send email, the Mail server must not be setup correctly.\n"+ toAddress+" "+subject);
+			logger.error("\n*** FAILED to send email, the Mail server must not be setup correctly.\n"+ toAddress+" "+subject +"\n"+text);
 		}
 	}
 
@@ -190,7 +190,7 @@ public class MailService
 		}
 		catch (Exception e)
 		{
-			logger.error("\n*** FAILED to send email, the Mail server must not be setup correctly.\n"+ recipients+" "+subject);
+			logger.error("\n*** FAILED to send email, the Mail server must not be setup correctly.\n"+ recipients+" "+subject +"\n"+text);
 		}
 	}
 

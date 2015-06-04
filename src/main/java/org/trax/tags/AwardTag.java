@@ -61,7 +61,6 @@ public class AwardTag extends TagSupport
 				return SKIP_BODY;
 			}
 			Map<Long, Long> requirementConfigIdAndCount = getRequirementConfigIdAndCount();
-			String imageSource = "";
 			String pinLink="";
 			String electiveLink="";
 			String worksheetLink="";
@@ -70,6 +69,8 @@ public class AwardTag extends TagSupport
 			
 			boolean isRank = false;
 			AwardConfig awardConfig = award.getAwardConfig();
+			activePageId = awardConfig.getTypeName().replace(' ', '_');
+
 			if(awardConfig.getLink()!=null && scout.getUnit().isCub()==false)
 			{
 				worksheetLink = "<a id='worksheetLink' title='Click here to view "+awardConfig.getName()+" worksheet' target='_blank' href='"+awardConfig.getLink()+"'>" +
@@ -78,24 +79,21 @@ public class AwardTag extends TagSupport
 
 			if (awardConfig instanceof RankConfig)
 			{
-				requirementsLabel = "Rank Requirements";
 				if(awardConfig instanceof CubRankConfig && scout.getUnit().isCub()==true)
 				{
-					activePageId = awardConfig.getName().replace(' ', '_');
-					imageSource = "images/cub/ranks/"+awardConfig.getName();
-					if (activePageId.equals("Wolf") || activePageId.equals("Bear"))
+					if (awardConfig.getName().equals("Wolf") || awardConfig.getName().equals("Bear"))
 					{
 						electiveLink = "<div><a id='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 							"Click here for Arrow Point Trail (Electives)</a></div>" +
 						"<a href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 								"<img height='40' alt='"+awardConfig.getName()+" Electives' title='"+awardConfig.getName()+" Electives' src='images/cub/electives/Electives1.png'></a>";
 					}
-					else if (activePageId.equals("Tiger_Cub"))
+					else if (awardConfig.getName().equals("Tiger Cub"))
 					{
 						electiveLink = "<div><a id='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 						"Click here for Tiger Cub Track Bead (Electives)</a></div>";
 					}
-					else if (activePageId.equals("Webelos_Award"))
+					else if (awardConfig.getName().equals("Webelos Award"))
 					{
 						electiveLink = "<div><a id='electiveLink' href='cubBadges.html?type=Activity Badges'>" +
 							"Click here for Activity Badges</a></div>"+
@@ -110,57 +108,20 @@ public class AwardTag extends TagSupport
 					{
 						activePageId = "Palms";
 					}
-					else
-					{
-						activePageId = awardConfig.getName().replace(' ', '_');
-					}
-					imageSource = "images/Ranks/"+awardConfig.getName();
 				}
 			} 
-			else if(awardConfig instanceof BadgeConfig)
-			{
-				imageSource = "images/meritbadges/"+awardConfig.getName();
-				activePageId="Badges";
-			}
-			else if(awardConfig instanceof DutyToGodConfig)
-			{
-				imageSource = "images/awards/dtg/"+awardConfig.getName();
-				activePageId="DTG";
-			}
 			else if(awardConfig instanceof BeltLoopConfig)
 			{
 				requirementsLabel = "Belt Loop Requirements";
 				electiveLink = "<div class='row'><div id='pinLinkDiv'>" +
 						"<a id='pinLink' href='selectPin.html?awardName="+awardConfig.getName()+"'>Click here to view "+awardConfig.getName() + " Pin requirements.</a>" +
 								"</div></div>";
-				imageSource = "images/cub/beltloops/"+awardConfig.getName();
-				activePageId="Belt_Loops";
 			}
 			else if(awardConfig instanceof PinConfig)
 			{
 				requirementsLabel = "Pin Requirements";
-				imageSource = "images/cub/pins/"+awardConfig.getName();
-				activePageId="Pins";
 			}
-			else if(awardConfig instanceof CubRankElectiveConfig)
-			{
-				imageSource = "images/cub/electives/"+awardConfig.getName();
-				activePageId=awardConfig.getName().substring(0, awardConfig.getName().indexOf(" Electives"));
-			}
-			else if(awardConfig instanceof ActivityBadgeConfig)
-			{
-				imageSource = "images/cub/activitybadges/"+awardConfig.getName();
-				activePageId="Webelos_Award";
-			}
-			else if(awardConfig instanceof CubAwardConfig)
-			{
-				imageSource = "images/cub/awards/"+awardConfig.getName();
-				activePageId="CubAwards";
-			}
-			else
-			{
-				imageSource = "images/awards/"+awardConfig.getName();
-			}
+			
 			writer.write("<span id='"+activePageId+"'></span>\n");// Column 1
 			writer.write("<div id='page1' class='cell'>\n");// Column 1
 			
@@ -187,7 +148,7 @@ public class AwardTag extends TagSupport
 					electiveLink +
 					"			</div>" +
 					"			<div id='awardimagediv' class='cell'>" +
-					"				<img id='awardimage' alt='"+awardConfig.getName()+"' src='"+imageSource.replace("'", "")+".png'>" +
+					"				<img id='awardimage' alt='"+awardConfig.getName()+"' src='"+awardConfig.getImageSource()+"'>" +
 					"				<div id='previousnextaward'>" +
 					"					<a href='prevAward.html?awardConfigId="+awardConfig.getId()+"'><img alt='Show Previous Badge' title='Show Previous Badge' src='images/resultset_previous.png'></a>" + //TODO images not showing up???
 					"					<a href='nextAward.html?awardConfigId="+awardConfig.getId()+"'><img alt='Show Next Badge' title='Show Next Badge' src='images/resultset_next.png'></a>" +
@@ -728,6 +689,10 @@ public class AwardTag extends TagSupport
 		splitMap.put("Fitness", 5);
 		splitMap.put("Aquanaut", 4);
 		splitMap.put("God and Me", 21);
+		splitMap.put("Tiger Elective Adventures 2015", 21);
+		splitMap.put("Wolf Elective Adventures 2015", 21);
+		splitMap.put("Bear Elective Adventures 2015", 21);
+		splitMap.put("AOL Elective Adventures 2015", 21);
 	}
 
 }

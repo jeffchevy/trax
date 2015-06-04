@@ -37,6 +37,16 @@
         <put-attribute name="scoutnames" value="" />
         <put-attribute name="sponsor" value="/tiles/sponsor.jsp" />
     </definition>
+    <definition name="cub2015.definition" template="/tiles/layout.jsp">
+        <put-attribute name="mainmenu" value="/tiles/mainmenu.jsp" />
+        <put-attribute name="earned" value="/tiles/earned.jsp" />
+        <put-attribute name="rankmenu" value="/tiles/cub/2015/rankmenu.jsp" />
+        <put-attribute name="inprogress" value="/tiles/inprogress.jsp" />
+        <put-attribute name="pages" value="/tiles/pages.jsp" />
+        <put-attribute name="footer" value="" />
+        <put-attribute name="scoutnames" value="" />
+        <put-attribute name="sponsor" value="/tiles/sponsor.jsp" />
+    </definition>
     <definition name="troopmanage.definition" template="/tiles/layout.jsp">
         <put-attribute name="mainmenu" value="/tiles/mainmenu.jsp" />
         <put-attribute name="rankmenu" value="" />
@@ -75,6 +85,11 @@
         <put-attribute name="top" value="/WEB-INF/jsp/login.jsp" />
         <put-attribute name="bottom" value="/WEB-INF/jsp/loginlinks.jsp" />
     </definition>
+    <definition name="uncaughtException" extends="threerowlayout.definition">
+        <put-attribute name="top" value="/WEB-INF/jsp/uncaughtException.jsp" />
+        <put-attribute name="bottom" value="/WEB-INF/jsp/loginlinks.jsp" />
+    </definition>
+    
     <definition name="forgot" extends="threerowlayout.definition">
         <put-attribute name="top" value="/WEB-INF/jsp/forgot.jsp" />
     </definition>
@@ -100,6 +115,10 @@
         <put-attribute name="top" value="/WEB-INF/jsp/emailVerification.jsp" />
     </definition>
 
+ 	<definition name="cub2015Advancement" extends="cub2015.definition">
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
+		<put-attribute name="footer" value="/tiles/footer.jsp" />
+    </definition>
     <definition name="cubAdvancement" extends="cub.definition">
 		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
 		<put-attribute name="footer" value="/tiles/footer.jsp" />
@@ -118,6 +137,10 @@
         <put-attribute name="pages" value="/WEB-INF/jsp/showBadges.jsp" />
 		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
     	<put-attribute name="sponsor" value="" />
+    </definition>
+    <definition name="showCub2015*" extends="cub2015.definition">
+        <put-attribute name="pages" value="/WEB-INF/jsp/cub/showCub{1}.jsp" />
+		<put-attribute name="scoutnames" value="/tiles/scoutnames.jsp" />
     </definition>
     <definition name="showCub*" extends="cub.definition">
         <put-attribute name="pages" value="/WEB-INF/jsp/cub/showCub{1}.jsp" />

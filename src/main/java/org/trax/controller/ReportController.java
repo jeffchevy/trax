@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.sf.jasperreports.engine.JRException;
@@ -63,10 +64,10 @@ import org.trax.model.cub.PinConfig;
 public class ReportController extends AbstractScoutController
 {
 	@RequestMapping("/scoutreport.html")
-	public ModelAndView createScoutReport(Model model, HttpServletRequest request, HttpServletResponse response) throws IOException
+	public ModelAndView createScoutReport(Model model, HttpSession session, HttpServletResponse response) throws IOException
 	{
 		ModelAndView mav = new ModelAndView("scoutreport");
-		List<Scout> scouts = getScouts(request);
+		List<Scout> scouts = getScouts(session);
 		List<ScoutReportDto> scoutReports = new ArrayList<ScoutReportDto>();
 		for (Scout scout : scouts)
 		{
@@ -502,11 +503,11 @@ public class ReportController extends AbstractScoutController
 	 * 
 	 */
 	@RequestMapping(value = "/toFirstClass.html", method = RequestMethod.GET)
-	public ModelAndView toFirstClass(HttpServletRequest request, Map<String, Object> model)
+	public ModelAndView toFirstClass(HttpSession session, Map<String, Object> model)
 	{
 		try
 		{
-			model.put("htmlTables", getTrailReport(request));
+			model.put("htmlTables", getTrailReport(session));
 		}
 		catch (Exception e)
 		{
@@ -518,12 +519,12 @@ public class ReportController extends AbstractScoutController
 	 * ajax call with the actual data
 	 */
 	@RequestMapping("/toFirstClassReport.html")
-	@ResponseBody public String toFirstClassReport(HttpServletRequest request) throws Exception
+	@ResponseBody public String toFirstClassReport(HttpSession session) throws Exception
 	{
 		String htmlString = null;
 		try
 		{
-			htmlString = getTrailReport(request);
+			htmlString = getTrailReport(session);
 		}
 		catch (Exception e)
 		{
@@ -533,11 +534,11 @@ public class ReportController extends AbstractScoutController
 		return htmlString;
 	}
 
-	private String getTrailReport(HttpServletRequest request) throws Exception
+	private String getTrailReport(HttpSession session) throws Exception
 	{
 		String htmlString = "";
 
-		Scout selectedScout = getSelectedScout(request);
+		Scout selectedScout = getSelectedScout(session);
 
 		if(selectedScout==null)
 		{
@@ -551,11 +552,11 @@ public class ReportController extends AbstractScoutController
 			{
 				tableCaption = "Tiger to Bear Report";
 			}
-			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(request, null, tableCaption)+"</div>";
+			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(session, null, tableCaption)+"</div>";
 		}
 		else
 		{
-			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(request, null, "Scout to First Class")+"</div>";
+			htmlString += "<div class='scoutToFirstTableDiv'>"+generateTranslatedReportTable(session, null, "Scout to First Class")+"</div>";
 		}
 	
 		return htmlString;
@@ -579,7 +580,7 @@ public class ReportController extends AbstractScoutController
 
 			award.getAwardConfig();
 
-			htmlString = generateTranslatedReportTable(request, award.getAwardConfig().getId(), award.getAwardConfig().getName());
+			htmlString = generateTranslatedReportTable(request.getSession(), award.getAwardConfig().getId(), award.getAwardConfig().getName());
 		}
 		catch (Exception e)
 		{
@@ -591,10 +592,10 @@ public class ReportController extends AbstractScoutController
 	
 	/**put the scout names as the table column header and the requirements as the row headers
 	 * @param currentAwardConfigId null if not  */
-	private String generateTranslatedReportTable(HttpServletRequest request, Long currentAwardConfigId, String tableCaption) throws Exception
+	private String generateTranslatedReportTable(HttpSession session, Long currentAwardConfigId, String tableCaption) throws Exception
 	{
 		String htmlString = "";
-		List<Scout> scouts = getScouts(request);
+		List<Scout> scouts = getScouts(session);
 		String completedTd = "<td class='completed' title='Completed'>X</td>";
 		String emptyTd = "<td>&nbsp;</td>";
 		String canSelectTd = "<td class='completed' title='Completed'></td>";
@@ -704,7 +705,7 @@ public class ReportController extends AbstractScoutController
 		}//end of awards
 		
 		htmlString += "</table>"; // table
-		request.getSession().setAttribute("todaysDate", new Date());
+		session.setAttribute("todaysDate", new Date());
 		
 		return htmlString;
 	}

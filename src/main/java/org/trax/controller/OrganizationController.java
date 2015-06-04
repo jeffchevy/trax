@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.jfree.util.Log;
@@ -217,7 +218,7 @@ public class OrganizationController extends AbstractScoutController
 	}
 	
 	@RequestMapping(value = "/transferScout.html", method = RequestMethod.GET)
-	public String transferScout(HttpServletRequest request, Map<String, Object> model, @Valid ScoutTransfer scoutTransfer)
+	public String transferScout(HttpSession session, Map<String, Object> model, @Valid ScoutTransfer scoutTransfer)
 	{
 		String message;
 		try
@@ -241,7 +242,7 @@ public class OrganizationController extends AbstractScoutController
 			
 			message = traxService.transferScout(scoutTransfer.getScoutId(), scoutTransfer.getLeader(), scoutTransfer.getCouncilName());
 			//take the transferred scout out of memory
-			List<Scout> scouts = getScouts(request);
+			List<Scout> scouts = getScouts(session);
 			List<Scout> newScouts = new ArrayList<Scout>();
 			
 			for (Scout scout : scouts)
@@ -251,7 +252,7 @@ public class OrganizationController extends AbstractScoutController
 					newScouts.add(scout);
 				}
 			}
-			request.getSession().setAttribute(SCOUTS, newScouts);
+			session.setAttribute(SCOUTS, newScouts);
 		}
 		catch (Exception e)
 		{

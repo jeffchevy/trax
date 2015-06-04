@@ -74,7 +74,7 @@
 			background: #E0DE7D !important;
 			color: black !important;
 		}
-		.datebox, #awarddatebox {
+		.datebox, #awarddatebox, .awarddatebox {
 		    background: -moz-linear-gradient(right center , #111133, #9999B2) repeat scroll 0 0 transparent;
 		    background: -moz-linear-gradient(right center , #AEB239, #FFFFAA) repeat scroll 0 0 transparent !important;
 		}
@@ -187,19 +187,19 @@
 		else if($('#ServiceLog').length != 0){$('a', '#nav-service').addClass('active');}
 		else if($('#CampLog').length != 0){$('a', '#nav-camping').addClass('active');}
 		else if($('#Badges').length != 0){$('a', '#nav-badges').addClass('active');}
-		else if($('#DTG').length != 0){$('a', '#nav-dtg').addClass('active');}
+		else if($('#DutyToGod').length != 0){$('a', '#nav-dtg').addClass('active');}
 		else if($('#Faith').length != 0){$('a', '#nav-faith').addClass('active');}
 		else if($('#Awards').length != 0){$('a', '#nav-awards').addClass('active');}
 		else if($('#bronze').length != 0){$('a', '#nav-bronze').addClass('active');}
 		else if($('#gold').length != 0){$('a', '#nav-gold').addClass('active');}
 		else if($('#silver').length != 0){$('a', '#nav-silver').addClass('active');}
 		else if($('#ranger').length != 0){$('a', '#nav-ranger').addClass('active');}
-		else if($('#Bobcat').length != 0){$('a', '#nav-bobcatrank').addClass('active');}
-		else if($('#Tiger_Cub').length != 0){$('a', '#nav-tigerrank').addClass('active');}
-		else if($('#Bear').length != 0){$('a', '#nav-bearrank').addClass('active');}
-		else if($('#Wolf').length != 0){$('a', '#nav-wolfrank').addClass('active');}
-		else if($('#Webelos_Award').length != 0){$('a', '#nav-webelosrank').addClass('active');}
-		else if($('#Arrow_Of_Light').length != 0){$('a', '#nav-arrowoflightrank').addClass('active');}
+		else if($('#Bobcat, #Bobcat_2015').length != 0 ){$('a', '#nav-bobcatrank').addClass('active');}
+		else if($('#Tiger_Cub, #Tiger_2015').length != 0 || $('#Tiger_Elective_Adventures_2015').length != 0 ){$('a', '#nav-tigerrank').addClass('active');}
+		else if($('#Bear, #Bear_2015, #Bear_Elective_Adventures_2015').length != 0 ){$('a', '#nav-bearrank').addClass('active');}
+		else if($('#Wolf, #Wolf_2015, #Wolf_Elective_Adventures_2015').length != 0){$('a', '#nav-wolfrank').addClass('active');}
+		else if($('#Webelos_Award, #Webelos_2015, #Webelos_\\&_AOL_Elective_Adventures_2015').length != 0){$('a', '#nav-webelosrank').addClass('active');}
+		else if($('#Arrow_Of_Light, #Arrow_of_Light_2015').length != 0){$('a', '#nav-arrowoflightrank').addClass('active');}
 		else if($('#Belt_Loops').length != 0){$('a', '#nav-beltloops').addClass('active');}
 		else if($('#Activity_Badges').length != 0){$('a', '#nav-activitybadges').addClass('active');}
 		else if($('#Pins').length != 0){$('a', '#nav-pins').addClass('active');}
@@ -315,11 +315,11 @@
 				}
 			}
 		});
-	    
 	    /*$('.requirementscheckbox').each(function(){
 			$(this).prop("indeterminate", true);
 		});*/
 	});
+	
 	</script>
 	</head>
 	<body id="body">
@@ -339,6 +339,9 @@
 											<tiles:insertAttribute name="earned" />
 										</div>
 									</div>
+									<security:authorize access='principal.unit.isCub'>
+									<img src="images/cub/2015/newfeature.png">
+									</security:authorize>
 								</div>
 								<div class='row'>
 									<div class='cell'>
@@ -373,8 +376,19 @@
 						<div id='rightcolumn' class='cell'>
 							<div class="link">
 								<div>Hello, <security:authentication property="principal.firstName" /></div>
-								<input id="logout" value="Logout" type="button" class="button" onclick="location.href='logout.html'"/>
-								<input value="Feedback" type="button" class="button" onclick="location.href='showfeedback.html'"/>
+								<div><input id="logout" value="Logout" type="button" class="button" onclick="location.href='logout.html'"/></div>
+								<div><input value="Feedback" type="button" class="button" onclick="location.href='showfeedback.html'"/></div>
+								<security:authorize access='principal.unit.isCub'>
+									<div>
+										<label>Switch to </label>
+										<c:if test="${Cub2015 == true }">
+											<input id="toggle2015Cubs" value="Classic Cubs" type="button" class="button" onclick="location.href='switchTo2015Cubs.html'"/>
+										</c:if>
+										<c:if test="${Cub2015==null || Cub2015 == false }">
+											<input id="toggle2015Cubs" value="2015 Cubs" type="button" class="button" onclick="location.href='switchTo2015Cubs.html'"/>
+										</c:if>
+									</div>
+								</security:authorize>
 							</div>
 							<!-- 
 							<div id="fb-root"></div>

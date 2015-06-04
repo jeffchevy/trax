@@ -2,19 +2,15 @@ package org.trax.controller;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
+import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,14 +24,12 @@ import org.trax.model.DutyToGod;
 import org.trax.model.DutyToGodConfig;
 import org.trax.model.RankConfig;
 import org.trax.model.Requirement;
-import org.trax.model.RequirementConfig;
 import org.trax.model.Scout;
 import org.trax.model.cub.ActivityBadgeConfig;
 import org.trax.model.cub.BeltLoopConfig;
 import org.trax.model.cub.CubAwardConfig;
 import org.trax.model.cub.CubDutyToGodConfig;
 import org.trax.model.cub.PinConfig;
-import org.trax.service.TraxService;
 
 @Controller
 public class BadgeController extends AbstractScoutController 
@@ -75,8 +69,16 @@ public class BadgeController extends AbstractScoutController
     }
     
     @RequestMapping(value="/cubBadges.html", method=RequestMethod.GET)
-    public String showCubBadges(Map<String, Object> model, @RequestParam(value="type", required=true)String type)
+    public String showCubBadges(HttpSession session, Map<String, Object> model, @RequestParam(value="type", required=true)String type)
     {
+    	Object cub2015 = (Boolean)session.getAttribute(CUB2015);
+		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
+		String returnval = "showCubPins";
+		if (isCub2015)
+		{
+			returnval = "showCub2015Pins";//ignore the pins here for now
+		}
+		
     	if("Belt Loops".equals(type))
     	{
     		List<BeltLoopConfig> awardConfigs = traxService.getAllBeltLoops();
@@ -87,25 +89,25 @@ public class BadgeController extends AbstractScoutController
     	{
     		List<ActivityBadgeConfig> awardConfigs = traxService.getAllActivityBadges();
     		model.put("badgeConfigs", awardConfigs);
-            return "showCubPins";
+            return returnval;
     	}
     	else if("Pins".equals(type))
     	{
     		List<PinConfig> awardConfigs = traxService.getAllPins();
     		model.put("badgeConfigs", awardConfigs);
-            return "showCubPins";    		
+            return returnval;    		
     	}
     	else if("Faith".equals(type))
     	{
     		Collection<CubDutyToGodConfig> cubDtgs = traxService.getCubDtgs();
         	model.put("badgeConfigs", cubDtgs);
-	        return "showCubPins";
+	        return returnval;
     	}
     	else if("CubAwards".equals(type))
     	{
     		Collection<CubAwardConfig> awardConfigs = traxService.getCubAwards();
     		model.put("badgeConfigs", awardConfigs);
-            return "showCubPins";    		
+            return returnval;    		
     	}
     	Collection<RankConfig> palms = traxService.getAllPalms();
         model.put("badgeConfigs", palms);
@@ -141,7 +143,9 @@ public class BadgeController extends AbstractScoutController
 		String returnValue = "advancement";
 		if ( scout.getUnit().isCub())
 		{
-			returnValue = "cubAdvancement";
+			Object cub2015 = (Boolean)request.getSession().getAttribute(CUB2015);
+			Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
+			returnValue = isCub2015?"cub2015Advancement":"cubAdvancement"; //default;
 		}
 		return returnValue;
 	}
@@ -216,7 +220,10 @@ public class BadgeController extends AbstractScoutController
 			foundAward.setRequirements(new HashSet<Requirement>());
 		}
 		request.getSession().setAttribute("award", foundAward);
-		return "cubAdvancement";
+
+		Object cub2015 = (Boolean)request.getSession().getAttribute(CUB2015);
+		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
+		return isCub2015?"cub2015Advancement":"cubAdvancement"; //default;
 	}
 
 	//@TODO combine this with select badges above
@@ -266,13 +273,13 @@ public class BadgeController extends AbstractScoutController
 
 	@RequestMapping(value = "/getRankMeritBadges.html", method = RequestMethod.GET)
 	public @ResponseBody
-	String reportTable(HttpServletRequest request, HttpServletResponse response) throws Exception
+	String reportTable(HttpSession session, HttpServletResponse response) throws Exception
 	{
 		String htmlString = "";
 		try
 		{
-			Award award = (Award) request.getSession().getAttribute("award");
-			List<Scout> scouts = getScouts(request);
+			Award award = (Award) session.getAttribute("award");
+			List<Scout> scouts = getScouts(session);
 			
 			htmlString = traxService.getRankMeritBadges(award.getAwardConfig().getName(), scouts);
 		}
