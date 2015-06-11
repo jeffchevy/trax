@@ -614,6 +614,7 @@ public class TraxServiceImpl implements TraxService
 	public List<Scout> getScouts(long organizationId, String unitTypeName)
 	{
 		BaseUnitType unitType = baseUnitTypeDao.find(unitTypeName);
+		
 		return userDao.getScouts(organizationId, unitType);
 	}
 
