@@ -30,4 +30,9 @@ public class Cub2015RankElectiveConfig extends AwardConfig//implements Comparabl
 	{
 		return "images/cub/2015/"+getName()+".png";
 	}
+	@Transient
+	public String getTypeName()
+	{
+		return getName().substring(0, getName().indexOf(" Elective"));
+	}
 }

@@ -328,7 +328,7 @@ public class Award2015Tag extends TagSupport
 				{
 					imageName = "images/cub/2015/Adventures in Coins.png";
 				}
-				else if (awardConfig.getName().equals("Bear2015"))
+				else if (awardConfig.getName().equals("Bear 2015"))
 				{
 					imageName = "images/cub/2015/Baloo the Builder.png";
 				}

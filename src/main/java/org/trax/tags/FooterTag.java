@@ -31,6 +31,10 @@ public class FooterTag extends TagSupport
 		try
 		{
 			Scout scout = getScout();
+			if (scout == null ) //no scout or many are selected
+			{
+				return SKIP_BODY;
+			}
 			Map<Long, Long> requirementConfigIdAndCount = getRequirementConfigIdAndCount();
 			if(scout != null || requirementConfigIdAndCount!=null)
 			{
@@ -73,22 +77,9 @@ public class FooterTag extends TagSupport
 				}
 				else
 				{
-					/*
-					List<Scout> scouts = (List<Scout>)pageContext.getSession().getAttribute("scouts");
-					for (Scout oneScout : scouts)
-					{
-						if (oneScout.isSelected()||oneScout.isChecked())
-						{
-							String fullName = oneScout.getFirstName()+(scouts.get(scouts.size()-1).equals(oneScout)?"":", ");
-							writer.write(fullName);
-						}
-					}
-					writer.write("</span>");
-					*/ 
 					writer.write("</div>");// cell
 				}
-				//writer.write("</div>");// cell
-				
+
 				//column 2
 				//writer.write("			<div id='reminder' class='cell tablefooter'>" +	"<span class='smalllabel'>reminders</span>"+/*<span class='biglabel'>"+award.getReminders()+"</span>*/"</div>\n");
 				writer.write("		</div>\n");// row
@@ -98,8 +89,7 @@ public class FooterTag extends TagSupport
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Not a problem, just now scout loaded yet, skip this tag
 		}
 
 		return SKIP_BODY;

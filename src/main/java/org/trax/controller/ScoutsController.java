@@ -85,7 +85,7 @@ public class ScoutsController extends AbstractScoutController
 	@RequestMapping("/advancement.html")
 	public String showAdvancement(HttpSession session, Map<String, Object> model) throws Exception
 	{
-		String returnType = "";
+		String returnType = "advancement";
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		//update as soon as they log in TODO this should probably be put in a seperate call. 
 		traxService.updateLoginDate(user.getId());
@@ -96,15 +96,15 @@ public class ScoutsController extends AbstractScoutController
 		{
 			List<Scout> scouts = getScouts(session);
 			
-			if(scouts==null)
+			if(scouts.size()==0)
 			{
 				//no scouts go to manage the troop to add troop members
 				returnType = "redirect:troopManage.html";
 			}
 			else
-			if(scouts!=null)
+			if(scouts!=null && scouts.size()>0)
 			{
-				Scout scout = getScout(session, scouts);
+				Scout scout = getScout(session);
 				
 				Award award = (Award)session.getAttribute(AWARD);
 				while(award==null)
@@ -144,7 +144,6 @@ public class ScoutsController extends AbstractScoutController
 					throw new Exception("Award configuration data has not been loaded.");
 				}
 				
-				
 				if(isCub)
 				{
 					returnType = updateCubAward(session, scout, award, null);
@@ -157,7 +156,6 @@ public class ScoutsController extends AbstractScoutController
 				session.setAttribute("unitTypes", traxService.getUnitTypes());
 				session.setAttribute("navigationItem", returnType);
 	
-				
 				if (user instanceof Leader)
 				{
 					session.setAttribute(UserController.ORGANIZATION, user.getOrganization());
@@ -195,30 +193,6 @@ public class ScoutsController extends AbstractScoutController
  		return returnType;
 	}
 
-	protected Scout getScout(HttpSession session, List<Scout> scouts)
-	{
-		Scout scout = (Scout)session.getAttribute(SCOUT);
-		if(scout==null)
-		{
-			//set defaults
-			for (Scout theScout : scouts)
-			{
-				if (theScout.isSelected() || theScout.isChecked())
-				{
-					scout = theScout;
-					break;
-				}
-			}
-			if (scout==null)
-			{
-				//none selected make it the first one
-				scout = scouts.iterator().next();
-			}
-		}
-		scout = traxService.refreshScout(scout); //refresh
-		return scout;
-	}
-
 	/*
 	 * If the rank is a classic cub and they just switched to 2015, get the 2015 rank 
 	 */
@@ -245,17 +219,31 @@ public class ScoutsController extends AbstractScoutController
 			}
 			else if (rankName==null && award!=null)
 			{
-				if(award.getAwardConfig().getName().contains(" "))
+				String awardName = award.getAwardConfig().getName();
+				if(awardName.contains(" "))
 				{
-					//"Tiger Cubs" fouls this up, so strip off everything past the space
-					rankName = award.getAwardConfig().getName().substring(0, award.getAwardConfig().getName().indexOf(" "));
+					if (awardName.contains("Elective"))
+					{
+						if (isCub2015 )
+						{
+							//the scout never earns this so just load the award
+							session.setAttribute(AWARD, award);
+							return "cub2015Advancement";
+						}
+					}
+					else
+					{
+						//"Tiger Cubs" fouls this up, so strip off everything past the space
+						rankName = awardName.substring(0, awardName.indexOf(" "));
+					}
 				}
 				else
 				{
-					rankName = award.getAwardConfig().getName();
+					rankName = awardName;
 				}
 			}
 			
+			//now get the ward and load it in the session
 			Award foundAward = null;
 			
 			for (Award scoutAward : scout.getAwards())
@@ -279,7 +267,7 @@ public class ScoutsController extends AbstractScoutController
 				}
 				else
 				{
-					if (scoutAward.getAwardConfig() instanceof CubRankConfig || scoutAward.getAwardConfig() instanceof CubRankElectiveConfig)
+					if (scoutAward.getAwardConfig() instanceof CubRankConfig)
 					{
 						//default to the first one, so we if we don't find it, we at least get one
 						foundAward = scoutAward;
