@@ -21,6 +21,17 @@
         </attribute>
     </tag>	
     <tag> 
+        <name>award2015</name> 
+        <tag-class>org.trax.tags.Award2015Tag</tag-class>
+        <body-content>JSP</body-content>
+        <display-name>show the Award and its requirements</display-name> 
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <description>The name of the Award</description>
+        </attribute>
+    </tag>	
+    <tag> 
         <name>logentry</name> 
         <tag-class>org.trax.tags.LogEntryTag</tag-class>
         <body-content>JSP</body-content>

@@ -159,9 +159,6 @@
 			<table>
 				<tr>
 					<td>
-						<iframe src="https://www.indiegogo.com/project/scouttrax-org/embedded/10616358" width="222px" height="445px" frameborder="0" scrolling="no"></iframe>
-					</td>
-					<td>
 					    <a id="nav-home" title='Home' href='home.html'>
 					    	<img id='scouttraxlogo' alt="Scout Trax Logo" src="images/scouttrax_logo.png" />
 					    </a>

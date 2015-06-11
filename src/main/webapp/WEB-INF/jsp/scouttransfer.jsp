@@ -26,7 +26,7 @@
 						alert("No councils exist for this state");
 					})
 					.complete(function() { 
-						alert("complete"); 
+						//alert("complete"); 
 					});
 				});
 			});

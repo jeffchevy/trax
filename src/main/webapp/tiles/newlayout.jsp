@@ -139,7 +139,7 @@
 			else if($('#ServiceLog').length != 0){$('a', '#nav-service').addClass('active');}
 			else if($('#CampLog').length != 0){$('a', '#nav-camping').addClass('active');}
 			else if($('#Badges').length != 0){$('a', '#nav-badges').addClass('active');}
-			else if($('#DTG').length != 0){$('a', '#nav-dtg').addClass('active');}
+			else if($('#DutyToGod').length != 0){$('a', '#nav-dtg').addClass('active');}
 			else if($('#Faith').length != 0){$('a', '#nav-faith').addClass('active');}
 			else if($('#Awards').length != 0){$('a', '#nav-awards').addClass('active');}
 			else if($('#bronze').length != 0){$('a', '#nav-bronze').addClass('active');}

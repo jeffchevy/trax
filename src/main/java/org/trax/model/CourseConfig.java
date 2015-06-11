@@ -2,6 +2,7 @@ package org.trax.model;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -16,5 +17,11 @@ public class CourseConfig extends AwardConfig//implements Comparable<AwardConfig
 		this.setDescription(description);
 		this.setSortOrder(sortOrder);
 		this.setRequired(required);
+	}
+	
+	@Transient
+	public String getImageSource()
+	{
+		return "images/awards/dtg/"+getName()+".png";
 	}
 }

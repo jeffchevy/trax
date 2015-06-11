@@ -38,6 +38,9 @@ import org.trax.dao.cub.BeltLoopConfigDao;
 import org.trax.dao.cub.CubRankConfigDao;
 import org.trax.dao.cub.CubUnitTypeDao;
 import org.trax.dao.cub.PinConfigDao;
+import org.trax.dao.cub.pu2015.ChildAwardConfigDao;
+import org.trax.dao.cub.pu2015.ChildAwardDao;
+import org.trax.dao.cub.pu2015.Cub2015RankConfigDao;
 import org.trax.dto.RankTrail;
 import org.trax.form.OrgUnit;
 import org.trax.form.UserCredentialsForm;
@@ -82,6 +85,10 @@ import org.trax.model.cub.CubRankElectiveConfig;
 import org.trax.model.cub.CubUnitType;
 import org.trax.model.cub.Pin;
 import org.trax.model.cub.PinConfig;
+import org.trax.model.cub.pu2015.ChildAward;
+import org.trax.model.cub.pu2015.ChildAwardConfig;
+import org.trax.model.cub.pu2015.Cub2015Rank;
+import org.trax.model.cub.pu2015.Cub2015RankConfig;
 import org.trax.security.TraxPasswordEncoder;
 import org.trax.util.SimpleEncrypter;
 
@@ -110,6 +117,13 @@ public class TraxServiceImpl implements TraxService
 	private RankConfigDao rankConfigDao;
 	@Autowired
 	private CubRankConfigDao cubRankConfigDao;
+	@Autowired
+	private Cub2015RankConfigDao cub2015RankConfigDao;
+	@Autowired
+	private ChildAwardConfigDao childAwardConfigDao;
+	@Autowired
+	private ChildAwardDao childAwardDao;
+	
 	@Autowired
 	private BeltLoopConfigDao beltLoopConfigDao;
 	@Autowired
@@ -199,17 +213,19 @@ public class TraxServiceImpl implements TraxService
 		// return scout;
 	}
 
+	/**
+	 * add ranks if they do not already have them. Awards are added as needed but each boy starts with empty ranks
+	 */
 	public void addRanks(Scout scout)
 	{
 		// give the new scout ranks to fill but only add them if they are not
 		// already there
 		if (scout.getAwards() == null || scout.getAwards().size() == 0)
 		{
-			Set<Award> ranks = new HashSet<Award>();
+			Set<Award> awards = new HashSet<Award>();
 
 			if (scout.getUnit().isCub())
 			{
-
 				List<CubRankConfig> rankConfigs = cubRankConfigDao.findAll();
 				for (CubRankConfig rankConfig : rankConfigs)
 				{
@@ -218,10 +234,12 @@ public class TraxServiceImpl implements TraxService
 					{
 						Award rank = new CubRank();
 						rank.setAwardConfig(rankConfig);
-						ranks.add(rank);
+						awards.add(rank);
 					}
 				}
-				scout.setAwards(ranks);
+				scout.setAwards(awards);
+				addCub2015Ranks(scout, awards);
+				
 			}
 			else
 			{
@@ -230,9 +248,51 @@ public class TraxServiceImpl implements TraxService
 				{
 					Award rank = new Rank();
 					rank.setAwardConfig(rankConfig);
-					ranks.add(rank);
+					awards.add(rank);
 				}
-				scout.setAwards(ranks);
+				scout.setAwards(awards);
+			}
+		}
+		else //they already have awards, but maybe missing the 2015 awards
+		if (scout.getUnit().isCub())
+		{
+			boolean foundCub2015Rank = false;
+			for (Award award : scout.getAwards())
+			{
+				if (award instanceof Cub2015Rank)
+				{
+					//they already have 2015 ranks, don't add them
+					foundCub2015Rank=true;
+					break;
+				}
+			}
+			if (! foundCub2015Rank)
+			{
+				addCub2015Ranks(scout, scout.getAwards());
+			}
+		}
+	}
+
+	private void addCub2015Ranks(Scout scout, Set<Award> awards)
+	{
+		//now do the same for program update, 2015 -- boys can have both for now
+		List<Cub2015RankConfig> rank2015Configs = cub2015RankConfigDao.findAll();
+		for (Cub2015RankConfig rankConfig : rank2015Configs)
+		{
+			// only add tiger rank if the organization hasTigers
+			if (!rankConfig.getName().startsWith("Tiger") || scout.getOrganization().hasTigers())
+			{
+				Award rank = new Cub2015Rank();
+				rank.setAwardConfig(rankConfig);
+				awards.add(rank);
+				
+				List<ChildAwardConfig> childAwardConfigs = childAwardConfigDao.getchildAwardConfigs(rankConfig.getId());
+				for (ChildAwardConfig childAwardConfig : childAwardConfigs)
+				{
+					Award childAward = new ChildAward();
+					childAward.setAwardConfig(childAwardConfig);
+					awards.add(childAward);
+				}
 			}
 		}
 	}
@@ -567,7 +627,7 @@ public class TraxServiceImpl implements TraxService
 		return userDao.getByOrganizationId(organizationId, isCub);
 	}
 
-	public Award updateAwardInprogress(List<Scout> scouts, AwardConfig awardConfig, boolean setAwardInprogress) throws Exception
+	public Award updateAwardInprogress(List<Scout> scouts, long awardConfigId, boolean setAwardInprogress) throws Exception
 	{
 		Award thisScoutsAward = null;
 		for (Scout scout : scouts)
@@ -575,7 +635,7 @@ public class TraxServiceImpl implements TraxService
 			scout = refreshScout(scout); // refresh
 			if (scout.isChecked() || scout.isSelected())
 			{
-				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
+				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfigId);
 				if (thisScoutsAward != null)
 				{
 					if (!setAwardInprogress)
@@ -597,7 +657,7 @@ public class TraxServiceImpl implements TraxService
 				}
 				else if (setAwardInprogress)
 				{
-					thisScoutsAward = createAward(null, awardConfig, null);
+					thisScoutsAward = createAward(null, awardConfigId, null);
 					thisScoutsAward.setInProgress(setAwardInprogress);
 					thisScoutsAward = saveNewScoutAward(scout, thisScoutsAward);
 				}
@@ -606,7 +666,8 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	public Award updateAwardEarned(List<Scout> scouts, AwardConfig awardConfig, boolean isAwardEarned) throws Exception
+	@Override
+	public Award updateAwardEarned(List<Scout> scouts, long awardConfigId, boolean isAwardEarned) throws Exception
 	{
 		Award thisScoutsAward = null;
 
@@ -615,7 +676,7 @@ public class TraxServiceImpl implements TraxService
 			scout = refreshScout(scout); // refresh
 			if (scout.isChecked() || scout.isSelected())
 			{
-				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
+				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfigId);
 				User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				if (thisScoutsAward != null)
 				{
@@ -636,7 +697,7 @@ public class TraxServiceImpl implements TraxService
 				}
 				else
 				{
-					thisScoutsAward = createAward(signOffLeader, awardConfig, new Date());
+					thisScoutsAward = createAward(signOffLeader, awardConfigId, new Date());
 					thisScoutsAward = saveNewScoutAward(scout, thisScoutsAward);
 				}
 			}
@@ -673,16 +734,18 @@ public class TraxServiceImpl implements TraxService
 	}
 
 	@Override
-	public Award updateAward(User signOffLeader, List<Scout> scouts, AwardConfig awardConfig, Date dateCompleted, boolean completingAward) throws Exception
+	public Award updateAward(List<Scout> scouts, long awardConfigId, Date dateCompleted, boolean completingAward) throws Exception
 	{
 		Award thisScoutsAward = null;
+		User signOffLeader = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
 
 		for (Scout scout : scouts)
 		{
 			scout = refreshScout(scout); // refresh
 			if (scout.isChecked() || scout.isSelected())
 			{
-				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfig.getId());
+				thisScoutsAward = awardDao.getScoutAward(scout.getId(), awardConfigId);
 				if (completingAward)
 				{
 					if (thisScoutsAward != null)
@@ -693,7 +756,7 @@ public class TraxServiceImpl implements TraxService
 					else
 					// create a new one
 					{
-						thisScoutsAward = createAward(signOffLeader, awardConfig, dateCompleted);
+						thisScoutsAward = createAward(signOffLeader, awardConfigId, dateCompleted);
 					}
 
 					// add the new requirement if it is not there.
@@ -727,15 +790,17 @@ public class TraxServiceImpl implements TraxService
 		return thisScoutsAward;
 	}
 
-	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted)
+	private Award createAward(User signOffLeader, long awardConfigId, Date dateCompleted)
 	{
-		return createAward(signOffLeader, awardConfig, dateCompleted, new HashSet<Requirement>());
+		return createAward(signOffLeader, awardConfigId, dateCompleted, new HashSet<Requirement>());
 	}
 
 	@Transactional
-	private Award createAward(User signOffLeader, AwardConfig awardConfig, Date dateCompleted, Set<Requirement> requirements)
+	private Award createAward(User signOffLeader, long awardConfigId, Date dateCompleted, Set<Requirement> requirements)
 	{
 		Award award = null;
+		AwardConfig awardConfig = awardConfigDao.findById(awardConfigId, false);
+		
 		// must start with Cubs
 		if (awardConfig instanceof BeltLoopConfig)
 		{
@@ -860,7 +925,7 @@ public class TraxServiceImpl implements TraxService
 					Requirement r = new Requirement(rc, dateCompleted, signOffLeader);
 					Set<Requirement> requirements = new HashSet<Requirement>();
 					requirements.add(r);
-					thisScoutsAward = createAward(signOffLeader, awardConfig, null, requirements);
+					thisScoutsAward = createAward(signOffLeader, awardConfig.getId(), null, requirements);
 					thisScoutsAward.setInProgress(true);
 					thisScoutsAward = saveNewScoutAward(scout, thisScoutsAward);
 				}
@@ -1258,8 +1323,7 @@ public class TraxServiceImpl implements TraxService
 
 		if (award == null)
 		{
-			AwardConfig awardConfig = awardConfigDao.findById(awardConfigId, false);
-			award = createAward(null, awardConfig, null);
+			award = createAward(null, awardConfigId, null);
 		}
 		return award;
 	}
@@ -1373,9 +1437,18 @@ public class TraxServiceImpl implements TraxService
 
 	public void updateLoginDate(long userId)
 	{
-		User loggedInUser = refreshUser(userId);
-		loggedInUser.setLastLoginDate(new Date());
-		userDao.persist(loggedInUser);
+		try
+		{
+			//update as soon as they log in TODO this should probably be put in a seperate call. 
+			User loggedInUser = refreshUser(userId);
+			loggedInUser.setLastLoginDate(new Date());
+			userDao.persist(loggedInUser);
+		}
+		catch (Exception e)
+		{
+			// if it can't save, this is not critical, just continue
+		}
+		
 	}
 
 	public void addTraining(long courseId, Collection<Long> userIds, Date courseDate)
@@ -1655,4 +1728,5 @@ public class TraxServiceImpl implements TraxService
 
 		return htmlString;
 	}
+
 }

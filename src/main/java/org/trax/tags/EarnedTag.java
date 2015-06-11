@@ -1,39 +1,24 @@
 package org.trax.tags;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
 
-import org.hibernate.LazyInitializationException;
 import org.trax.model.Award;
 import org.trax.model.AwardConfig;
-import org.trax.model.BadgeConfig;
 import org.trax.model.DutyToGodConfig;
-import org.trax.model.RankConfig;
 import org.trax.model.Requirement;
 import org.trax.model.Scout;
-import org.trax.model.cub.ActivityBadgeConfig;
-import org.trax.model.cub.BeltLoopConfig;
-import org.trax.model.cub.CubAwardConfig;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
-import org.trax.model.cub.PinConfig;
 
 @SuppressWarnings("serial")
-public class EarnedTag extends TagSupport
+public class EarnedTag extends BaseTag
 {
-	private PageContext pageContext = null;
-	private Tag parent = null;
-	private String name = null;
-	private int size = 47;
-
 	@Override
 	public int doStartTag() throws JspException
 	{
@@ -53,121 +38,67 @@ public class EarnedTag extends TagSupport
 			}
 			if (scout.isSelected() || scout.isChecked())
 			{
+				Map<String, Integer> awardCounts = new HashMap<String, Integer>();
 				String htmlLists = "";
-				int mbCount = 0;
-				int rankCount = 0;
-				int awardCount = 0;
-				int beltloopCount = 0;
-				int pinCount = 0;
-				int activityBadgeCount = 0;
-				int tigerElectiveRequirementCount = 0;
-				int wolfArrowpointCount = 0;
-				int bearArrowpointCount = 0;
-				int wolfBeadCount = 0;
-				int bearBeadCount = 0;
 				
 				Set<Award> awards = getAwards();
 				if(awards==null)
 				{
 					return SKIP_BODY;
 				}
+				boolean isCub2015Mode = isCub2015();
+				
 				for (Award award : awards)
 				{
 					AwardConfig awardConfig = award.getAwardConfig();
+
 					if (award.getDateCompleted() != null)
 					{
 						String awardName = awardConfig.getName().replace("'", "");
+						
+
 						if (scout.getUnit().isCub())
 						{
-							if (awardConfig instanceof BeltLoopConfig)
+							
+							if(isCub2015Mode)
 							{
-								beltloopCount++;
-								htmlLists += createImageLink(awardConfig, "cub/beltloops/"+awardName, awardName);
-							}
-							else if (awardConfig instanceof PinConfig)
-							{
-								pinCount++;
-								htmlLists += createImageLink(awardConfig, "cub/pins/"+awardName, awardName);
-							}
-							else if(awardConfig instanceof CubRankElectiveConfig)
-							{
-								htmlLists += createImageLink(awardConfig, "cub/electives/"+awardName, awardName);
-							}
-							else if(awardConfig instanceof ActivityBadgeConfig)
-							{
-								activityBadgeCount++;
-								htmlLists += createImageLink(awardConfig, "cub/activitybadges/"+awardName, awardName);
-							}
-							else if (awardConfig instanceof CubRankConfig)
-							{
-								rankCount++;
-								boolean isWolf = awardConfig.getName().equals("Wolf");
-								boolean isBear = awardConfig.getName().equals("Bear");
-								if(isWolf || isBear)
+								if( isCub2015Award(award))
 								{
-									//if they earn the award, they automatically get the beads
-									htmlLists += createImageLink(awardConfig, "cub/ranks/PTR"+awardConfig.getName()+"4", awardConfig.getName());
-									if(isWolf){wolfBeadCount=4;}else{bearBeadCount=4;}
+									//only processing 2015 Awards
+									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
+									incrementAwardCount(awardCounts, awardConfig);
 								}
-								htmlLists += createImageLink(awardConfig, "cub/ranks/"+awardName, awardName);
 							}
-							else if (awardConfig instanceof DutyToGodConfig)//cub and scout
+							else
 							{
-								awardCount++;
-								htmlLists += createImageLink(awardConfig, "awards/dtg/"+awardName, awardName);
-							}
-							else if (awardConfig instanceof CubAwardConfig)//cub and scout
-							{
-								awardCount++;
-								htmlLists += createImageLink(awardConfig, "cub/awards/"+awardName, awardName);
-							}
-							else 
-							{
-								//must be a scout award, we don't want to show it --should never happen
-								System.out.println("***Not showing "+awardName+" is not valid for a cub scout");
-								continue;
+								if (isClassicCubAward(award))
+								{
+									//only processing legacy Awards
+									if (awardConfig instanceof CubRankConfig)
+									{
+										boolean isWolf = awardConfig.getName().equals("Wolf");
+										boolean isBear = awardConfig.getName().equals("Bear");
+										if(isWolf || isBear)
+										{
+											//if they earn the award, they automatically get the beads
+											htmlLists += createImageLink(awardConfig, "images/cub/ranks/PTR"+awardConfig.getName()+"4.png", awardConfig.getName());
+											awardCounts.put((isWolf ? "Wolf":"Bear")+" Bead", 4);
+										}
+									}
+									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
+									incrementAwardCount(awardCounts, awardConfig);
+								}
 							}
 						}
-						else //ScoutUnit, only show scout awards
+						else 
 						{
-							if (awardConfig instanceof BeltLoopConfig
-									|| awardConfig instanceof PinConfig
-									|| awardConfig instanceof CubRankElectiveConfig
-									|| awardConfig instanceof ActivityBadgeConfig
-									|| awardConfig instanceof CubRankConfig
-									|| awardConfig instanceof DutyToGodConfig
-									|| awardConfig instanceof CubAwardConfig)
+							//this award is for older scouts
+							if (isAnyCubAward(awardConfig))
 							{
 								continue;
 							}
-							
-							if (awardConfig instanceof RankConfig)
-							{
-								htmlLists += createImageLink(awardConfig, "Ranks/"+awardName, awardName);
-								rankCount++;
-								continue;
-							}
-							else if (awardConfig instanceof BadgeConfig)
-							{
-								htmlLists += createImageLink(awardConfig, "meritbadges/"+awardName, awardName);
-								mbCount++;
-							}
-							else if (awardConfig instanceof DutyToGodConfig)
-							{
-								awardCount++;
-								htmlLists += createImageLink(awardConfig, "awards/dtg/"+awardName, awardName);
-							}
-							else if (awardConfig instanceof AwardConfig)
-							{
-								awardCount++;
-								htmlLists += createImageLink(awardConfig, "awards/"+awardName, awardName);
-							}
-							else 
-							{
-								//must be a cub award, we don't want to show it 
-								System.out.println("***Not showing "+awardName+" we do not show cub awards for scouts");
-								continue;
-							}
+							incrementAwardCount(awardCounts, awardConfig);
+							htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
 						}
 					}
 					else //not complete yet
@@ -176,90 +107,28 @@ public class EarnedTag extends TagSupport
 						{
 							if(awardConfig instanceof CubRankConfig)
 							{
-								boolean isWolf = awardConfig.getName().equals("Wolf");
-								boolean isBear = awardConfig.getName().equals("Bear");
-								if(isWolf || isBear)
-								{
-									int requirementCount=0;
-									
-									for(Requirement r: award.getRequirements())
-									{
-										//count the numbered requirements
-										if(r.getDateCompleted()!=null && Character.isDigit(r.getRequirementConfig().getText().charAt(0)))
-										{
-											requirementCount++;
-										}
-									}
-									int beadCount = isWolf ? (wolfBeadCount=requirementCount/3):(bearBeadCount=requirementCount/3);
-									if (beadCount!=0)
-									{
-										htmlLists += createImageLink(awardConfig, "cub/ranks/PTR"+awardConfig.getName()+beadCount, awardConfig.getName());
-									}
-								}
+								htmlLists = addBeadImage(awardCounts, htmlLists, award, awardConfig);
 							}
 							else if(awardConfig instanceof CubRankElectiveConfig)
 							{
-								//for these they get an award for every ten (bead, arrowpoint, etc...) 
-								/*if(awardConfig.getName().equals("Tiger Cub Electives"))
-								{
-									htmlLists+="<li><a class='meritbadgelink' href='selectBadge.html?badgeConfigId="+awardConfig.getId()+
-									"'><img src='images/"+subFolder+"/"+awardConfig.getName()+".png' " +
-									"height="+size+" title='Click to view "+awardConfig.getName()+" details' alt='"+awardConfig.getDescription()+"' border='none'/></a></li>";
-								}
-								else*/ 
-								boolean isWolfElective = awardConfig.getName().equals("Wolf Electives");
-								boolean isBearElective = awardConfig.getName().equals("Bear Electives");
-								if(isWolfElective || isBearElective)
-								{
-									int arrowpointCount = isWolfElective ? (wolfArrowpointCount=award.getRequirements().size()/10):(bearArrowpointCount=award.getRequirements().size()/10);
-									int tenCount = arrowpointCount*10;//truncate to the nearest factor of ten, 10,20,30 etc
-									if (tenCount!=0)
-									{
-										htmlLists += createImageLink(awardConfig, "cub/electives/"+awardConfig.getName()+tenCount, awardConfig.getName());
-									}
-								}
+								htmlLists = addElectivesImage(awardCounts, htmlLists, award, awardConfig);
 							}
 							else if(awardConfig instanceof DutyToGodConfig)
 							{
-								if(awardConfig.getName().equals("Faith in God"))
-								{
-									int religiousKnotCount=0;
-									for (Requirement requirement : award.getRequirements())
-									{
-										if (requirement.getDateCompleted()!=null)
-										{
-											if(requirement.getRequirementConfig().getText().contains("%%%"))
-											{
-												religiousKnotCount++;
-											}
-										}
-									}
-									int totalRkCount=6;//TODO There are 6 requirements for the ReligiousKnot -- This is bad, just not sure how to do it good
-									if (religiousKnotCount==totalRkCount)
-									{
-										htmlLists += createImageLink(awardConfig, "awards/dtg/Religious Knot", awardConfig.getName());
-										awardCount++;//just count as an award, does not need its own category
-									}
-								}
+								htmlLists = addReligiousKnot(htmlLists, award, awardConfig);
 							}
 						}
 					}
 				}
 				//hide the carousel if no awards earned
-				if(rankCount+mbCount+awardCount+beltloopCount+pinCount+activityBadgeCount+wolfArrowpointCount+bearArrowpointCount > 0)
+				if( ! awardCounts.isEmpty() )
 				{
-					writer.write("<span id='earnedlabel'>Earned (" 
-							+ getEarnedMessage(rankCount, "Rank")
-							+ getEarnedMessage(mbCount, "Merit Badge")
-							+ getEarnedMessage(awardCount, "Award")
-							+ getEarnedMessage(beltloopCount, "Belt Loop")
-							+ getEarnedMessage(pinCount, "Pin")
-							+ getEarnedMessage(activityBadgeCount, "Activity Badge")
-							+ getEarnedMessage(wolfBeadCount, "Wolf Bead")
-							+ getEarnedMessage(wolfArrowpointCount, "Wolf Arrow Point")
-							+ getEarnedMessage(bearBeadCount, "Bear Bead")
-							+ getEarnedMessage(bearArrowpointCount, "Bear Arrow Point")
-							+")</span>");
+					writer.write("<span id='earnedlabel'>Earned (" );
+					for (String awardType : awardCounts.keySet())
+					{
+						writer.write(""+awardCounts.get(awardType)+ " " + awardType+", ");
+					}
+					writer.write(")</span>");
 					writer.write("<div id='earnedmerritbadges' class='jcarousel jcarousel-skin-tango'><ul>");
 					writer.write(htmlLists);
 					writer.write("</ul></div>");
@@ -275,158 +144,99 @@ public class EarnedTag extends TagSupport
 		return SKIP_BODY;
 	}
 
-	private String createImageLink(AwardConfig awardConfig, String imageName, String awardName)
+
+	private void incrementAwardCount(Map<String, Integer> awardCounts, AwardConfig awardConfig)
 	{
-		String imageLink="<li><a class='meritbadgelink' href='selectBadge.html?badgeConfigId="+awardConfig.getId()+
-		"'><img src='images/"+imageName+".png' " +
-		"height="+size+" title='Click to view "+awardName+" details' alt='"+awardConfig.getDescription()+"' border='none'/></a></li>";
-		return imageLink;
+		if (!awardCounts.containsKey(awardConfig.getTypeName()))
+		{
+			awardCounts.put(awardConfig.getTypeName(), 1);
+		}
+		else
+		{
+			awardCounts.put(awardConfig.getTypeName(), ((Integer)awardCounts.get(awardConfig.getTypeName())).intValue()+1);
+		}
+	}
+
+
+	private String addBeadImage(Map<String, Integer> awardCounts, String htmlLists, Award award, AwardConfig awardConfig)
+	{
+		boolean isWolf = awardConfig.getName().equals("Wolf");
+		boolean isBear = awardConfig.getName().equals("Bear");
+		if(isWolf || isBear)
+		{
+			int requirementCount=0;
+			
+			for(Requirement r: award.getRequirements())
+			{
+				//count the numbered requirements
+				if(r.getDateCompleted()!=null && Character.isDigit(r.getRequirementConfig().getText().charAt(0)))
+				{
+					requirementCount++;
+				}
+			}
+			int beadCount = requirementCount/3;
+			if (beadCount!=0)
+			{
+				awardCounts.put((isWolf ? "Wolf":"Bear")+" Bead", beadCount);
+				htmlLists += createImageLink(awardConfig, "images/cub/ranks/PTR"+awardConfig.getName()+beadCount+".png", awardConfig.getName());
+			}
+		}
+		return htmlLists;
+	}
+
+	private String addElectivesImage(Map<String, Integer> awardCounts, String htmlLists, Award award, AwardConfig awardConfig)
+	{
+		//for these they get an award for every ten (bead, arrowpoint, etc...) 
+		/*if(awardConfig.getName().equals("Tiger Cub Electives"))
+		{
+			htmlLists+="<li><a class='meritbadgelink' href='selectBadge.html?badgeConfigId="+awardConfig.getId()+
+			"'><img src='images/"+subFolder+"/"+awardConfig.getName()+".png' " +
+			"height="+size+" title='Click to view "+awardConfig.getName()+" details' alt='"+awardConfig.getDescription()+"' border='none'/></a></li>";
+		}
+		else*/ 
+		boolean isWolfElective = awardConfig.getName().equals("Wolf Electives");
+		boolean isBearElective = awardConfig.getName().equals("Bear Electives");
+		if(isWolfElective || isBearElective)
+		{
+			int arrowpointCount = isWolfElective ? (award.getRequirements().size()/10):(award.getRequirements().size()/10);
+			int tenCount = arrowpointCount*10;//truncate to the nearest factor of ten, 10,20,30 etc
+			if (tenCount!=0)
+			{
+				awardCounts.put((isWolfElective ? "Wolf":"Bear")+" Electives", tenCount);
+				htmlLists += createImageLink(awardConfig, "images/cub/electives/"+awardConfig.getName()+tenCount+".png", awardConfig.getName());
+			}
+		}
+		return htmlLists;
+	}
+
+	/* The religious knot is earned when all 6 of the specific requirements are passed off, check that here */ 
+	private String addReligiousKnot(String htmlLists, Award award, AwardConfig awardConfig)
+	{
+		if(awardConfig.getName().equals("Faith in God"))
+		{
+			int religiousKnotCount=0;
+			for (Requirement requirement : award.getRequirements())
+			{
+				if (requirement.getDateCompleted()!=null)
+				{
+					if(requirement.getRequirementConfig().getText().contains("%%%"))
+					{
+						religiousKnotCount++;
+					}
+				}
+			}
+			int totalRkCount=6;//TODO There are 6 requirements for the ReligiousKnot -- This is bad, just not sure how to do it good
+			if (religiousKnotCount==totalRkCount)
+			{
+				htmlLists += createImageLink(awardConfig, "images/awards/dtg/Religious Knot.png", awardConfig.getName());
+			}
+		}
+		return htmlLists;
 	}
 
 	private String getEarnedMessage(int count, String name)
 	{
 		return count==0?"":count+" "+name+(count>1?"s":"")+", ";
-	}
-
-	private boolean shouldShowAwards()
-	{
-		boolean showAwards = true;
-		List<Scout> scouts = (List<Scout>)pageContext.getSession().getAttribute("scouts");
-		if(scouts != null)
-		{
-			int checkedCount=0;
-			for (Scout scout : scouts)
-			{
-				if (scout.isChecked() || scout.isSelected())
-				{
-					checkedCount++;
-				}
-				if (checkedCount>1)
-				{
-					break;
-				}
-			}
-			if(checkedCount >1 || checkedCount == 0)
-			{
-				showAwards = false;
-			}
-		}
-		return showAwards;
-	}
-	
-	private Set<Award> getAwards() throws IOException
-	{
-		Object bean = pageContext.getSession().getAttribute("awards");
-		if (bean == null)
-		{
-			String message = "No 'awards' found in the request.";
-			pageContext.setAttribute("errorMessage", message);
-			throw new IOException(message);
-		}
-		if (!(bean instanceof Set<?>))
-		{
-			String message = "<h2>Wrong type:" + bean.getClass() + "</h2>";
-			pageContext.setAttribute("errorMessage", message);
-			throw new IOException(message);
-		}
-		Set<Award> awards = (Set<Award>)bean;
-		try
-		{
-			//TODO this will throw an exception if the awards cannot be found, 
-			// so just swallow it and return null, the tag does not need to draw anything
-			if (awards.size()==0)
-			{
-				return null;
-			}
-		}
-		catch (LazyInitializationException e)
-		{
-			// TODO Auto-generated catch block
-			return null;
-		}
-		return awards;
-	}
-	
-	private Map<Long, Long> getRequirementConfigIdAndCount() throws IOException
-	{
-		Object bean = pageContext.getRequest().getAttribute("requirementConfigIdAndCount");
-		if (bean == null)
-		{
-			return null; // this is not a problem, it is only their if choosing multiple boys
-		}
-		else if (!(bean instanceof Map))
-		{
-			String message = "<h2>Wrong type:" + bean.getClass() + "</h2>";
-			pageContext.setAttribute("errorMessage", message);
-			throw new IOException(message);
-		}
-		return (Map)bean;
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.jsp.tagext.Tag#getParent()
-	 */
-	public Tag getParent()
-	{
-		return parent;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
-	 */
-	public int doEndTag() throws JspException
-	{
-		return EVAL_PAGE;
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.jsp.tagext.Tag#setPageContext(javax.servlet.jsp.PageContext)
-	 */
-	public void setPageContext(PageContext pageContext)
-	{
-		this.pageContext = pageContext;
-	}
-
-	/**
-	 * @return the pageContext
-	 */
-	public PageContext getPageContext()
-	{
-		return this.pageContext;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.jsp.tagext.Tag#setParent(javax.servlet.jsp.tagext.Tag)
-	 */
-	public void setParent(Tag parent)
-	{
-		this.parent = parent;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
-	public int getSize()
-	{
-		return size;
-	}
-
-	public void setSize(int size)
-	{
-		this.size = size;
 	}
 
 }

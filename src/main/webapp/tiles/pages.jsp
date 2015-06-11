@@ -3,7 +3,7 @@
 
 <div class='table' id="content">
 	<div class='row'>
-		<trax:award name='award'/>
+		<trax:award2015 name='award'/>
 	</div>
 </div>
 <div id="spinner" class="spinner" style="display:none">
@@ -92,13 +92,26 @@
 		                }
 					} 								
 				});
-			$('#awarddatebox').mask("00/00/0000", {placeholder: "__/__/____"});
+			$('#awarddatebox, .awarddatebox').mask("00/00/0000", {placeholder: "__/__/____"});
 			$('#awarddatebox').datepicker({
 				onSelect: function(dateText, inst){ 
 					var selectedbox = $('#awardearned');
 					if($(this).val().length !=0)
 					{
 						document.location.href="updateaward.html?ischecked=true&newdate="+dateText;
+					}
+				}
+			});
+			$('.awarddatebox').datepicker({
+				onSelect: function(dateText, inst){ 
+					//make sure its checked
+					var awardconfigid = "&awardConfigId="+$(this).parent().find('input').val();
+					if($(this).val().length !=0)
+					{
+						if(! isNaN($(this).parent().find('input').val()))
+						{
+							document.location.href="updateaward.html?ischecked=true&newdate="+this.value+awardconfigid;
+						}
 					}
 				}
 			});
@@ -111,8 +124,8 @@
 				}
 			});
 				
-			$('#awardearned').click( function()
-			{
+			$('#awardearned, .awardearned').click( function( event ) {
+				event.stopPropagation();//so it does not hide the adventure requirements
 				//make sure at least one boy is selected and we have scouts (not when a boy is logged in)
                 if ($('.scoutName:checked').length==0 && $('.selectedscout').length==0 && $('.scoutName').length>0)
 				{
@@ -127,10 +140,13 @@
                 		return false;
                 	}
                 }
-				document.location.href="updateawardearned.html?ischecked="+this.checked;
+				//only pass the awardconfigid if it is a number
+				var awardconfigid = isNaN(this.value) ? "" : "&awardConfigId="+this.value;
+				document.location.href="updateawardearned.html?ischecked="+this.checked+awardconfigid;
 				
 				return false;
 			});
+			
 			$('#awardinprogress').click( function()
 			{
 				if(this.checked===false)
@@ -141,6 +157,14 @@
                 		return false;
                 	}
                 }
+				var awardconfigid = "&awardConfigId="+$(this).parent().find('input').val();
+				if($(this).val().length !=0)
+				{
+					if(! isNaN($(this).parent().find('input').val()))
+					{
+						document.location.href="updateaward.html?ischecked=true&newdate="+this.value+awardconfigid;
+					}
+				}
 				document.location.href="updateawardinprogress.html?ischecked="+this.checked;
 				
 				return false;
@@ -358,10 +382,16 @@
 				});
 			});
 			*/
+			$('.childAwardRow').nextUntil('.childAwardRow').toggle(); //hide initially
+			$('.childAwardRow').click( function() {
+				$(this).nextUntil('.childAwardRow').toggle();
+				$(this).find('.expandCollapseAdventure').toggleClass('expandAdventure').toggleClass('collapseAdventure');
+			});
+			$('.childAwardRow').css('cursor', 'pointer');
+			
 			if($('#awardname').html()=="Faith in God")
 			{
 				$('.requirementtext').each(function(i, val) {
-				  //var newRequirement = val.innerHTML.replace('%%%', '<span class="religiousKnot">&nbsp;&nbsp;&nbsp;&nbsp;</span>');
 				   if(val.innerHTML.indexOf('%%%')>=0)
 				   {
 				   		var newRequirement = val.innerHTML.replace('%%%', '<img src="images/awards/dtg/Religious Knot2.png" alt="Religious Knot Image" title="This is required for the religious knot">');
@@ -388,4 +418,18 @@
     background-size:80px 60px;
 }
 #noScoutSelectedDialog { display: none; }
+.expandAdventure {
+	float: right;
+    background: url("images/expand.png") no-repeat center top transparent;
+    height: 24px;
+  	width: 24px;
+  	margin-top: 7px;
+}
+.collapseAdventure {
+	float: right;
+    background: url("images/collapse.png") no-repeat center top transparent;
+    height: 24px;
+  	width: 24px;
+  	margin-top: 7px;
+}
 </style>

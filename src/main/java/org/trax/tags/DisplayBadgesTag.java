@@ -45,18 +45,24 @@ public class DisplayBadgesTag extends TagSupport
 		
 		try
 		{
-			String id=getIdName(badges);
-			writer.write("\n<span id='"+id+"'/>\n");// Mark it for the tabs
+			AwardConfig firstBadgeConfig = badges.iterator().next();
+			String activePageId=firstBadgeConfig.getTypeName();
+			if (firstBadgeConfig.getName().contains("Palm"))
+			{
+				//palms are a special case
+				activePageId = "Palms";
+			}
+			writer.write("\n<span id='"+activePageId+"'/>\n");// Mark it for the tabs
 //			if (isBadge)
 //			{
 //				writer.write("<input type='checkbox' id='showRequired' value='Show Required'><span>Show Required</span>");
 //			}
-			if(id.startsWith("Faith"))
+			if(activePageId.startsWith("Faith"))
 			{
 				writer.write("<div style='color:#99CC99' class='inprogresslabel'>Religious emblems of any faith may be added upon request. " +
 					"Just click on Feedback in the upper right hand corner.</div>");
 			}
-			else if(id.equals("DTG"))
+			else if(activePageId.equals("DutyToGod"))
 			{
 				writer.write("<div style='color:#99CC99' class='inprogresslabel'>Duty To God for any faith may be added upon request. " +
 					"Just click on Feedback in the upper right hand corner.</div>");
@@ -80,50 +86,11 @@ public class DisplayBadgesTag extends TagSupport
 				}
 				String classes = awardConfig.isRequired()?"class='awardImage required'":"class='awardimage'";
 				String awardTitle = "";
-				String imageSource = "images/meritbadges/"+awardConfig.getName()+".png";
-				if (id.equals("Awards"))
-				{
-					imageSource = "images/awards/"+awardConfig.getName().replace("'", "")+".png";
-				}
-				else if (id.equals("Palms"))
-				{
-					imageSource = "images/Ranks/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("DTG")||id.equals("Faith"))
-				{
-					imageSource = "images/awards/dtg/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("Pins"))
-				{
-					//@TODO change dir to pins when we have images
-					imageSource = "images/cub/pins/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("Electives"))
-				{
-					imageSource = "images/cub/electives/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("Belt_Loops"))
-				{
-					imageSource = "images/cub/beltloops/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("CubAwards"))//TODO take this out
-				{
-					imageSource = "images/cub/awards/"+awardConfig.getName()+".png";
-				}
-				else if (id.equals("Webelos_Award"))
-				{
-					imageSource = "images/cub/activitybadges/"+awardConfig.getName()+".png";
-				}
-				else
-				{
-					awardTitle = awardConfig.isRequired()?" title='"+awardConfig.getName()+" (required for Eagle)' ":" title='Click to view "+awardConfig.getName()+" details'";
-					imageSource = "images/meritbadges/"+awardConfig.getName()+".png";
-				}
-				writer.write("<td "//+(awardConfig.isRequired()?"class='eagleRequired'":"")
+			
+				writer.write("<td "
 								+"><a href='selectBadge.html?badgeConfigId="+awardConfig.getId()+"' "+awardTitle+">" +
-						"<img "+classes+" src='"+imageSource+"' alt='"+awardConfig.getDescription()+"' />");
+						"<img "+classes+" src='"+awardConfig.getImageSource()+"' alt='"+awardConfig.getDescription()+"' />");
 				writer.write("<div class='meritbadgename'>"+awardConfig.getName() +"</div>"
-								//+(awardConfig.isRequired()?"<img class='eagleRequired' src='images/EagleRequired.png' />":"")
 								+"</a>"
 								+"</td>");
 				if ((i%col) == 0)
@@ -150,52 +117,6 @@ public class DisplayBadgesTag extends TagSupport
 		}
 
 		return SKIP_BODY;
-	}
-	private String getIdName(Collection<AwardConfig> badges)
-	{
-		String id = "";
-		
-		if (badges.iterator().next() instanceof BadgeConfig)
-		{
-			id="Badges";
-		}
-		else if (badges.iterator().next() instanceof RankConfig)
-		{
-			id="Palms";
-		}
-		else if (badges.iterator().next() instanceof CubDutyToGodConfig)
-		{
-			id="Faith";
-		}
-		else if (badges.iterator().next() instanceof DutyToGodConfig)
-		{
-			id="DTG";
-		}
-		else if (badges.iterator().next() instanceof CubRankConfig)
-		{
-			id="CubRanks";
-		}
-		else if (badges.iterator().next() instanceof BeltLoopConfig)
-		{
-			id="Belt_Loops";
-		}
-		else if (badges.iterator().next() instanceof ActivityBadgeConfig)
-		{
-			id="Webelos_Award";
-		}
-		else if (badges.iterator().next() instanceof CubAwardConfig)
-		{
-			id="CubAwards";
-		}
-		else if (badges.iterator().next() instanceof PinConfig)
-		{
-			id="Pins";
-		}
-		else
-		{
-			id="Awards";
-		}
-		return id;
 	}
 
 	private Collection<AwardConfig> getAwards() throws IOException

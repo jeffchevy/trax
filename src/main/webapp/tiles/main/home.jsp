@@ -72,8 +72,6 @@
 			font-family:Verdana,Arial;
 			font-size:2em;
 		}
-		#donate {
-		}
 		#scouttraxlogo {
 			height: 445px;
 		}
@@ -115,9 +113,6 @@
 			<table>
 				<tr>
 					<td>
-						<iframe src="https://www.indiegogo.com/project/scouttrax-org/embedded/10616358" width="222px" height="445px" frameborder="0" scrolling="no"></iframe>
-					</td>
-					<td>
 					    <a id="nav-home" title='Home' href='home.html'>
 					    	<img id='scouttraxlogo' alt="Scout Trax Logo" src="images/scouttrax_logo.png" />
 					    </a>
@@ -129,11 +124,6 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<a title="Click here to help us implement the Cub Scout Program Updates by June 1st" href="https://www.indiegogo.com/projects/scouttrax-org/x/10616358" id="donate">
-							<img class="donate" alt="donate" src="images/donate.png" />
-						</a>
-					</td>
 					<td>
 						<a id="nav-home" title='Login' href='login.html'>
 							<img class="startNow" alt="Scout Trax Login" src="images/startnow.png" />

@@ -2,6 +2,7 @@ package org.trax.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,13 +16,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.annotations.ForeignKey;
+import org.trax.model.cub.pu2015.ChildAwardConfig;
 
 
 @SuppressWarnings("serial")
@@ -34,11 +39,18 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 {
 	private String name;
 	private String description;
+	private boolean isSelectable=true;
 	private List<RequirementConfig> requirementConfigs;
 	protected int sortOrder;
 	private long id;
 	private Boolean required;
 	protected String link;
+	private Set<ChildAwardConfig> childAwardConfigs;
+	/*there are Scout, Cub, Cub2015, Varsity Team and Venturing Crew awards
+	 some awards go across multiple families, so need to do a many to many mapping
+	 AwardConfig would have a list of familiesOfScouting and the families can be mapped to many different awards or age groups
+	 private String awardGroup;
+	 */
 	
 	public AwardConfig(){}
 	
@@ -50,7 +62,7 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 		this.setRequired(required);
 	}
 
-	protected void setId(long id)
+	public void setId(long id)
 	{
 	    this.id = id;
 	}
@@ -146,8 +158,55 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 		this.link = link;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "parentAwardConfigId", nullable = true, unique = false)
+	@ForeignKey(name="parent_award_config_award")
+	@OrderBy(value = "sortOrder")
+	public Set<ChildAwardConfig> getChildAwardConfigs()
+	{
+		return childAwardConfigs;
+	}
+
+	public void setChildAwardConfigs(Set<ChildAwardConfig> childAwardConfigs)
+	{
+		this.childAwardConfigs = childAwardConfigs;
+	}
+	@Transient
+	public String getTypeName()
+	{
+		return "Awards";
+	}
+	@Transient
+	public String getImageSource()
+	{
+		return "images/awards/"+getName()+".png";
+	}
 //	public int compareTo(AwardConfig ac2)
 //	{
 //		return ac2.sortOrder-this.sortOrder;
 //	}
+
+	// some awards like 2015 cub hold other awards and cannot be earned.
+	@Column (name="isSelectable", nullable=false, unique=false)
+	public boolean isSelectable()
+	{
+		return isSelectable;
+	}
+
+	public void setSelectable(boolean isSelectable)
+	{
+		this.isSelectable = isSelectable;
+	}
+
+/*	@Column(name = "awardGroup", nullable = true)
+	public String getAwardGroup()
+	{
+		return awardGroup;
+	}
+
+	public void setAwardGroup(String awardGroup)
+	{
+		this.awardGroup = awardGroup;
+	}
+	*/
 }
