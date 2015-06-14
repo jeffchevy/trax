@@ -383,11 +383,11 @@
 			});
 			*/
 			$('.childAwardRow').nextUntil('.childAwardRow').toggle(); //hide initially
-			$('.childAwardRow').click( function() {
-				$(this).nextUntil('.childAwardRow').toggle();
-				$(this).find('.expandCollapseAdventure').toggleClass('expandAdventure').toggleClass('collapseAdventure');
+			$('.childAwardRow .childAward').click( function() {
+				$(this).parent().nextUntil('.childAwardRow').toggle();
+				$(this).parent().find('.expandCollapseAdventure').toggleClass('expandAdventure').toggleClass('collapseAdventure');
 			});
-			$('.childAwardRow').css('cursor', 'pointer');
+			$('.childAwardRow .childAward').css('cursor', 'pointer');
 			
 			if($('#awardname').html()=="Faith in God")
 			{

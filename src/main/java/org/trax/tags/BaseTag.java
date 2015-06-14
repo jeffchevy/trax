@@ -74,7 +74,7 @@ public class BaseTag extends TagSupport
 
 	protected Set<Award> getAwards() throws IOException
 	{
-		Object bean = pageContext.getSession().getAttribute("awards");
+		Object bean = pageContext.getSession().getAttribute(AwardConfig.AWARDS);
 		if (bean == null)
 		{
 			String message = "No 'awards' found in the request.";

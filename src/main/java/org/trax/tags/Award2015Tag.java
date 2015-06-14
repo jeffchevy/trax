@@ -61,7 +61,7 @@ public class Award2015Tag extends TagSupport
 			String electiveLink="";
 			String worksheetLink="";
 			String requirementsLabel = "Requirements";
-			String activePageId="Awards";
+			String activePageId=AwardConfig.AWARDS;
 			
 			boolean isRank = false;
 			AwardConfig awardConfig = award.getAwardConfig();
@@ -297,19 +297,19 @@ public class Award2015Tag extends TagSupport
 		{
 			if (awardConfig.getName().equals("Wolf") || awardConfig.getName().equals("Bear"))
 			{
-				electiveLink = "<div><a id='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
+				electiveLink = "<div><a class='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 					"Click here for Arrow Point Trail (Electives)</a></div>" +
 				"<a href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 						"<img height='40' alt='"+awardConfig.getName()+" Electives' title='"+awardConfig.getName()+" Electives' src='images/cub/electives/Electives1.png'></a>";
 			}
 			else if (awardConfig.getName().equals("Tiger Cub"))
 			{
-				electiveLink = "<div><a id='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
+				electiveLink = "<div><a class='electiveLink' href='selectElective.html?awardName="+awardConfig.getName()+" Electives'>" +
 				"Click here for Tiger Cub Track Bead (Electives)</a></div>";
 			}
 			else if (awardConfig.getName().equals("Webelos Award"))
 			{
-				electiveLink = "<div><a id='electiveLink' href='cubBadges.html?type=Activity Badges'>" +
+				electiveLink = "<div><a class='electiveLink' href='cubBadges.html?type=Activity Badges'>" +
 					"Click here for Activity Badges</a></div>"+
 				"<a href='cubBadges.html?type=Activity Badges'>" +
 					"<img height='50' alt='Activity Badges' title='Activity Badges' src='images/cub/activitybadges/Aquanaut-link.png'></a>";
@@ -341,7 +341,7 @@ public class Award2015Tag extends TagSupport
 				{
 					electiveName = "Webelos Elective Adventures 2015";
 				}
-				electiveLink = "<div><a id='electiveLink' href='selectElective.html?awardName="+electiveName+"'>" +
+				electiveLink = "<div><a class='electiveLink' href='selectElective.html?awardName="+electiveName+"'>" +
 							"Click here for Electives</a></div>" +
 						"<a href='selectElective.html?awardName="+electiveName+"'>" +
 								"<img height='40' alt='"+electiveName+"' title='"+electiveName+"' src='"+imageName+"'></a>";

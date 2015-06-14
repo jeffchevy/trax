@@ -27,7 +27,7 @@ public class PinConfig extends AwardConfig //implements Comparable<AwardConfig>
 	@Transient
 	public String getTypeName()
 	{
-		return "Pins";
+		return PIN;
 	}
 	@Transient
 	public String getImageSource()

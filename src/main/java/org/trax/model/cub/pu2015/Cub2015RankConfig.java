@@ -18,7 +18,7 @@ public class Cub2015RankConfig extends RankConfig//implements Comparable<AwardCo
 	@Transient
 	public String getTypeName()
 	{
-		return "Rank";
+		return RANK;
 	}
 	@Transient
 	public String getImageSource()

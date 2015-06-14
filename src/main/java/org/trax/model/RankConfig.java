@@ -9,10 +9,10 @@ import javax.persistence.Transient;
 @DiscriminatorValue("R")
 public class RankConfig extends AwardConfig
 {
-	@Transient
+    @Transient
 	public String getTypeName()
 	{
-		return "Rank";
+		return RANK;
 	}
 	@Transient
 	public String getImageSource()

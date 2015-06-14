@@ -570,14 +570,14 @@ background: none repeat scroll 0 0 #000000;	}
 		margin-right:auto;
 		width:40%;
 	}
-	#electiveLink{
+	.electiveLink{
 		margin-left: 10px;
-		background-color: rgba(0, 0, 0, 0);
+		background-color: #000;
 		color: #FFA;
     	white-space: nowrap;
     	font-size: 1.1em;
     	text-decoration: none;
-    	padding: 0px;
+    	padding: 0 10px;
 	}
 	#pinLinkDiv {
 		margin-top: 10px;

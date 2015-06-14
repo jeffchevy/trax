@@ -33,9 +33,16 @@ $(document).ready(function()
 	});
 	$('#printpreview').click(function(){
 		$('#awardreportheader').removeClass('hidden');
-		
+		var currentdate = new Date(); 
+	    var localDate = "" + currentdate.getDate() + "/"
+	                + (currentdate.getMonth()+1)  + "/" 
+	                + currentdate.getFullYear() + " @ "  
+	                + currentdate.getHours() + ":"  
+	                + currentdate.getMinutes() + ":" 
+	                + currentdate.getSeconds();
+	                
         myWindow=window.open('','','WIDTH=1000,HEIGHT=800,resizable=yes,scrollbars=yes,menubar=yes,titlebar=yes');
-        myWindow.document.write('<html><head><p id="todaysdate">${todaysDate}</p>');
+        myWindow.document.write('<html><head><p id="todaysdate">'+localDate+'</p>');
         
         myWindow.document.write('<style type="text/css">');
 		myWindow.document.write('table {border: border-collapse: collapse; text-align: center; font: 12px;white-space:wrap;}');

@@ -127,7 +127,7 @@ public class ScoutsController extends AbstractScoutController
 					if (award==null && isCub) {
 						//somehow they have a cub with scout ranks, that ok, but add cub ranks
 						traxService.addRanks(scout);
-						session.setAttribute(AWARDS, scout.getAwards());
+						session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
 					}
 				}
 				session.setAttribute(AWARD, award);
@@ -138,7 +138,7 @@ public class ScoutsController extends AbstractScoutController
 					model.put("requirementConfigIdAndCount", requirementConfigIdCount);
 				}
 				
-				session.setAttribute(AWARDS, scout.getAwards());
+				session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
 				if(scout.getAwards()==null)
 				{
 					throw new Exception("Award configuration data has not been loaded.");
@@ -208,85 +208,85 @@ public class ScoutsController extends AbstractScoutController
 			traxService.addRanks(scout);
 		}
 		
-		//if (award.getAwardConfig() instanceof CubRankConfig || award.getAwardConfig() instanceof CubRankElectiveConfig
-		//	|| award.getAwardConfig() instanceof Cub2015RankConfig || award.getAwardConfig() instanceof Cub2015RankElectiveConfig)
+			//get the rank up to the space, so we can find it for this boy -- this way "Bear" and "Bear 2015"
+		if (rankName!=null && rankName.contains(" "))
 		{
-				//get the rank up to the space, so we can find it for this boy
-			if (rankName!=null && rankName.contains(" "))
-			{
-				//"Tiger Cubs" fouls this up, so strip off everything past the space
-				rankName = rankName.substring(0, rankName.indexOf(" "));
-			}
-			else if (rankName==null && award!=null)
-			{
-				String awardName = award.getAwardConfig().getName();
-				if(awardName.contains(" "))
-				{
-					if (awardName.contains("Elective"))
-					{
-						if (isCub2015 )
-						{
-							//the scout never earns this so just load the award
-							session.setAttribute(AWARD, award);
-							return "cub2015Advancement";
-						}
-					}
-					else
-					{
-						//"Tiger Cubs" fouls this up, so strip off everything past the space
-						rankName = awardName.substring(0, awardName.indexOf(" "));
-					}
-				}
-				else
-				{
-					rankName = awardName;
-				}
-			}
-			
-			//now get the ward and load it in the session
-			Award foundAward = null;
-			
-			for (Award scoutAward : scout.getAwards())
-			{
-				if(isCub2015)
-				{
-					if (scoutAward.getAwardConfig() instanceof Cub2015RankConfig || scoutAward.getAwardConfig() instanceof Cub2015RankElectiveConfig)
-					{
-						//default to the first one, so we if we don't find it, we at least get one
-						foundAward = scoutAward;
-						if (award!=null) 
-						{
-							//there was already a cub award, find a 2015 that matches
-							if (scoutAward.getAwardConfig().getName().startsWith(rankName))
-							{
-								foundAward=scoutAward;
-								break;
-							}
-						}
-					}
-				}
-				else
-				{
-					if (scoutAward.getAwardConfig() instanceof CubRankConfig)
-					{
-						//default to the first one, so we if we don't find it, we at least get one
-						foundAward = scoutAward;
-						if (award!=null) 
-						{
-							//there was already a cub award, find a 2015 that matches
-							if (scoutAward.getAwardConfig().getName().startsWith(rankName))
-							{
-								foundAward=scoutAward;
-								break;
-							}
-						}
-					}
-					
-				}
-			}
-			award = foundAward;
-			session.setAttribute(AWARD, award);
+			//"Tiger Cubs" fouls this up, so strip off everything past the space
+			rankName = rankName.substring(0, rankName.indexOf(" "));
 		}
+		else if (rankName==null && award!=null)
+		{
+			String awardName = award.getAwardConfig().getName();
+			if(awardName.contains(" "))
+			{
+				if (awardName.contains("Elective"))
+				{
+					if (isCub2015 )
+					{
+						//the scout never earns this so just load the award
+						session.setAttribute(AWARD, award);
+						return "cub2015Advancement";
+					}
+				}
+				else
+				{
+					//"Tiger Cubs" fouls this up, so strip off everything past the space
+					rankName = awardName.substring(0, awardName.indexOf(" "));
+				}
+			}
+			else
+			{
+				rankName = awardName;
+			}
+		}
+		
+		//now get the ward and load it in the session
+		Award foundAward = null;
+		
+		for (Award scoutAward : scout.getAwards())
+		{
+			if(isCub2015)
+			{
+				if (scoutAward.getAwardConfig() instanceof Cub2015RankConfig || scoutAward.getAwardConfig() instanceof Cub2015RankElectiveConfig)
+				{
+					//default to the first one, so we if we don't find it, we at least get one
+					//foundAward = scoutAward;
+					if (award!=null) 
+					{
+						//there was already a cub award, find a 2015 that matches
+						if (scoutAward.getAwardConfig().getName().startsWith(rankName))
+						{
+							foundAward=scoutAward;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				if (scoutAward.getAwardConfig() instanceof CubRankConfig)
+				{
+					//default to the first one, so we if we don't find it, we at least get one
+					//foundAward = scoutAward;
+					if (award!=null) 
+					{
+						//there was already a cub award, find a 2015 that matches
+						if (scoutAward.getAwardConfig().getName().startsWith(rankName))
+						{
+							foundAward=scoutAward;
+							break;
+						}
+					}
+				}
+				
+			}
+		}
+		if(foundAward!=null)
+		{
+		    //when not found, Must not be changing awards,just use the one passed in
+		    award = foundAward;
+		}
+		session.setAttribute(AWARD, award);
 		
 		return isCub2015?"cub2015Advancement":"cubAdvancement"; //default
 	}
@@ -354,7 +354,7 @@ public class ScoutsController extends AbstractScoutController
 			session.setAttribute(AWARD, rank);
 		}
 		//add the awards here so each time we switch ranks the earned ranks will update 
-		session.setAttribute(AWARDS,scout.getAwards());
+		session.setAttribute(AwardConfig.AWARDS,scout.getAwards());
 		
 		Map<Long, Long> requirementConfigIdCount = traxService.getAggregateCount(award.getAwardConfig().getId(), scouts);
 		model.put("requirementConfigIdAndCount", requirementConfigIdCount);
@@ -390,7 +390,7 @@ public class ScoutsController extends AbstractScoutController
 		
 		session.setAttribute(SCOUTS, scouts);
 		session.setAttribute(SCOUT, scout);
-		session.setAttribute(AWARDS, scout.getAwards());
+		session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
 		Award award = null;
 		try
 		{
@@ -540,7 +540,7 @@ public class ScoutsController extends AbstractScoutController
         if (signOffLeader instanceof Scout && award.getRequirements().size()==1)//just added this one, reload this scout in the session,  with new award
 		{
 			Scout scout = scouts.iterator().next();
-			session.setAttribute(AWARDS, scout.getAwards());//reload, read here to lazy load
+			session.setAttribute(AwardConfig.AWARDS, scout.getAwards());//reload, read here to lazy load
 			session.setAttribute("scout", scout);
 		}
         
@@ -606,7 +606,7 @@ public class ScoutsController extends AbstractScoutController
 				}
 				session.setAttribute(AWARD, award);
 				session.setAttribute(SCOUT, scout2);
-				session.setAttribute(AWARDS, scout2.getAwards());
+				session.setAttribute(AwardConfig.AWARDS, scout2.getAwards());
 			}
 		}
 		else

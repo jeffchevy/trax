@@ -214,20 +214,20 @@ public class ScoutReportTag extends TagSupport
 
 		if(isCub)
 		{
-			writeAwardTable(writer, rankMap, "Cub Ranks", "Total Complete");
+			writeAwardTable(writer, rankMap, AwardConfig.RANK+"s", "Total Complete");
 			writeAwardTable(writer, electiveMap, "Electives", "Cub Rank Electives");
-			writeAwardTable(writer, pinMap, "Pins", "Total Complete");
+			writeAwardTable(writer, pinMap, AwardConfig.PIN, "Total Complete");
 			writeAwardTable(writer, beltLoopMap, "Belt Loops", "Total Complete");
 			writeAwardTable(writer, activityBadgeMap, "Activity Badges", "Total Complete");
-			writeAwardTable(writer, awardMap, "Awards", "Total Complete");
+			writeAwardTable(writer, awardMap, AwardConfig.AWARDS, "Total Complete");
 			writeAwardTable(writer, dtgMap, "Duty To God", "Total Complete");
 		}
 		else
 		{
-			writeAwardTable(writer, rankMap, "Ranks", "Total Complete");
+			writeAwardTable(writer, rankMap, AwardConfig.RANK+"s", "Total Complete");
 			writeAwardTable(writer, requiredBadgeMap, "Required Badges", "Total Complete(13 for Eagle)");
 			writeAwardTable(writer, badgeMap, "Merit Badges", "Total Complete(9 for Eagle)");
-			writeAwardTable(writer, awardMap, "Awards", "Total Complete");
+			writeAwardTable(writer, awardMap, AwardConfig.AWARDS, "Total Complete");
 			writeAwardTable(writer, dtgMap, "Duty To God", "Total Complete");
 		}
 
