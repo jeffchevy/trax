@@ -259,7 +259,7 @@ public class TraxServiceImpl implements TraxService
 			boolean foundCub2015Rank = false;
 			for (Award award : scout.getAwards())
 			{
-				if (award instanceof Cub2015Rank)
+				if (award.getAwardConfig() instanceof Cub2015RankConfig)
 				{
 					//they already have 2015 ranks, don't add them
 					foundCub2015Rank=true;
