@@ -13,7 +13,8 @@ import org.trax.model.AwardConfig;
 @DiscriminatorValue("L")
 public class BeltLoopConfig extends AwardConfig //implements Comparable<AwardConfig> 
 {
-	public BeltLoopConfig(){}
+
+    public BeltLoopConfig(){}
 	
 	public boolean equals(BeltLoopConfig ac)
 	{ 
@@ -26,7 +27,7 @@ public class BeltLoopConfig extends AwardConfig //implements Comparable<AwardCon
 	@Transient
 	public String getTypeName()
 	{
-		return "Belt_Loops";
+		return BELT_LOOPS;
 	}
 
 	@Transient

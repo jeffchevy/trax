@@ -37,6 +37,11 @@ import org.trax.model.cub.pu2015.ChildAwardConfig;
 @DiscriminatorValue("A")
 public class AwardConfig implements Serializable//implements Comparable<AwardConfig> 
 {
+    public static final String AWARDS = "Awards";
+    public static final String BELT_LOOPS = "Belt_Loops";
+    public static final String PIN = "Pins";
+    public static final String RANK = "Rank";
+    
 	private String name;
 	private String description;
 	private boolean isSelectable=true;
@@ -174,7 +179,7 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 	@Transient
 	public String getTypeName()
 	{
-		return "Awards";
+		return AWARDS;
 	}
 	@Transient
 	public String getImageSource()

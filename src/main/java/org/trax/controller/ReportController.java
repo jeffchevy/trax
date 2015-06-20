@@ -59,6 +59,7 @@ import org.trax.model.cub.CubAwardConfig;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
 import org.trax.model.cub.PinConfig;
+import org.trax.tags.GroupReportTag;
 
 @Controller
 public class ReportController extends AbstractScoutController
@@ -212,7 +213,6 @@ public class ReportController extends AbstractScoutController
 									}
 									else if (award.getAwardConfig() instanceof AwardConfig)// cub and scout
 									{
-										// awardCount++;
 										addNameComplete(awardScoutMap, indexAndName, nameComplete);
 									}
 									else
@@ -235,7 +235,7 @@ public class ReportController extends AbstractScoutController
 										continue;
 									}
 
-									if (award.getAwardConfig() instanceof RankConfig)
+									if (AwardConfig.RANK.equals(award.getAwardConfig().getTypeName()))
 									{
 										addNameComplete(rankScoutMap, indexAndName, nameComplete);
 									}
@@ -255,16 +255,15 @@ public class ReportController extends AbstractScoutController
 			}
 		}
 		// cub only
-		request.setAttribute("pinMap", pinMap);
-		request.setAttribute("beltLoopMap", beltLoopMap);
-		request.setAttribute("electiveMap", electiveMap);
-		request.setAttribute("activityBadgeMap", activityBadgeMap);
+		request.setAttribute(GroupReportTag.PIN_MAP, pinMap);
+		request.setAttribute(GroupReportTag.BELT_LOOP_MAP, beltLoopMap);
+		request.setAttribute(GroupReportTag.ELECTIVE_MAP, electiveMap);
+		request.setAttribute(GroupReportTag.ACTIVITY_BADGE_MAP, activityBadgeMap);
 		request.setAttribute("dtgMap", dtgMap);
 		// all scouts
 		request.setAttribute("awardScoutMap", awardScoutMap);
 		request.setAttribute("rankScoutMap", rankScoutMap);
 		request.setAttribute("requiredScoutMap", requiredScoutMap);
-		request.getSession().setAttribute("todaysDate", new Date());
 
 		return isCub ? "groupCubReport" : "groupReport";
 	}
@@ -273,9 +272,7 @@ public class ReportController extends AbstractScoutController
 	{
 		if (awardScoutMap.containsKey(indexAndName))
 		{
-			awardScoutMap.get(indexAndName).add(nameComplete); // use index to
-																// preserve
-																// order
+			awardScoutMap.get(indexAndName).add(nameComplete); // use index to preserve order
 		}
 		else
 		{
@@ -705,7 +702,6 @@ public class ReportController extends AbstractScoutController
 		}//end of awards
 		
 		htmlString += "</table>"; // table
-		session.setAttribute("todaysDate", new Date());
 		
 		return htmlString;
 	}
@@ -861,7 +857,6 @@ public class ReportController extends AbstractScoutController
 						htmlString += "]\n"; // row
 					}
 					htmlString += "]\n"; // table
-					request.getSession().setAttribute("todaysDate", new Date());
 				}
 				
 			}

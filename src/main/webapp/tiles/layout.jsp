@@ -195,7 +195,7 @@
 		else if($('#silver').length != 0){$('a', '#nav-silver').addClass('active');}
 		else if($('#ranger').length != 0){$('a', '#nav-ranger').addClass('active');}
 		else if($('#Bobcat, #Bobcat_2015').length != 0 ){$('a', '#nav-bobcatrank').addClass('active');}
-		else if($('#Tiger_Cub, #Tiger_2015').length != 0 || $('#Tiger_Elective_Adventures_2015').length != 0 ){$('a', '#nav-tigerrank').addClass('active');}
+		else if($('#Tiger #Tiger_Cub, #Tiger_2015, #Tiger_Elective_Adventures_2015').length != 0 ){$('a', '#nav-tigerrank').addClass('active');}
 		else if($('#Bear, #Bear_2015, #Bear_Elective_Adventures_2015').length != 0 ){$('a', '#nav-bearrank').addClass('active');}
 		else if($('#Wolf, #Wolf_2015, #Wolf_Elective_Adventures_2015').length != 0){$('a', '#nav-wolfrank').addClass('active');}
 		else if($('#Webelos_Award, #Webelos_2015, #Webelos_\\&_AOL_Elective_Adventures_2015').length != 0){$('a', '#nav-webelosrank').addClass('active');}

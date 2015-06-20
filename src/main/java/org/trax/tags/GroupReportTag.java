@@ -17,13 +17,20 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.trax.dto.NameComplete;
+import org.trax.model.AwardConfig;
 import org.trax.model.Scout;
 import org.trax.model.User;
 
 @SuppressWarnings("serial")
 public class GroupReportTag extends TagSupport
 {
-	protected static final Format formatter = new SimpleDateFormat("MM/dd/yyyy");
+	public static final String AWARD_MAP = "awardMap";
+	public static final String ACTIVITY_BADGE_MAP = "activityBadgeMap";
+	public static final String BELT_LOOP_MAP = "beltLoopMap";
+	public static final String PIN_MAP = "pinMap";
+	public static final String ELECTIVE_MAP = "electiveMap";
+	public static final String RANK_SCOUT_MAP = "rankScoutMap";
+    protected static final Format formatter = new SimpleDateFormat("MM/dd/yyyy");
 	private PageContext pageContext = null;
 	private Tag parent = null;
 	private String name = null;
@@ -44,12 +51,12 @@ public class GroupReportTag extends TagSupport
 			boolean isCub = user.getUnit().isCub();
 			if (isCub)
 			{
-				if(name.equals("rankScoutMap")) {colHeaderName="Cub Ranks";}
-				else if(name.equals("electiveMap")) {colHeaderName="Cub Rank Electives";}
-				else if(name.equals("pinMap")) {colHeaderName="Pins";}
-				else if(name.equals("beltLoopMap")) {colHeaderName="Belt Loops";}
-				else if(name.equals("activityBadgeMap")) {colHeaderName="Activity Badges";}
-				else if(name.equals("awardMap")) {colHeaderName="Other Awards";}
+				if(name.equals(RANK_SCOUT_MAP)) {colHeaderName=AwardConfig.RANK+"s";}
+				else if(name.equals(ELECTIVE_MAP)) {colHeaderName=AwardConfig.RANK+" Electives";}
+				else if(name.equals(PIN_MAP)) {colHeaderName=AwardConfig.PIN;}
+				else if(name.equals(BELT_LOOP_MAP)) {colHeaderName="Belt Loops";}
+				else if(name.equals(ACTIVITY_BADGE_MAP)) {colHeaderName="Activity Badges";}
+				else if(name.equals(AWARD_MAP)) {colHeaderName="Other Awards";}
 			}
 			else
 			{

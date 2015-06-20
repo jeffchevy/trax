@@ -145,6 +145,17 @@
 					});
 			    });
 			});
+			function ShowLocalDate()
+		    {
+				var currentdate = new Date(); 
+			    var localdate = "" + currentdate.getDate() + "/"
+			                + (currentdate.getMonth()+1)  + "/" 
+			                + currentdate.getFullYear() + " @ "  
+			                + currentdate.getHours() + ":"  
+			                + currentdate.getMinutes() + ":" 
+			                + currentdate.getSeconds();
+			    $('#currentDate').text(localdate)
+		    }
 		</script>
    
 <div class='table'>
@@ -153,7 +164,7 @@
 		<div id='printdiv'>
 			<div class='row'>
 				<h1>Pack ${scout.unit.number} Group report</h1>
-				<h2>${todaysDate}</h2>
+				<h2 id='currentDate'></h2>
 			</div>
 			<div class='row'>
 				<trax:groupreport name='rankScoutMap' styleId='rankreport'/>

@@ -91,7 +91,7 @@ public class BadgeController extends AbstractScoutController
     		model.put("badgeConfigs", awardConfigs);
             return returnval;
     	}
-    	else if("Pins".equals(type))
+    	else if(AwardConfig.PIN.equals(type))
     	{
     		List<PinConfig> awardConfigs = traxService.getAllPins();
     		model.put("badgeConfigs", awardConfigs);
@@ -207,7 +207,7 @@ public class BadgeController extends AbstractScoutController
 				foundAward = award;
 				if("Wolf Electives".equals(awardName) || "Bear Electives".equals(awardName)) //do this so they get loaded in earned 
 				{
-					request.getSession().setAttribute("awards", scout.getAwards());
+					request.getSession().setAttribute(AwardConfig.AWARDS, scout.getAwards());
 				}
 				break;
 			}
