@@ -34,7 +34,7 @@ import org.trax.model.Requirement;
 import org.trax.model.Scout;
 import org.trax.model.User;
 import org.trax.model.cub.CubRankConfig;
-import org.trax.model.cub.CubRankElectiveConfig;
+import org.trax.model.cub.CubRankElective;
 import org.trax.model.cub.pu2015.ChildAward;
 import org.trax.model.cub.pu2015.ChildAwardConfig;
 import org.trax.model.cub.pu2015.Cub2015RankConfig;
@@ -123,12 +123,22 @@ public class ScoutsController extends AbstractScoutController
 							break;
 						}
 					}
-					
-					if (award==null && isCub) {
-						//somehow they have a cub with scout ranks, that ok, but add cub ranks
-						traxService.addRanks(scout);
-						session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
-					}
+					if (award == null) 
+					{
+                        if (isCub)
+                        {
+                            //somehow they have a cub with scout ranks, that ok, but add cub ranks - could be a new 2015 cub
+                            traxService.addRanks(scout);
+                            session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
+                        }
+                        else
+                        {
+                            //should never happen, somehow we got a regular scout without any awards
+                            System.out.println("ERROR: found boy by the name of "+scout.getFullName()+ " that does not have any awards");
+                            returnType = "redirect:troopManage.html";
+                            break;
+                        }
+                    }
 				}
 				session.setAttribute(AWARD, award);
 				if(award!=null)
@@ -221,11 +231,29 @@ public class ScoutsController extends AbstractScoutController
 			{
 				if (awardName.contains("Elective"))
 				{
-					if (isCub2015 )
+					if (isCub2015)
 					{
-						//the scout never earns this so just load the award
-						session.setAttribute(AWARD, award);
-						return "cub2015Advancement";
+					    if (! awardName.contains("2015"))
+                        {
+					        //super kludge but its late
+					        if (awardName.contains("Tiger"))
+                            {
+                                rankName = "Tiger Elective";
+                            }
+					        else if (awardName.contains("Wolf"))
+                            {
+                                rankName = "Wolf Elective";
+                            }
+					        else if (awardName.contains("Bear"))
+                            {
+                                rankName = "Bear Elective";
+                            }
+                        }
+					    else
+					    {
+    						session.setAttribute(AWARD, award);
+    						return "cub2015Advancement";
+					    }
 					}
 				}
 				else
@@ -249,9 +277,7 @@ public class ScoutsController extends AbstractScoutController
 			{
 				if (scoutAward.getAwardConfig() instanceof Cub2015RankConfig || scoutAward.getAwardConfig() instanceof Cub2015RankElectiveConfig)
 				{
-					//default to the first one, so we if we don't find it, we at least get one
-					//foundAward = scoutAward;
-					if (award!=null) 
+					if (award!=null && rankName != null) 
 					{
 						//there was already a cub award, find a 2015 that matches
 						if (scoutAward.getAwardConfig().getName().startsWith(rankName))
@@ -266,9 +292,7 @@ public class ScoutsController extends AbstractScoutController
 			{
 				if (scoutAward.getAwardConfig() instanceof CubRankConfig)
 				{
-					//default to the first one, so we if we don't find it, we at least get one
-					//foundAward = scoutAward;
-					if (award!=null) 
+					if (award!=null && rankName != null) 
 					{
 						//there was already a cub award, find a 2015 that matches
 						if (scoutAward.getAwardConfig().getName().startsWith(rankName))
@@ -281,6 +305,7 @@ public class ScoutsController extends AbstractScoutController
 				
 			}
 		}
+		
 		if(foundAward!=null)
 		{
 		    //when not found, Must not be changing awards,just use the one passed in

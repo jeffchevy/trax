@@ -183,7 +183,10 @@ input#awardpurchasedcheckbox[type=checkbox],
 		color: #454;
 		font: 1em bold;
 	}
-	
+	#supporterImage {
+		width: 100%;
+		height: 150px;
+	}
 	.dropshadow {
 	 -moz-box-shadow: 9px 6px 6px #333; /* Firefox */
 	 -webkit-box-shadow: 9px 6px 6px #333; /* Safari/Chrome */

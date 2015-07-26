@@ -234,6 +234,7 @@ public class TraxServiceImpl implements TraxService
 					{
 						Award rank = new CubRank();
 						rank.setAwardConfig(rankConfig);
+						rank.setUser(scout);
 						awards.add(rank);
 					}
 				}
@@ -248,6 +249,7 @@ public class TraxServiceImpl implements TraxService
 				{
 					Award rank = new Rank();
 					rank.setAwardConfig(rankConfig);
+                    rank.setUser(scout);
 					awards.add(rank);
 				}
 				scout.setAwards(awards);
@@ -271,6 +273,7 @@ public class TraxServiceImpl implements TraxService
 				addCub2015Ranks(scout, scout.getAwards());
 			}
 		}
+		userDao.save(scout);
 	}
 
 	private void addCub2015Ranks(Scout scout, Set<Award> awards)
@@ -284,6 +287,7 @@ public class TraxServiceImpl implements TraxService
 			{
 				Award rank = new Cub2015Rank();
 				rank.setAwardConfig(rankConfig);
+                rank.setUser(scout);
 				awards.add(rank);
 				
 				List<ChildAwardConfig> childAwardConfigs = childAwardConfigDao.getchildAwardConfigs(rankConfig.getId());
@@ -291,6 +295,7 @@ public class TraxServiceImpl implements TraxService
 				{
 					Award childAward = new ChildAward();
 					childAward.setAwardConfig(childAwardConfig);
+					childAward.setUser(scout);
 					awards.add(childAward);
 				}
 			}
@@ -1519,7 +1524,7 @@ public class TraxServiceImpl implements TraxService
 		List<? extends BaseUnitType> unitTypes;
 		if (isCub)
 		{
-			List<? extends BaseUnitType> someUnitTypes = new ArrayList();
+			List<? extends BaseUnitType> someUnitTypes = new ArrayList<>();
 			unitTypes = cubUnitTypeDao.findAll();
 
 			try

@@ -188,6 +188,15 @@ public class AwardTag extends TagSupport
 				if ((requirementIndex++) == requirementSplit )
 				{
 					endP1StartP2(writer, scout, requirementConfigIdAndCount, scouts, false, pinLink);
+					if (awardConfig.getSponsors()!=null && ! awardConfig.getSponsors().isEmpty()) {
+					    writer.write(" <div class='row'>\n" 
+					            + "  <div class='cell'>\n" 
+			                    + "    <a id='supporter' href='"+awardConfig.getSponsors().iterator().next().getLink()+"'>"
+			                    + "      <img class='dropshadow' alt='supporter' src='"+awardConfig.getImageSource()+"'></a>"
+			                    + "</div>"
+			                    + "</div>");
+                    } 
+
 					onlyOnePage = false;
 				}
 				

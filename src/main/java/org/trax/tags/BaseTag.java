@@ -92,7 +92,7 @@ public class BaseTag extends TagSupport
 		{
 			//TODO this will throw an exception if the awards cannot be found, 
 			// so just swallow it and return null, the tag does not need to draw anything
-			if (awards.size()==0)
+			if (awards==null || awards.size()==0)
 			{
 				return null;
 			}

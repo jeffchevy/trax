@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 //import net.tanesha.recaptcha.ReCaptcha;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -149,12 +150,24 @@ public class UserController
 	@RequestMapping(value = "/addscout.html", method = RequestMethod.GET)
 	public ModelAndView showScoutForm(HttpServletRequest request, Map<String, Object> model)
 	{
-		model.put("positions", traxService.getScoutPositions());
-		Organization organization = (Organization) request.getSession().getAttribute(ORGANIZATION);
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Scout scout = new Scout(organization, user.getUnit(), "", "", "", "", user.getZip());
-		//needs to be a copy, not the original, that is used by someone else
-		scout.setUnitCopy(user.getUnit());
+	    //in case there is a problem create this one completely blank
+		Scout scout = new Scout();
+		
+        try {
+            model.put("positions", traxService.getScoutPositions());
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            scout.setOrganization(user.getOrganization());
+            scout.setState(user.getOrganization().getState());
+            scout.setCity(user.getOrganization().getCity());
+            scout.setUnitCopy(user.getUnit());
+            scout.setZip(user.getZip());
+            //needs to be a copy, not the original, that is used by someone else
+            scout.setUnitCopy(user.getUnit());
+        }
+        catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		
 		return new ModelAndView("scout", "scout", scout);
 	}
@@ -164,7 +177,6 @@ public class UserController
 	{
 		model.put("positions", traxService.getLeaderPositions());
 		Leader leader = new Leader();
-//		Organization organization = (Organization) request.getSession().getAttribute(ORGANIZATION);
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		leader.setOrganization(user.getOrganization());
 		leader.setState(user.getOrganization().getState());

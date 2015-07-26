@@ -23,6 +23,7 @@ import org.trax.model.RankConfig;
 import org.trax.model.Requirement;
 import org.trax.model.RequirementConfig;
 import org.trax.model.Scout;
+import org.trax.model.Sponsor;
 import org.trax.model.User;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.pu2015.ChildAwardConfig;
@@ -195,8 +196,8 @@ public class Award2015Tag extends TagSupport
 				requirementSplit = requirementSplit==-1?(awardConfig.getRequirementConfigs().size()/2)-spaceForEarnedInprogress:requirementSplit;
 				if ((requirementIndex++) == requirementSplit )
 				{
-					endP1StartP2(writer, scout, requirementConfigIdAndCount, scouts, false, pinLink);
-					onlyOnePage = false;
+				    onlyOnePage = false;
+                    endP1StartP2(writer, scout, requirementConfigIdAndCount, scouts, false, pinLink, awardConfig, onlyOnePage);
 				}
 				
 				//write row
@@ -271,7 +272,7 @@ public class Award2015Tag extends TagSupport
 			}
 			if(onlyOnePage)
 			{
-				endP1StartP2(writer, scout, requirementConfigIdAndCount, scouts, true, pinLink);
+				endP1StartP2(writer, scout, requirementConfigIdAndCount, scouts, true, pinLink, awardConfig, onlyOnePage);
 			}
 			writer.write("		</div>"); //end requirements column 2 table
 			writer.write("</div>"); //table, cell, row, row2 table, cell, row, end both pages table
@@ -521,7 +522,7 @@ public class Award2015Tag extends TagSupport
 	}
 
 	private void endP1StartP2(JspWriter writer, Scout scout, Map<Long, Long> requirementConfigIdAndCount,
-			List<Scout> scouts, boolean needsQuote, String pinLink) throws IOException
+			List<Scout> scouts, boolean needsQuote, String pinLink, AwardConfig awardConfig, boolean onlyOnePage) throws IOException
 	{
 		writer.write("				</div>" + //requirements 1 table 
 				pinLink+
@@ -530,7 +531,22 @@ public class Award2015Tag extends TagSupport
 				"		</div>" + //table
 				"	</div>");//+ // end page 1 cell
 		writer.write("<div id='page2' class='cell'>");
-		writer.write("<div class='table' id='pagetwo'>"); //requirements colum2 table
+		
+		boolean hasSponsor = (awardConfig.getSponsors()!=null && ! awardConfig.getSponsors().isEmpty()) && (awardConfig.getSponsors().size()==1 && awardConfig.getSponsors().iterator().next().getLogo()!=null);
+        writer.write("<div class='table' "+(hasSponsor?">":"id='pagetwo'>")); //requirements colum2 table --only add the id if there is no sponsor
+        if (hasSponsor) {
+            for (Sponsor sponsor : awardConfig.getSponsors()) {
+                writer.write(" <div class='row'>\n" 
+                        + (onlyOnePage ? "": " <div class='cell'></div>") //if only one page the second page only has a single cell width
+                        + " <div class='cell'>"
+                        + "    <a id='supporter' href="+sponsor.getLink()+">"
+                        + "      <img id='supporterImage' class='dropshadow' alt='"+sponsor.getCompanyName()+"' src='supporterimage.html'></a>"
+                        + " </div>"
+                        + (onlyOnePage ? "": " <div class='cell'></div>") //if only one page the second page only has a single cell width
+                        + "</div>");
+                break;
+            } 
+        }
 		if(needsQuote)
 		{
 			writer.write(getQuote());

@@ -105,15 +105,19 @@ public class EarnedTag extends BaseTag
 					{
 						if(scout.getUnit().isCub())
 						{
-							if(awardConfig instanceof CubRankConfig)
-							{
-								htmlLists = addBeadImage(awardCounts, htmlLists, award, awardConfig);
-							}
-							else if(awardConfig instanceof CubRankElectiveConfig)
-							{
-								htmlLists = addElectivesImage(awardCounts, htmlLists, award, awardConfig);
-							}
-							else if(awardConfig instanceof DutyToGodConfig)
+						    if(! isCub2015Mode)
+                            {
+    							if(awardConfig instanceof CubRankConfig)
+    							{
+    								htmlLists = addBeadImage(awardCounts, htmlLists, award, awardConfig);
+    							}
+    							else if(awardConfig instanceof CubRankElectiveConfig)
+    							{
+    								htmlLists = addElectivesImage(awardCounts, htmlLists, award, awardConfig);
+    							}
+                            }
+						    
+							if(awardConfig instanceof DutyToGodConfig)
 							{
 								htmlLists = addReligiousKnot(htmlLists, award, awardConfig);
 							}

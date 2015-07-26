@@ -18,7 +18,7 @@
 					
 					<p style="color: red;">To finalize your registration, click on the image below to create your own username and password.</p>
 					<a href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">		
-						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/scouttraxPatch.png">
 					</a>
 					<p>After doing this, login and update your information and scout advancement records. 
 					This information will be kept secure, while shared with other scout leaders in your unit.</p>

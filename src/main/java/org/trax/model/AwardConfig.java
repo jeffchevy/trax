@@ -41,8 +41,8 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
     public static final String BELT_LOOPS = "Belt_Loops";
     public static final String PIN = "Pins";
     public static final String RANK = "Rank";
-    
-	private String name;
+    private Set<Sponsor> sponsors;
+    private String name;
 	private String description;
 	private boolean isSelectable=true;
 	private List<RequirementConfig> requirementConfigs;
@@ -203,6 +203,17 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 		this.isSelectable = isSelectable;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "awardConfigId", nullable = true, unique = false)
+    @ForeignKey(name="award_config_sponsor")
+	public Set<Sponsor> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(Set<Sponsor> sponsors) {
+        this.sponsors = sponsors;
+    }
+	
 /*	@Column(name = "awardGroup", nullable = true)
 	public String getAwardGroup()
 	{

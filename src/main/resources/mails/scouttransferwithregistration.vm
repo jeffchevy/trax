@@ -9,7 +9,7 @@
 			</tr>	
 			<tr>
 				<td>
-					$oldLeader.fullName from $oldLeader.unit.typeOfUnit.name $oldLeader.unit.number  has invited you to join ScoutTrax to view the records for $scout.fullName. 
+					$oldLeader.fullName from $oldLeader.unit.typeOfUnit.name $oldLeader.unit.number has invited you to join ScoutTrax to view the records for $scout.fullName. 
 					<p><b>ScoutTrax is free.</b><p>
 				</td>
 			</tr>	
@@ -22,7 +22,7 @@
 					
 					<p style="color: red;">In order to get started you need to click on the ScoutTrax image below and set up a username and password. Then use your new user name and password to login.</p>
 					<a href="http://www.scouttrax.org/verify.html?userId=$userIdKey&passcode=$passcode">		
-						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/TraxEmailLink.gif">
+						<img alt="Click here to go to the scouttrax.org login page" src="http://www.scouttrax.org/images/scouttraxPatch.png">
 					</a>
 					<p>After doing this, login and update your information and scout advancement records. 
 					This information will be kept secure, while shared with other scout leaders.</p>

@@ -30,6 +30,7 @@ version="2.0">
     <class>org.trax.model.Unit</class>
     <class>org.trax.model.cub.CubUnitType</class>
     <class>org.trax.model.ScoutUnitType</class>
+    <class>org.trax.model.Sponsor</class>
     
     <properties>
       <property name="hibernate.archive.autodetection" value="class" />
