@@ -79,6 +79,24 @@
 		</dependency>
 
 
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.46.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency>
+
 		<!-- General dependencies for standard applications -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -436,6 +454,7 @@
 				<configuration>
 					<printSummary>false</printSummary>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <skipTests>true</skipTests>
 					<excludes>
 						<exclude>**/*_Roo_*</exclude>
 					</excludes>
