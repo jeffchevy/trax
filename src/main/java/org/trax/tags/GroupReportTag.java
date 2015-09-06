@@ -56,6 +56,7 @@ public class GroupReportTag extends TagSupport
 				else if(name.equals(PIN_MAP)) {colHeaderName=AwardConfig.PIN;}
 				else if(name.equals(BELT_LOOP_MAP)) {colHeaderName="Belt Loops";}
 				else if(name.equals(ACTIVITY_BADGE_MAP)) {colHeaderName="Activity Badges";}
+				else if(name.equals("awardScoutMap")) {colHeaderName="2015 Awards";}
 				else if(name.equals(AWARD_MAP)) {colHeaderName="Other Awards";}
 			}
 			else
@@ -86,7 +87,7 @@ public class GroupReportTag extends TagSupport
 			int goldArrowCount=0;
 			for (String awardKey : awardScoutMap.keySet())
 			{
-				StringTokenizer st = new StringTokenizer(awardKey, ":");
+				StringTokenizer st = new StringTokenizer(awardKey, "|");
 				String sortOrder = st.nextToken();
 				String awardName = st.nextToken();
 				tbody+="<tr><td class='hidden'>"+sortOrder+"</td><td class='header'>"+awardName+"</td>";

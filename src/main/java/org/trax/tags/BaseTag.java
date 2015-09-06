@@ -152,51 +152,8 @@ public class BaseTag extends TagSupport
 	{
 		this.size = size;
 	}
-
-	/**
-	 * its not an either 2015 or classic, awards are shared by both
-	 * @param award
-	 * @return
-	 */
-	protected boolean isCub2015Award(Award award)
-	{
-		boolean isCub2015Award = ! (award.getAwardConfig() instanceof CubRankConfig 
-						||  award.getAwardConfig() instanceof CubRankElectiveConfig
-						||  award.getAwardConfig() instanceof PinConfig
-						||  award.getAwardConfig() instanceof BeltLoopConfig
-						||  award.getAwardConfig() instanceof ActivityBadgeConfig);
-		return isCub2015Award;
-	}
-
-	/**
-	 * its not an either 2015 or classic, awards are shared by both
-	 * @param award
-	 * @return
-	 */
-	protected boolean isClassicCubAward(Award award)
-	{
-		boolean isClassicCub = !(award.getAwardConfig() instanceof ChildAwardConfig 
-						||  award.getAwardConfig() instanceof Cub2015RankConfig 
-						||  award.getAwardConfig() instanceof Cub2015RankElectiveConfig);
-		return isClassicCub;
-	}
-
-	protected boolean isAnyCubAward(AwardConfig awardConfig)
-	{
-		boolean isCubAward = awardConfig instanceof BeltLoopConfig
-				|| awardConfig instanceof PinConfig
-				|| awardConfig instanceof CubRankElectiveConfig
-				|| awardConfig instanceof ActivityBadgeConfig
-				|| awardConfig instanceof CubRankConfig
-				|| awardConfig instanceof Cub2015RankConfig
-				|| awardConfig instanceof Cub2015RankElectiveConfig
-				|| awardConfig instanceof ChildAwardConfig
-				|| awardConfig instanceof CubDutyToGodConfig
-				|| awardConfig instanceof CubAwardConfig;
-		return isCubAward;
-	}
-
-	protected boolean isCub2015()
+	
+	public boolean isCub2015()
 	{
 		Object cub2015 = pageContext.getSession().getAttribute("Cub2015");
 		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);

@@ -15,6 +15,7 @@ import org.trax.model.Requirement;
 import org.trax.model.Scout;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
+import org.trax.util.Helper;
 
 @SuppressWarnings("serial")
 public class EarnedTag extends BaseTag
@@ -62,7 +63,7 @@ public class EarnedTag extends BaseTag
 							
 							if(isCub2015Mode)
 							{
-								if( isCub2015Award(award))
+								if( Helper.isCub2015Award(award))
 								{
 									//only processing 2015 Awards
 									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
@@ -71,7 +72,7 @@ public class EarnedTag extends BaseTag
 							}
 							else
 							{
-								if (isClassicCubAward(award))
+								if (Helper.isClassicCubAward(award))
 								{
 									//only processing legacy Awards
 									if (awardConfig instanceof CubRankConfig)
@@ -93,7 +94,7 @@ public class EarnedTag extends BaseTag
 						else 
 						{
 							//this award is for older scouts
-							if (isAnyCubAward(awardConfig))
+							if (Helper.isAnyCubAward(awardConfig))
 							{
 								continue;
 							}

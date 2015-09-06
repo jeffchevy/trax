@@ -153,7 +153,7 @@ public class ReportController extends AbstractScoutController
 				isCub = scout.getUnit().isCub();
 				for (Award award : scout.getAwards())
 				{
-					String indexAndName = award.getAwardConfig().getSortOrder() + ":" + award.getAwardConfig().getName();
+					String indexAndName = award.getAwardConfig().getSortOrder() + "|" + award.getAwardConfig().getName();
 					String scoutName = scout.getFullName();
 					boolean hasBeadsAndArrows = isCub && (award.getAwardConfig() instanceof CubRankConfig || award.getAwardConfig() instanceof CubRankElectiveConfig);
 					if (award.getDateCompleted() != null || hasBeadsAndArrows)

@@ -35,6 +35,7 @@ import org.trax.model.cub.CubDutyToGodConfig;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
 import org.trax.model.cub.PinConfig;
+import org.trax.util.Helper;
 
 @SuppressWarnings("serial")
 public class ScoutReportTag extends TagSupport
@@ -176,14 +177,11 @@ public class ScoutReportTag extends TagSupport
 				}
 				else
 				{
-					if (awardConfig instanceof CubRankConfig || 
-									awardConfig instanceof CubRankElectiveConfig ||
-									awardConfig instanceof PinConfig ||
-									awardConfig instanceof BeltLoopConfig ||
-									awardConfig instanceof CubDutyToGodConfig ||
-									awardConfig instanceof ActivityBadgeConfig)
+					//its a scout, skip all cub awards
+					if (Helper.isAnyCubAward(awardConfig))
 					{
 						//skip these
+						continue;
 					}
 					else if (awardConfig instanceof RankConfig)
 					{
@@ -219,7 +217,7 @@ public class ScoutReportTag extends TagSupport
 			writeAwardTable(writer, pinMap, AwardConfig.PIN, "Total Complete");
 			writeAwardTable(writer, beltLoopMap, "Belt Loops", "Total Complete");
 			writeAwardTable(writer, activityBadgeMap, "Activity Badges", "Total Complete");
-			writeAwardTable(writer, awardMap, AwardConfig.AWARDS, "Total Complete");
+			writeAwardTable(writer, awardMap, "Awards", "Total Complete");
 			writeAwardTable(writer, dtgMap, "Duty To God", "Total Complete");
 		}
 		else

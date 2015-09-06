@@ -18,6 +18,7 @@ import org.trax.model.Scout;
 import org.trax.model.cub.CubRankConfig;
 import org.trax.model.cub.CubRankElectiveConfig;
 import org.trax.model.cub.pu2015.ChildAwardConfig;
+import org.trax.util.Helper;
 
 @SuppressWarnings("serial")
 public class InProgressTag extends BaseTag
@@ -70,7 +71,7 @@ public class InProgressTag extends BaseTag
 						String awardName = awardConfig.getName().replace("'", "");
 						if (scout.getUnit().isCub())
 						{
-							if( ! isAnyCubAward(awardConfig))
+							if( ! Helper.isAnyCubAward(awardConfig))
 							{
 								//this must be a scout award, we don't want to show it --should never happen
 								logger.error("***Not showing "+awardName+" is not valid for a cub scout");
@@ -79,7 +80,7 @@ public class InProgressTag extends BaseTag
 
 							if(isCub2015Mode)
 							{
-								if( isCub2015Award(award))
+								if( Helper.isCub2015Award(award))
 								{
 									//only processing 2015 Awards
 									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
@@ -88,7 +89,7 @@ public class InProgressTag extends BaseTag
 							}
 							else 
 							{
-								if(isClassicCubAward(award)) //classic cubs
+								if(Helper.isClassicCubAward(award)) //classic cubs
 								{
 									if (awardConfig instanceof CubRankConfig)
 									{
@@ -120,7 +121,7 @@ public class InProgressTag extends BaseTag
 								}
 							}
 						}
-						else if (! isAnyCubAward(awardConfig))
+						else if (! Helper.isAnyCubAward(awardConfig))
 						{
 							//This is an older scout
 							if (awardConfig instanceof RankConfig)
