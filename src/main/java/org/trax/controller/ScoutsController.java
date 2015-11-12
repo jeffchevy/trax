@@ -128,7 +128,7 @@ public class ScoutsController extends AbstractScoutController
                         if (isCub)
                         {
                             //somehow they have a cub with scout ranks, that ok, but add cub ranks - could be a new 2015 cub
-                            traxService.addRanks(scout);
+                            scout = traxService.addRanks(scout);
                             session.setAttribute(AwardConfig.AWARDS, scout.getAwards());
                         }
                         else
@@ -215,7 +215,7 @@ public class ScoutsController extends AbstractScoutController
 		if(isCub2015)
 		{
 			//make sure the scout has ranks
-			traxService.addRanks(scout);
+			scout = traxService.addRanks(scout);
 		}
 		
 			//get the rank up to the space, so we can find it for this boy -- this way "Bear" and "Bear 2015"

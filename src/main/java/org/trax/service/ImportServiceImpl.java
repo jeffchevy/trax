@@ -208,7 +208,7 @@ public class ImportServiceImpl implements ImportService
 					organization = organizationDao.findById(organization.getId(), false);
 					scout = new Scout(organization, unit, firstName, middleName, lastName, nameSuffix, leader.getZip());
 					scout.setUnitCopy(unit);//each scout must have his own
-					traxService.addRanks(scout);
+					scout = traxService.addRanks(scout);
 				}
 
 				if (scout.getRetired())

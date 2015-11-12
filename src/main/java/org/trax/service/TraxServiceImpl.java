@@ -180,7 +180,7 @@ public class TraxServiceImpl implements TraxService
 
 	public void saveScout(Scout scout) throws Exception
 	{
-		addRanks(scout);
+		scout = addRanks(scout);
 		if (scout.getPosition() != null)
 		{
 			// need to update the leadership log
@@ -216,7 +216,7 @@ public class TraxServiceImpl implements TraxService
 	/**
 	 * add ranks if they do not already have them. Awards are added as needed but each boy starts with empty ranks
 	 */
-	public void addRanks(Scout scout)
+	public Scout addRanks(Scout scout)
 	{
 		// give the new scout ranks to fill but only add them if they are not
 		// already there
@@ -273,7 +273,7 @@ public class TraxServiceImpl implements TraxService
 				addCub2015Ranks(scout, scout.getAwards());
 			}
 		}
-		userDao.save(scout);
+		return (Scout)userDao.save(scout);
 	}
 
 	private void addCub2015Ranks(Scout scout, Set<Award> awards)

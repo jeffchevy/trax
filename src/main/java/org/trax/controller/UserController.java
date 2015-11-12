@@ -221,6 +221,7 @@ public class UserController
     			realUsers.add(realUser);
 			}
     	}
+		
     	if (realUsers == null || realUsers.size()==0)
     	{
     		model.put("errorMessage","That "+(hasEmail?"email address":"user name")+" does not exist in our system!");
@@ -228,11 +229,47 @@ public class UserController
     	}
     	else
     	{
+    		//the user may have multiple accounts, set flags here so we can give the best overall message
+    		boolean isRetired = true;
+    		boolean isEnabled = false;
+    		boolean hasUsername = false;
+    		boolean hasAnEmail = false;
 	    	for (User realUser : realUsers)
 			{
-        		traxService.sendPasswordReset(realUser);
+	    		if(realUser.getEmail()!=null) 
+	    		{
+	    			hasAnEmail = true;
+	    		}
+	    		if(realUser.isEnabled()) 
+	    		{
+		    		isEnabled = true;
+	    		}
+	    		if(realUser.getUsername()!=null) 
+	    		{
+		    		hasUsername = true;
+	    		}
+	    		if( ! realUser.isRetired()) 
+	    		{
+		    		isRetired = false;
+	    		}
+	    		
+	    		if(realUser.getEmail()!=null && realUser.getUsername()!=null && realUser.isEnabled() && ! realUser.isRetired()) 
+	    		{
+		    		traxService.sendPasswordReset(realUser);
+	    		}
 			}
-    		model.put("successMessage", "An email has been sent with login name and password reset instructions");
+    		if ( ! hasAnEmail || ! isEnabled || ! hasUsername || isRetired)
+			{
+        		String message = 
+        			! hasAnEmail ? "There is no email address associated with this account. Contact one of your leaders to fix this problem." :
+        			! isEnabled || ! hasUsername ? "The account has not been setup. Contact one of your leaders to send you and invitation to join.":
+        			isRetired ? "This account has been retired. Contact your leader to fix this problem.": "There was a problem, please contact jeff@scouttrax.org";
+        		model.put("errorMessage", message);
+        		return "forgot";
+			}
+	    	
+	    	String message = "An email has been sent with login name and password reset instructions";
+			model.put("successMessage", message);
 
     		return "forgotPasswordSuccess";
     	}

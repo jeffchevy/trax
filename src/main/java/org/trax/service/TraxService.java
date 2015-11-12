@@ -98,7 +98,7 @@ public interface TraxService
 	List<? extends BaseUnitType> getUnitTypes(boolean isCub);
 	List getLeaderPositions(boolean isCub);
 	
-	void addRanks(Scout scout);
+	Scout addRanks(Scout scout);
 	Collection<? extends String> getUnitLeaderEmails(String council, BaseUnitType typeOfUnit, Integer number);
 	String transferScout(long scoutId, Leader leader, String councilName) throws Exception;
 	Map<Long, Map<Long, Set<Long>>> getScoutsAwardList(List<Scout> scouts, Set<Long> set) throws Exception;
