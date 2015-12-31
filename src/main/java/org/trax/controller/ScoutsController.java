@@ -208,9 +208,16 @@ public class ScoutsController extends AbstractScoutController
 	 */
 	private String updateCubAward(HttpSession session, Scout scout, Award award, String rankName)
 	{
-		Object cub2015 = (Boolean)session.getAttribute(CUB2015);
-		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
-		
+		Object cub2015 = session.getAttribute(CUB2015);
+		Boolean isCub2015 = false;
+		if(cub2015==null){
+			//default to 2015
+			session.setAttribute(CUB2015, true);
+			isCub2015 = true;
+		}
+		else {
+			isCub2015 = (Boolean)cub2015;
+		}
 
 		if(isCub2015)
 		{

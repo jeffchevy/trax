@@ -64,7 +64,7 @@ public class Award2015Tag extends TagSupport
 			String requirementsLabel = "Requirements";
 			String activePageId=AwardConfig.AWARDS;
 			
-			boolean isRank = false;
+			boolean useSpecialFormatting = true;
 			AwardConfig awardConfig = award.getAwardConfig();
 			if (awardConfig instanceof RankConfig)
 			{
@@ -91,7 +91,14 @@ public class Award2015Tag extends TagSupport
 				}
 				else if(scout.getUnit().isCub()==false)
 				{
-					isRank = true; //boy scout ranks only
+					if (awardConfig.getName().contains("Palm") 
+									|| awardConfig.getName().equals("Star") 
+									|| awardConfig.getName().equals("Life") 
+									|| awardConfig.getName().equals("Eagle"))
+					{
+						useSpecialFormatting = false; //requirements are all numbered, don't use special formatting 
+					}
+					
 					if (awardConfig.getName().contains("Palm"))
 					{
 						activePageId = "Palms";
@@ -265,7 +272,7 @@ public class Award2015Tag extends TagSupport
 				}
 				
 				writeCheckbox(writer, canSelect, user, requirementConfig, checked, indeterminateClass);
-				writeText(writer, isRank, requirementConfig);
+				writeText(writer, useSpecialFormatting, requirementConfig);
 				writeDateBox(writer, canSelect, user, requirementConfig, dateCompletedString, signature);
 				
 				writer.write("</div>");// end the row
@@ -444,7 +451,7 @@ public class Award2015Tag extends TagSupport
 	}
 
 
-	private void writeText(JspWriter writer, boolean isRank, RequirementConfig rc)
+	private void writeText(JspWriter writer, boolean useSpecialFormatting, RequirementConfig rc)
 			throws IOException
 	{
 		String text = rc.getText();
@@ -452,7 +459,7 @@ public class Award2015Tag extends TagSupport
 		String classes = "cell requirementtext";
 		
 		//do not do special coloring for Scout Ranks
-		if(!isRank)
+		if(useSpecialFormatting)
 		{
 			if(text.trim().matches("[\\s\\S]*[Dd]o .* of the following[\\s\\S]*")
 				|| text.trim().matches("[\\s\\S]*Complete .* of the following[\\s\\S]*")
@@ -699,10 +706,10 @@ public class Award2015Tag extends TagSupport
 	// if not found here, just split it in half
 	static 
 	{
-		splitMap.put("Scout", 10);
-		splitMap.put("Tenderfoot", 10);
-		splitMap.put("Second Class", 13);
-		splitMap.put("First Class", 10);
+		splitMap.put("Scout", 8);
+		splitMap.put("Tenderfoot", 20);
+		splitMap.put("Second Class", 23);
+		splitMap.put("First Class", 19);
 		splitMap.put("Star", 7);
 		splitMap.put("Life", 8);
 		splitMap.put("Eagle", 3);

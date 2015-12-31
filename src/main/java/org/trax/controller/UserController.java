@@ -313,19 +313,28 @@ public class UserController
 	public String saveCredentials(HttpServletRequest request, Map<String, Object> model,
 			@Valid UserCredentialsForm credentials, BindingResult result) throws Exception
 	{
-		userValidator.validateCredentials(credentials, result);
-
-		if (result.hasErrors())
+		try
 		{
-			for (ObjectError error : result.getAllErrors())
+			userValidator.validateCredentials(credentials, result);
+
+			if (result.hasErrors())
 			{
-				model.put("errorMessage", error.getDefaultMessage());
+				for (ObjectError error : result.getAllErrors())
+				{
+					model.put("errorMessage", error.getDefaultMessage());
+				}
+				return "emailVerification";
 			}
+			User user = traxService.saveCredentials(credentials);
+
+			request.getSession().setAttribute(ORGANIZATION, user.getOrganization());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			model.put("errorMessage", "Username already taken, please choose another one. ["+e.getMessage()+"]");
 			return "emailVerification";
 		}
-		User user = traxService.saveCredentials(credentials);
-
-		request.getSession().setAttribute(ORGANIZATION, user.getOrganization());
 		return "redirect:troopManage.html";
 	}
 

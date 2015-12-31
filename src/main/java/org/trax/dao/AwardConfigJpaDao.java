@@ -147,7 +147,7 @@ public class AwardConfigJpaDao extends GenericJpaDao<AwardConfig, Long> implemen
 		catch (Exception e)
 		{
 			//log an error but keep going this is not critical
-			Log.error("Failed to get Meritbadges for a rank ", e);
+			Log.error("Failed to get Merit badges for a rank ", e);
 		}
 
 		return awardNames;

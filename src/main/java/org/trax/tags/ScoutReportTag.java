@@ -363,9 +363,9 @@ public class ScoutReportTag extends TagSupport
 			{
 				for (String key : awardMap.keySet())
 				{
-					StringTokenizer st = new StringTokenizer(key, ":");
-					String sortOrder = st.nextToken();
-					String awardName = st.nextToken();
+					int firstIndexOf = key.indexOf(":");
+					String sortOrder = key.substring(0,firstIndexOf);
+					String awardName = key.substring(firstIndexOf+1);
 					Award award = (Award) awardMap.get(key);
 					try
 					{

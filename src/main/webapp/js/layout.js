@@ -69,7 +69,7 @@
 		else if($('#First_Class').length != 0){$('a', '#nav-1stclassrank').addClass('active');}
 		else if($('#Star').length != 0){
 			$('a', '#nav-starrank').addClass('active');
-			//go get all the required meritbadges for this scout, and fill in the blanks for this requirement
+			//go get all the required merit badges for this scout, and fill in the blanks for this requirement
 			$.get('getRankMeritBadges.html', function(data) {
 				if(data.length>0)
 				{
@@ -79,7 +79,7 @@
 		}
 		else if($('#Life').length != 0){
 			$('a', '#nav-liferank').addClass('active');
-			//go get all the required meritbadges for this scout, and fill in the blanks for this requirement
+			//go get all the required merit badges for this scout, and fill in the blanks for this requirement
 			$.get('getRankMeritBadges.html', function(data) {
 				if(data.length>0)
 				{
@@ -89,7 +89,7 @@
 		}
 		else if($('#Eagle').length != 0){
 			$('a', '#nav-eaglerank').addClass('active');
-			//go get all the required meritbadges for this scout, and fill in the blanks for this requirement
+			//go get all the required merit badges for this scout, and fill in the blanks for this requirement
 			$.get('getRankMeritBadges.html', function(data) {
 				if(data.length>0)
 				{

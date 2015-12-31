@@ -1673,13 +1673,15 @@ public class TraxServiceImpl implements TraxService
 		if (theScout != null)
 		{
 
+			
 			if (rankName.equals("Star"))
 			{
 				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 0, 4, 0, 2);
 				if (!requiredAwardNames.isEmpty())
 				{
+					int requiredEarnedCount = requiredAwardNames.size();
 					htmlString = "3. Earn 6 merit badges; including 4 from the required list for Eagle.\n" + "<hr><p style='background: #dd6;'>You have earned "
-									+ requiredAwardNames.size() + " of 6 needed for your Star Rank: \n" + requiredAwardNames + "</p>";
+									+ requiredEarnedCount + " of 6 needed for your Star Rank: \n" + requiredAwardNames + "</p>";
 				}
 			}
 			else if (rankName.equals("Life"))
@@ -1687,10 +1689,11 @@ public class TraxServiceImpl implements TraxService
 				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 4, 3, 2, 2);
 				if (!requiredAwardNames.isEmpty())
 				{
+					int requiredEarnedCount = requiredAwardNames.size();
 					htmlString = "3. Earn five more merit badges (so that you have 11 in all), including any three more"
 									+ " from the required list for Eagle. (See the Eagle Rank Requirements," + " number 3, for this list.)"
 									+ " \nA Scout may choose any of the 17 required merit badges in the 13 categories to fulfill this requirement.\n"
-									+ "<hr><p style='background: #dd6;'>You have earned " + requiredAwardNames.size() + " of 5 needed for your Life Rank: \n" + requiredAwardNames
+									+ "<hr><p style='background: #dd6;'>You have earned " + requiredEarnedCount + " of 5 needed for your Life Rank: \n" + requiredAwardNames
 									+ "</p>";
 				}
 			}
@@ -1699,11 +1702,16 @@ public class TraxServiceImpl implements TraxService
 				requiredAwardNames = awardConfigDao.getRankMeritBadges(theScout.getId(), 0, 13, 0, 0);
 				if (!requiredAwardNames.isEmpty())
 				{
-					htmlString = "3. Earn a total of 21 merit badges; including the following: <br>" + "     a. First Aid<br>" + "     b. Citizenship in the Community<br>"
-									+ "     c. Citizenship in the Nation<br>" + "     d. Citizenship in the World<br>" + "     e. Communications<br>"
-									+ "     f. Personal Fitness<br>" + "     g. Emergency Preparedness OR Lifesaving<br>" + "     h. Environmental Science OR Sustainability<br>"
-									+ "     i. Personal Management<br>" + "     j. Swimming OR Hiking OR Cycling<br>" + "     k. Camping<br>" + "     l. Family Life<br>"
-									+ "     m. Cooking (2014)<br>";
+					String requiredBadgeList = "     a. First Aid<br>" + "     b. Citizenship in the Community<br>"
+														+ "     c. Citizenship in the Nation<br>" + "     d. Citizenship in the World<br>" + "     e. Communications<br>"
+														+ "     f. Cooking (2014)<br>"
+														+ "     g. Personal Fitness<br>" + "     h. Emergency Preparedness OR Lifesaving<br>" + "     i. Environmental Science OR Sustainability<br>"
+														+ "     j. Personal Management<br>" + "     k. Swimming OR Hiking OR Cycling<br>" + "     l. Camping<br>" + "     m. Family Life<br>";
+					htmlString = "3. Earn a total of 21 merit badges (10 more than required for the Life rank), including the following: <br>" 
+														+ requiredBadgeList 
+														+ "You must choose only one of the merit badges listed in categories h, i, and k. " +
+														"Any additional merit badge(s) earned in those categories may be counted as one of your " +
+														"eight optional merit badges used to make your total of 21.";
 
 					for (String earnedAwardName : requiredAwardNames)
 					{
@@ -1714,8 +1722,9 @@ public class TraxServiceImpl implements TraxService
 					}
 					if (!requiredAwardNames.isEmpty())
 					{
-						htmlString += "<hr><p style='background: #dd6;'>You have earned " + requiredAwardNames.size()
-										+ " of 13 Required Meritbadges for your Eagle Rank. (Yours will appear in bold font.)</p>";
+						int requiredEarnedCount = requiredAwardNames.size();
+						htmlString += "<hr><p style='background: #dd6;'>You have earned " + requiredEarnedCount
+										+ " of 13 Required merit badges for your Eagle Rank. (Yours will appear in bold font.)</p>";
 					}
 				}
 
@@ -1725,7 +1734,7 @@ public class TraxServiceImpl implements TraxService
 				{
 					if (!electiveNames.isEmpty())
 					{
-						htmlString += "<hr><p style='background: #dd6;'>You have earned " + electiveNames.size() + " of 8 elective Meritbadges needed for your Eagle Rank: \n"
+						htmlString += "<hr><p style='background: #dd6;'>You have earned " + electiveNames.size() + " of 8 elective merit badges needed for your Eagle Rank: \n"
 										+ electiveNames + "</p>";
 					}
 				}
