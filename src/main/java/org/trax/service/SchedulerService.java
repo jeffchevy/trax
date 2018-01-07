@@ -289,6 +289,7 @@ public class SchedulerService
 		mailService.sendEmail("no-reply@ScoutTrax.org", "gregswork@hotmail.com", subject, message, false);
 		mailService.sendEmail("no-reply@ScoutTrax.org", "brentjacox@smoothlake.com", subject, message, false);
 		mailService.sendEmail("no-reply@ScoutTrax.org", "schmittdarren@comcast.net", subject, message, false);
+		mailService.sendEmail("no-reply@ScoutTrax.org", "volcanicchevy@gmail.com", subject, message, false);
 	}
 
 }

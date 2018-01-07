@@ -20,7 +20,7 @@ public class AbstractScoutController
 	protected static final String SCOUTS = "scouts";
 	protected static final String AWARD = "award";
 	protected static final String SCOUT = "scout";
-	protected static final String CUB2015 = "Cub2015";
+	protected static final String NEWCUBS = "Cub2015";
 	protected static final Format formatter = new SimpleDateFormat("MM/dd/yyyy");
 	protected int checkedScoutNumber = 0;
 	@Autowired

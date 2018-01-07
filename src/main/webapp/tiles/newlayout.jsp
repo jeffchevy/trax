@@ -323,7 +323,7 @@
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
 								<input id="logout" value="Logout" type="button" class="button" onclick="location.href='logout.html'"/>
-								<input value="Feedback" type="button" class="button" onclick="location.href='showfeedback.html'"/>
+								<input value="Support" type="button" class="button" onclick="location.href='showfeedback.html'"/>
 							</div>
 							 <!-- 
 							<div id="fb-root"></div>

@@ -71,10 +71,10 @@ public class BadgeController extends AbstractScoutController
     @RequestMapping(value="/cubBadges.html", method=RequestMethod.GET)
     public String showCubBadges(HttpSession session, Map<String, Object> model, @RequestParam(value="type", required=true)String type)
     {
-    	Object cub2015 = (Boolean)session.getAttribute(CUB2015);
-		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
+    	Object newCubs = (Boolean)session.getAttribute(NEWCUBS);
+		Boolean isNewCubs = (Boolean) (newCubs!=null ? newCubs : false);
 		String returnval = "showCubPins";
-		if (isCub2015)
+		if (isNewCubs)
 		{
 			returnval = "showCub2015Pins";//ignore the pins here for now
 		}
@@ -143,9 +143,9 @@ public class BadgeController extends AbstractScoutController
 		String returnValue = "advancement";
 		if ( scout.getUnit().isCub())
 		{
-			Object cub2015 = (Boolean)request.getSession().getAttribute(CUB2015);
-			Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
-			returnValue = isCub2015?"cub2015Advancement":"cubAdvancement"; //default;
+			Object newCubs = (Boolean)request.getSession().getAttribute(NEWCUBS);
+			Boolean isNewCubs = (Boolean) (newCubs!=null ? newCubs : false);
+			returnValue = isNewCubs?"cub2015Advancement":"cubAdvancement"; //default;
 		}
 		return returnValue;
 	}
@@ -221,9 +221,9 @@ public class BadgeController extends AbstractScoutController
 		}
 		request.getSession().setAttribute("award", foundAward);
 
-		Object cub2015 = (Boolean)request.getSession().getAttribute(CUB2015);
-		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
-		return isCub2015?"cub2015Advancement":"cubAdvancement"; //default;
+		Object newCubs = (Boolean)request.getSession().getAttribute(NEWCUBS);
+		Boolean isNewCubs = (Boolean) (newCubs!=null ? newCubs : false);
+		return isNewCubs?"cub2015Advancement":"cubAdvancement"; //default;
 	}
 
 	//@TODO combine this with select badges above

@@ -20,14 +20,14 @@ public class Helper
 	 * @param award
 	 * @return
 	 */
-	public static boolean isCub2015Award(Award award)
+	public static boolean isNewCubsAward(Award award)
 	{
-		boolean isCub2015Award = ! (award.getAwardConfig() instanceof CubRankConfig 
+		boolean isNewCubsAward = ! (award.getAwardConfig() instanceof CubRankConfig 
 						||  award.getAwardConfig() instanceof CubRankElectiveConfig
 						||  award.getAwardConfig() instanceof PinConfig
 						||  award.getAwardConfig() instanceof BeltLoopConfig
 						||  award.getAwardConfig() instanceof ActivityBadgeConfig);
-		return isCub2015Award;
+		return isNewCubsAward;
 	}
 
 	/**

@@ -462,7 +462,7 @@ public class Award2015Tag extends TagSupport
 		if(useSpecialFormatting)
 		{
 			if(text.trim().matches("[\\s\\S]*[Dd]o .* of the following[\\s\\S]*")
-				|| text.trim().matches("[\\s\\S]*Complete .* of the following[\\s\\S]*")
+				|| text.trim().matches("[\\s\\S]*Complete .*the following[\\s\\S]*")
 				|| text.trim().matches("[\\s\\S]*[Dd]o.* the following[\\s\\S]*")
 				|| text.startsWith("Chapter")
 				|| text.trim().matches("[Dd]o .*[\\s\\S]*")

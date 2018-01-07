@@ -47,7 +47,7 @@ public class EarnedTag extends BaseTag
 				{
 					return SKIP_BODY;
 				}
-				boolean isCub2015Mode = isCub2015();
+				boolean isNewCubsMode = isNewCubs();
 				
 				for (Award award : awards)
 				{
@@ -61,9 +61,9 @@ public class EarnedTag extends BaseTag
 						if (scout.getUnit().isCub())
 						{
 							
-							if(isCub2015Mode)
+							if(isNewCubsMode)
 							{
-								if( Helper.isCub2015Award(award))
+								if( Helper.isNewCubsAward(award))
 								{
 									//only processing 2015 Awards
 									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);
@@ -106,7 +106,7 @@ public class EarnedTag extends BaseTag
 					{
 						if(scout.getUnit().isCub())
 						{
-						    if(! isCub2015Mode)
+						    if(! isNewCubsMode)
                             {
     							if(awardConfig instanceof CubRankConfig)
     							{

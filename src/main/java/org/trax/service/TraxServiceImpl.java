@@ -1586,13 +1586,13 @@ public class TraxServiceImpl implements TraxService
 		
 		Set<Long> awardList = new LinkedHashSet<Long>();
 		
-		awardList.add(awardConfigDao.getByName("Bobcat").getId());
+		awardList.add(awardConfigDao.getByName("Bobcat 2015").getId());
 		if (scouts.get(0).getOrganization().hasTigers())
 		{
-			awardList.add(awardConfigDao.getByName("Tiger Cub").getId());
+			awardList.add(awardConfigDao.getByName("Tiger 2015").getId());
 		}
-		awardList.add(awardConfigDao.getByName("Wolf").getId());
-		awardList.add(awardConfigDao.getByName("Bear").getId());
+		awardList.add(awardConfigDao.getByName("Wolf 2015").getId());
+		awardList.add(awardConfigDao.getByName("Bear 2015").getId());
 
 		List<Long> scoutIds = getSelectedScoutIds(scouts);
 		if (scoutIds.isEmpty())

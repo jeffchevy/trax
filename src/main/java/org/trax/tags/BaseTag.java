@@ -153,11 +153,11 @@ public class BaseTag extends TagSupport
 		this.size = size;
 	}
 	
-	public boolean isCub2015()
+	public boolean isNewCubs()
 	{
-		Object cub2015 = pageContext.getSession().getAttribute("Cub2015");
-		Boolean isCub2015 = (Boolean) (cub2015!=null ? cub2015 : false);
-		return isCub2015;
+		Object newCubs = pageContext.getSession().getAttribute("Cub2015");
+		Boolean isNewCubs = (Boolean) (newCubs!=null ? newCubs : false);
+		return isNewCubs;
 	}
 
 }

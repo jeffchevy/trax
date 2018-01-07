@@ -43,6 +43,7 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
     public static final String RANK = "Rank";
     private Set<Sponsor> sponsors;
     private String name;
+    private String bsaName;
 	private String description;
 	private boolean isSelectable=true;
 	private List<RequirementConfig> requirementConfigs;
@@ -89,6 +90,17 @@ public class AwardConfig implements Serializable//implements Comparable<AwardCon
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	@Column(name = "bsaName", nullable = false)
+	public String getBsaName()
+	{
+		return bsaName;
+	}
+
+	public void setBsaName(String bsaName)
+	{
+		this.bsaName = bsaName;
 	}
 
 	@Column(name = "description", nullable = false)

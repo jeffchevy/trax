@@ -52,7 +52,7 @@ public class InProgressTag extends BaseTag
 				{
 					return SKIP_BODY;
 				}
-				boolean isCub2015Mode = isCub2015(); 
+				boolean isNewCubsMode = isNewCubs(); 
 				
 		        String htmlLists = "";
 				int mbCount = 0;
@@ -78,9 +78,9 @@ public class InProgressTag extends BaseTag
 								continue;
 							}
 
-							if(isCub2015Mode)
+							if(isNewCubsMode)
 							{
-								if( Helper.isCub2015Award(award))
+								if( Helper.isNewCubsAward(award))
 								{
 									//only processing 2015 Awards
 									htmlLists += createImageLink(awardConfig, awardConfig.getImageSource(), awardName);

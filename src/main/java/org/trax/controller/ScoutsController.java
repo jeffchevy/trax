@@ -68,15 +68,15 @@ public class ScoutsController extends AbstractScoutController
 	@RequestMapping("/switchTo2015Cubs.html")
 	public String switchTo2015Cubs(HttpSession session, Map<String, Object> model) throws Exception
 	{
-		Boolean isCub2015 = (Boolean) session.getAttribute(CUB2015);
-		if ( isCub2015 == null || !isCub2015 )
+		Boolean isNewCubs = (Boolean) session.getAttribute(NEWCUBS);
+		if ( isNewCubs == null || !isNewCubs )
 		{
 			//assume it is classic to start with
-			session.setAttribute(CUB2015, new Boolean(true));
+			session.setAttribute(NEWCUBS, new Boolean(true));
 		}
 		else
 		{
-			session.setAttribute(CUB2015, new Boolean(false));
+			session.setAttribute(NEWCUBS, new Boolean(false));
 		}
 		
 		return "redirect:advancement.html";
@@ -208,18 +208,18 @@ public class ScoutsController extends AbstractScoutController
 	 */
 	private String updateCubAward(HttpSession session, Scout scout, Award award, String rankName)
 	{
-		Object cub2015 = session.getAttribute(CUB2015);
-		Boolean isCub2015 = false;
-		if(cub2015==null){
+		Object newCubs = session.getAttribute(NEWCUBS);
+		Boolean isNewCubs = false;
+		if(newCubs==null){
 			//default to 2015
-			session.setAttribute(CUB2015, true);
-			isCub2015 = true;
+			session.setAttribute(NEWCUBS, true);
+			isNewCubs = true;
 		}
 		else {
-			isCub2015 = (Boolean)cub2015;
+			isNewCubs = (Boolean)newCubs;
 		}
 
-		if(isCub2015)
+		if(isNewCubs)
 		{
 			//make sure the scout has ranks
 			scout = traxService.addRanks(scout);
@@ -238,9 +238,9 @@ public class ScoutsController extends AbstractScoutController
 			{
 				if (awardName.contains("Elective"))
 				{
-					if (isCub2015)
+					if (isNewCubs)
 					{
-					    if (! awardName.contains("2015"))
+					    if (awardName.contains("2014"))
                         {
 					        //super kludge but its late
 					        if (awardName.contains("Tiger"))
@@ -275,12 +275,12 @@ public class ScoutsController extends AbstractScoutController
 			}
 		}
 		
-		//now get the ward and load it in the session
+		//now get the award and load it in the session
 		Award foundAward = null;
 		
 		for (Award scoutAward : scout.getAwards())
 		{
-			if(isCub2015)
+			if(isNewCubs)
 			{
 				if (scoutAward.getAwardConfig() instanceof Cub2015RankConfig || scoutAward.getAwardConfig() instanceof Cub2015RankElectiveConfig)
 				{
@@ -320,7 +320,7 @@ public class ScoutsController extends AbstractScoutController
 		}
 		session.setAttribute(AWARD, award);
 		
-		return isCub2015?"cub2015Advancement":"cubAdvancement"; //default
+		return isNewCubs?"cub2015Advancement":"cubAdvancement"; //default
 	}
 
 	@RequestMapping("/changerank.html")

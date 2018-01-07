@@ -326,7 +326,7 @@ public class ScoutReportTag extends TagSupport
 			int completeAwardCount = 0;
 			if ("Required Badges".equals(awardTypeName))
 			{
-				footerString = "<p>*Only one of (Swimming, Hiking, Cycling) and (Emergency Prepardness or Lifesaving) counts for Eagle</p>";
+				footerString = "<p>*Only one of (Swimming, Hiking, Cycling) and (Emergency Preparedness or Lifesaving) and (Sustainability or Environmental Science) counts for Eagle</p>";
 				List<BadgeConfig> requiredBadges = this.getRequiredMeritBadges();
 				for (BadgeConfig badgeConfig : requiredBadges)
 				{

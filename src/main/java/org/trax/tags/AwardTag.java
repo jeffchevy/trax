@@ -429,7 +429,7 @@ public class AwardTag extends TagSupport
 		if(!isRank)
 		{
 			if(text.trim().matches("[\\s\\S]*[Dd]o .* of the following[\\s\\S]*")
-				|| text.trim().matches("[\\s\\S]*Complete .* of the following[\\s\\S]*")
+				|| text.trim().matches("[\\s\\S]*Complete .*the following[\\s\\S]*")
 				|| text.trim().matches("[\\s\\S]*[Dd]o.* the following[\\s\\S]*")
 				|| text.startsWith("Chapter"))//match  the \s\S match anything including \n and \r add class
 			{

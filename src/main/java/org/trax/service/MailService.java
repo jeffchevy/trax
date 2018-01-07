@@ -309,6 +309,7 @@ public class MailService
 		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "mails/feedback.vm", data);
 
 		sendEmail(user.getEmail(), "jeff@scouttrax.org", "ScoutTrax Feedback - Priority: " + priority, text, true);
+		sendEmail(user.getEmail(), "volcanicchevy@gmail.com", "ScoutTrax Feedback - Priority: " + priority, text, true);
 	}
 	
 	public void sendGroup(String subject, String message, Collection<Long> userIds) throws AddressException
