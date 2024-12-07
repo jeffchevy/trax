@@ -1,0 +1,5 @@
+<Resource name="jdbc/trax" auth="Container" type="javax.sql.DataSource"
+          maxActive="100" maxIdle="30" maxWait="10000"
+          username="trax" password="trax" driverClassName="com.mysql.jdbc.Driver"
+          url="jdbc:mysql://localhost:3306/trax"
+          validationQuery="Select 1"/>
